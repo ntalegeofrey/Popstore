@@ -4,14 +4,13 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import firebase from "../../service/firebase";
-
+import { useDispatch } from "react-redux";
+import { addUserInfo } from "../../redux/user";
 import "./styles.css";
 const LandingPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  //   const handleLogin = () => {
-  //     navigate("/login");
-  //   };
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -19,6 +18,7 @@ const LandingPage = () => {
       setUser(user);
       if (user.multiFactor.user) {
         setUser(user.multiFactor.user);
+        dispatch(addUserInfo(user.multiFactor.user));
         navigate("/my-popstore");
       }
     });

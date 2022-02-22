@@ -1,9 +1,19 @@
-import React from 'react'
-import { auth } from '../../service/firebase'
+import React from "react";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import "./styles.css";
+import LogoutButton from "../../components/Logout Button/LogoutButton";
 const MyPopstore = () => {
   return (
-    <div>MyPopstore</div>
-  )
-}
+    <Container maxWidth="lg">
+      <div className="popstore-wrapper">
+        <Typography style={{ marginBottom: "20px" }} variant="h6">
+          My Popstore
+        </Typography>
+        <LogoutButton/>
+      </div>
+    </Container>
+  );
+};
 
-export default MyPopstore
+export default MyPopstore;
