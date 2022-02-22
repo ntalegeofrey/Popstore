@@ -13,18 +13,16 @@ import { useNavigate, Link } from "react-router-dom";
 const MyPopstore = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUser(user.multiFactor.user);
         setUserPhoto(user.multiFactor.user.photoURL);
       } else {
         navigate("/");
       }
     });
-  }, []);
+  }, [navigate]);
 
 
   return (

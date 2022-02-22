@@ -24,7 +24,7 @@ const LandingPage = () => {
         navigate("/");
       }
     });
-  }, []);
+  }, [navigate, dispatch]);
 
   return (
     <Container maxWidth="lg">

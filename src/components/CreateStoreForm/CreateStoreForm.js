@@ -24,14 +24,14 @@ const CreateStoreForm = () => {
         navigate("/");
       }
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="create-store-wrapper">
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           <Grid item xs={8}>
-            <Typography style={{ marginBottom: "20px" }} variant="h5">
+            <Typography style={{ marginTop: "20px" }} variant="h5">
               Create Popstore from a spreadsheet
             </Typography>
           </Grid>
