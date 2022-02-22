@@ -4,13 +4,15 @@ import Typography from "@mui/material/Typography";
 import "./styles.css";
 import LogoutButton from "../../components/Logout Button/LogoutButton";
 import Grid from "@mui/material/Grid";
-import firebase from "../../service/firebase";
 import ProductTable from "../../components/Product_Table/ProductTable";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import firebase from "../../service/firebase";
+
+import { useNavigate, Link } from "react-router-dom";
 
 const MyPopstore = () => {
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   useEffect(() => {
@@ -24,17 +26,7 @@ const MyPopstore = () => {
     });
   }, []);
 
-  const handleLogout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   return (
     <Container maxWidth="lg">
       <div className="popstore-wrapper">
@@ -45,14 +37,16 @@ const MyPopstore = () => {
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <div onClick={handleLogout} className="logout-button">
+            <div className="logout-button">
               <LogoutButton user={userPhoto} />
             </div>
           </Grid>
         </Grid>
       </div>
       <div className="new-popstore-button">
-        <Button variant="contained">New Popstore</Button>
+        <Button component={Link} to="/new-popstore" variant="contained">
+          New Popstore
+        </Button>
       </div>
       <ProductTable />
     </Container>

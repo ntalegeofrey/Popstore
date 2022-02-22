@@ -1,19 +1,27 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import firebase from "../../service/firebase";
+import { useNavigate } from "react-router-dom";
 
-const LogoutButton = ({user}) => {
+const LogoutButton = ({ user }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
-    <div>
+    <div onClick={handleLogout}>
       <div>
-        <Avatar
-          alt="Remy Sharp"
-          src={user}
-          sx={{ width: 56, height: 56 }}
-        />
-        <Typography variant="p">
-          Logout
-        </Typography>
+        <Avatar alt="Remy Sharp" src={user} sx={{ width: 56, height: 56 }} />
+        <Typography variant="p">Logout</Typography>
       </div>
     </div>
   );

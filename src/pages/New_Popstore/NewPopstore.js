@@ -6,25 +6,20 @@ import { useNavigate } from "react-router-dom";
 import firebase from "../../service/firebase";
 import { useDispatch } from "react-redux";
 import { addUserInfo } from "../../redux/user";
-import "./styles.css";
-const LandingPage = () => {
+const NewPopstore = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log(user.multiFactor.user);
-        dispatch(addUserInfo(user.multiFactor.user));
-        localStorage.setItem(
-          "popstore_user_token",
-          user.multiFactor.user.accessToken
-        );
-        navigate("/my-popstore");
-      } else {
-        navigate("/");
-      }
-    });
-  }, []);
+//   useEffect(() => {
+//     firebase.auth().onAuthStateChanged((user) => {
+//       if (user) {
+//         console.log(user.multiFactor.user);
+//         dispatch(addUserInfo(user.multiFactor.user));
+//         navigate("/my-popstore");
+//       } else {
+//         navigate("/");
+//       }
+//     });
+//   }, []);
 
   return (
     <Container maxWidth="lg">
@@ -37,4 +32,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default NewPopstore;
