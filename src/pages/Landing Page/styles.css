@@ -1,0 +1,12 @@
+.create-table-wrapper{
+    background-color: #eee;
+    width: 100%;
+    height: 300px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.go-button{
+    float: right;
+    margin-top: 20px;
+}
