@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import CreateStoreForm from "../../components/CreateStoreForm/CreateStoreForm";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -10,14 +10,10 @@ import "./styles.css";
 const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      console.log(user);
-      setUser(user);
       if (user.multiFactor.user) {
-        setUser(user.multiFactor.user);
+        console.log(JSON.stringify(user));
         dispatch(addUserInfo(user.multiFactor.user));
         navigate("/my-popstore");
       }
@@ -28,9 +24,9 @@ const LandingPage = () => {
     <Container maxWidth="lg">
       <CreateStoreForm />
       <div className="create-table-wrapper"></div>
-      <Button className="go-button" variant="contained">
-        Go
-      </Button>
+      <div className="go-button">
+        <Button variant="contained">Go</Button>
+      </div>
     </Container>
   );
 };
