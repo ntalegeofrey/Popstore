@@ -12,10 +12,12 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user.multiFactor.user) {
-        console.log(JSON.stringify(user));
+      if (user) {
+        console.log(user.multiFactor.user);
         dispatch(addUserInfo(user.multiFactor.user));
         navigate("/my-popstore");
+      } else {
+        navigate("/");
       }
     });
   }, []);

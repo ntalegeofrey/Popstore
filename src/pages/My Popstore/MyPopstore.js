@@ -7,22 +7,34 @@ import Grid from "@mui/material/Grid";
 import firebase from "../../service/firebase";
 import ProductTable from "../../components/Product_Table/ProductTable";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 const MyPopstore = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user.multiFactor.user) {
+      if (user) {
         setUser(user.multiFactor.user);
         setUserPhoto(user.multiFactor.user.photoURL);
+      } else {
+        navigate("/");
       }
     });
   }, []);
 
-  const handleLogout =()=>{
-    
-}
+  const handleLogout = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <Container maxWidth="lg">
       <div className="popstore-wrapper">
