@@ -9,26 +9,36 @@ import Grid from "@mui/material/Grid";
 import LogoutButton from "../../components/Logout Button/LogoutButton";
 import DataTable from "../../components/Data_Table/DataTable";
 import { useSelector } from "react-redux";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+
 const MapYourData = () => {
   const tableData = useSelector((state) => state.csvText.tableData);
   const [age, setAge] = React.useState("");
   const [options, setOptions] = useState([]);
+  const [data, setData] = useState(tableData);
   let temp = [];
 
   const handleChange = (event, ele, i) => {
     console.log(i);
-    temp = tableData;
-    if (event.target.value === "ignore") {
-      temp.map((ele) => {
-        ele.map((item) => {
-          console.log(ele.indexOf(item))
-        });
-        ele.filter((item) => ele.indexOf(item) !== i);
-      });
-    }
-    console.log(temp);
+    var newList = [];
+    temp = data;
+    temp.map((ele) => {
+      var tempArray = [...ele];
+      tempArray.splice(i, 1);
+      newList.push(tempArray);
+    });
+    setData(newList);
+    console.log(newList);
+
     setAge(event.target.value);
   };
+
+  //   ele.map((elem) => {
+  //     //   console.log(elem);
+  //     });
+  // newList = ele.filter((item) => ele.indexOf(item) !== i);
+  // ele.map((item) => console.log(ele.indexOf(item) === i));
   useEffect(() => {
     tableData[0].map((ele) => {
       temp.push({
@@ -36,7 +46,6 @@ const MapYourData = () => {
         opt: "select"
       });
     });
-    console.log(temp);
     setOptions(temp);
   }, []);
   return (
@@ -140,7 +149,7 @@ const MapYourData = () => {
                   <Select
                     labelId={`${ele}-label`}
                     id={`${ele}`}
-                    value={age}
+                    // value={ele}
                     label={ele}
                     onChange={(e) => handleChange(e, ele, i)}
                   >
@@ -178,7 +187,15 @@ const MapYourData = () => {
             <MenuItem value="ignore">Ignore</MenuItem>
           </Select>
         </FormControl> */}
-        <DataTable data={tableData} />
+        <DataTable data={data} />
+      </div>
+      <div style={{ marginTop: "20px", marginBottom: "20px", float: "right" }}>
+        <Button component={Link} to="/map-your-data" variant="text">
+          Cancel
+        </Button>
+        <Button component={Link} to="/map-your-data" variant="contained">
+          Create Popstore
+        </Button>
       </div>
     </Container>
   );
