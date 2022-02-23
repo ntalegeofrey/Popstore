@@ -8,6 +8,9 @@ import OrdersPage from "./pages/OrdersPage";
 import CustomersPage from "./pages/CustomersPage";
 import PackagingPage from "./pages/PackagingPage";
 import StoreOwnerPages from "./pages/StoreOwnerPages";
+import PopStore from "./pages/PopStore";
+import NotFound from "./pages/NotFound";
+
 import theme from "./config/theme";
 import MapYourData from "./pages/Map_Your_Data/MapYourData";
 
@@ -25,6 +28,8 @@ function App() {
             <Route path="customers" element={<CustomersPage />} />
             <Route path="packaging" element={<PackagingPage />} />
           </Route>
+          <Route path=":storeOwnerId/:storeName" element={<PopStore />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
