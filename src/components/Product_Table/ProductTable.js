@@ -27,6 +27,7 @@ const rows = [
   createData("Popstore 6", "Link", "Edit", "Orders", "Customers", "Packaging"),
   createData("Popstore 7", "Link", "Edit", "Orders", "Customers", "Packaging")
 ];
+console.log("pdt",rows)
 const ProductTable = () => {
   return (
     <TableContainer component={Paper}>

@@ -8,8 +8,8 @@ import OrdersPage from "./pages/OrdersPage";
 import CustomersPage from "./pages/CustomersPage";
 import PackagingPage from "./pages/PackagingPage";
 import StoreOwnerPages from "./pages/StoreOwnerPages";
-
 import theme from "./config/theme";
+import MapYourData from "./pages/Map_Your_Data/MapYourData";
 
 function App() {
   return (
@@ -17,9 +17,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route exact path="/login" element={<Login />} />
           <Route exact path="/my-popstore" element={<MyPopstore />} />
-           <Route path="/new-popstore" element={<NewPopstore />} />
+          <Route path="/new-popstore" element={<NewPopstore />} />
+          <Route path="/map-your-data" element={<MapYourData />} />
           <Route path=":id/:storeName" element={<StoreOwnerPages />}>
             <Route path="orders" element={<OrdersPage />} />
             <Route path="customers" element={<CustomersPage />} />
@@ -28,6 +28,6 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }
 export default App;
