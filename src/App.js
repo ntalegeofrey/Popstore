@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import "./App.css";
-
 import LandingPage from "./pages/Landing Page/LandingPage";
-import Login from "./pages/Login/Login";
 import MyPopstore from "./pages/My Popstore/MyPopstore";
+import NewPopstore from "./pages/New_Popstore/NewPopstore";
 import OrdersPage from "./pages/OrdersPage";
 import CustomersPage from "./pages/CustomersPage";
 import PackagingPage from "./pages/PackagingPage";
@@ -20,6 +19,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/my-popstore" element={<MyPopstore />} />
+           <Route path="/new-popstore" element={<NewPopstore />} />
           <Route path=":id/:storeName" element={<StoreOwnerPages />}>
             <Route path="orders" element={<OrdersPage />} />
             <Route path="customers" element={<CustomersPage />} />
@@ -28,7 +28,6 @@ function App() {
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  );
+  )
 }
-
 export default App;
