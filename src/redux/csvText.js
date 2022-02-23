@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  text: null
+  text: null,
+  tableData: null
 };
 
 export const csvTextSlice = createSlice({
@@ -9,10 +10,13 @@ export const csvTextSlice = createSlice({
   initialState,
   reducers: {
     updateText: (state, action) => {
-      state.text = action.payload
+      state.text = action.payload;
+    },
+    updateTableData: (state, action) => {
+      state.tableData = action.payload;
     }
   }
 });
 
-export const { updateText } = csvTextSlice.actions;
+export const { updateText, updateTableData } = csvTextSlice.actions;
 export default csvTextSlice.reducer;
