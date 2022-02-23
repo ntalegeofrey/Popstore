@@ -10,8 +10,7 @@ const PageContent = styled(Paper)({
 });
 
 const StoreOwnerPages = () => (
-  <Container fluid>
-    <Typography variant="h2">StoreOwner pages</Typography>
+  <Container>
     <Typography variant="h4">Dynamic page header component</Typography>
     <PageContent elevation={0}>
       <Outlet />
