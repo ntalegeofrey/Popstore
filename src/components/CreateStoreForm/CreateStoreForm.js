@@ -8,13 +8,15 @@ import { signInWithGoogle } from "../../service/firebase";
 import LogoutButton from "../Logout Button/LogoutButton";
 import firebase from "../../service/firebase";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { updateText } from "../../redux/csvText";
 import "../CreateStoreForm/styles.css";
 
 const CreateStoreForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userPhoto, setUserPhoto] = useState(null);
-
+  const [text, setText] = useState("");
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -25,6 +27,10 @@ const CreateStoreForm = () => {
       }
     });
   }, [navigate]);
+
+  const handleText = (e) => {
+    dispatch(updateText(e.target.value));
+  };
 
   return (
     <div className="create-store-wrapper">
@@ -54,6 +60,8 @@ const CreateStoreForm = () => {
               label="Create Popstore from a spreadsheet"
               fullWidth
               variant="outlined"
+              multiline
+              onChange={(e) => handleText(e)}
             />
           </Grid>
         </Grid>
