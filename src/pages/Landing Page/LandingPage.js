@@ -6,14 +6,10 @@ import { useNavigate, Link } from "react-router-dom";
 import firebase from "../../service/firebase";
 import { useDispatch } from "react-redux";
 import { addUserInfo } from "../../redux/user";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { updateTableData } from "../../redux/csvText";
 import { useSelector } from "react-redux";
 import "./styles.css";
+import DataTable from "../../components/Data_Table/DataTable";
 const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,7 +42,7 @@ const LandingPage = () => {
           rows.push(elem);
         });
       setTableData(rows);
-      // console.log(rows);
+      dispatch(updateTableData(rows));
     }
   };
 
@@ -73,35 +69,7 @@ const LandingPage = () => {
     <Container maxWidth="lg">
       <CreateStoreForm />
       <div className="create-table-wrapper">
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableBody>
-              {tableData.map((row) => (
-                <TableRow
-                  key={row[0]}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row[0]}
-                  </TableCell>
-                  {row.map((elem, j) => {
-                    return (
-                      <TableCell
-                        style={{
-                          display: j === 0 ? "none" : ""
-                        }}
-                        key={j}
-                        align="right"
-                      >
-                        {row[j]}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <DataTable data={tableData} />
       </div>
       <div className="go-button">
         <Button component={Link} to="/map-your-data" variant="contained">
