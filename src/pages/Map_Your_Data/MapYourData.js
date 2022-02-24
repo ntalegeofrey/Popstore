@@ -25,7 +25,6 @@ import { signInWithGoogle } from "../../service/firebase";
 const MapYourData = () => {
   const tableData = useSelector((state) => state.csvText.tableData);
   const navigate = useNavigate();
-  const [age, setAge] = React.useState("");
   const [options, setOptions] = useState([]);
   const [storeName, setStoreName] = useState("");
   const [storeOwner, setStoreOwner] = useState("");
@@ -55,9 +54,6 @@ const MapYourData = () => {
       newList.push(tempArray);
     });
     setData(newList);
-    console.log(newList);
-
-    setAge(event.target.value);
   };
 
   const handleCreatePopstore = async () => {
@@ -200,13 +196,13 @@ const MapYourData = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item md={4}>
+          <Grid container justifyContent="flex-end" item md={4}>
             {userPhoto ? <LogoutButton user={userPhoto} /> : null}
           </Grid>
         </Grid>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <Grid container spacing={2}>
+        <Grid justifyContent="center" container spacing={2}>
           {tableData[0].map((ele, i) => {
             return (
               <Grid key={i} item>
