@@ -7,13 +7,15 @@ import Grid from "@mui/material/Grid";
 import ProductTable from "../../components/Product_Table/ProductTable";
 import Button from "@mui/material/Button";
 import firebase from "../../service/firebase";
-
-import { useNavigate, Link } from "react-router-dom";
+import { db, collection, getDocs } from "../../service/firebase";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 const MyPopstore = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [userPhoto, setUserPhoto] = useState(null);
+  const [tableData, setTableData] = useState([]);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -24,6 +26,19 @@ const MyPopstore = () => {
     });
   }, [navigate]);
 
+  useEffect(async () => {
+    var temp = [];
+    const allStores = collection(
+      db,
+      `/StoreOwners/${localStorage.getItem("poolfarm_user_id")}/allStores`
+    );
+    const querySnapshot = await getDocs(allStores);
+    querySnapshot.forEach((doc) => {
+      temp.push(doc.data());
+    });
+    console.log(temp);
+    setTableData(temp);
+  }, []);
 
   return (
     <Container maxWidth="lg">
@@ -46,7 +61,7 @@ const MyPopstore = () => {
           New Popstore
         </Button>
       </div>
-      <ProductTable />
+      <ProductTable tableData={tableData} />
     </Container>
   );
 };
