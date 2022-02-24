@@ -1,26 +1,23 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../service/firebase";
+import { useParams } from "react-router-dom";
+
+import { getStoreID } from "../../api/stores";
+import { getAllOrdersByStore } from "../../api/orders";
 
 export default function useActions() {
+  const { storeOwnerID, storeName } = useParams();
   const [customersByOrder, setCustomersByOrder] = React.useState([]);
   const [selectedCustomer, setSelectedCustomer] = React.useState();
   const [totalOrderPrice, setTotalOrderPrice] = React.useState(0);
 
-  const { userInfo } = useSelector((state) => state.user);
-  const storeID = "YcgLsohfAT8ZLZkVdcPK";
+  const getOrders = async () => {
+    const storeID = await getStoreID({ storeOwnerID, storeName });
 
-  const getOrders = () => {
-    const ordersRef = collection(db, "StoreOwners", userInfo.id, "AllOrders");
-
-    const q = query(ordersRef, where("storeID", "==", storeID));
-
-    return getDocs(q);
+    return getAllOrdersByStore({ storeOwnerID, storeID });
   };
 
-  const updateCustomersByOrder = async () => {
+  const groupCustomersByOrder = async () => {
     const querySnapShot = await getOrders();
 
     const customerByOrderedProducts = querySnapShot.docs.reduce(
@@ -75,7 +72,7 @@ export default function useActions() {
   }, [selectedCustomer]);
 
   React.useEffect(() => {
-    updateCustomersByOrder();
+    groupCustomersByOrder();
   }, []);
 
   return {

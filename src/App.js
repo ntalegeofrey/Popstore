@@ -23,12 +23,12 @@ function App() {
           <Route exact path="/my-popstore" element={<MyPopstore />} />
           <Route path="/new-popstore" element={<NewPopstore />} />
           <Route path="/map-your-data" element={<MapYourData />} />
-          <Route path=":id/:storeName" element={<StoreOwnerPages />}>
+          <Route path=":storeOwnerID/:storeName" element={<StoreOwnerPages />}>
             <Route path="orders" element={<OrdersPage />} />
             <Route path="customers" element={<CustomersPage />} />
             <Route path="packaging" element={<PackagingPage />} />
           </Route>
-          <Route path=":storeOwnerId/:storeName" element={<PopStore />} />
+          <Route path=":storeOwnerID/:storeName" element={<PopStore />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
