@@ -15,7 +15,10 @@ import {
   getDocs,
   query,
   where,
-  addDoc
+  serverTimestamp,
+  addDoc,
+  setDoc,
+  updateDoc
 } from "../../service/firebase";
 import "./styles.css";
 
@@ -35,7 +38,6 @@ const LandingPage = () => {
   // 4, Wine 4, 12, 12
   // 5, Wine 5, 12, 8
   // `
-
 
   const handleCSV = (data) => {
     if (data) {
@@ -74,24 +76,37 @@ const LandingPage = () => {
 
   const checkIfExists = async (userData) => {
     const storeOwners = collection(db, "StoreOwners");
+    console.log("store", storeOwners);
     const q = query(storeOwners, where("email", "==", userData.email));
     var queryUser;
+    var tempId;
     const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
+    console.log("Snap", querySnapshot);
+    console.log("q", q);
     querySnapshot.forEach((doc) => {
+      console.log("doc", doc);
       queryUser = doc.data();
+      tempId = doc.id;
       localStorage.setItem("poolfarm_user_id", doc.id);
+      console.log(doc.id);
     });
     console.log(queryUser);
+    // await updateDoc(queryUser, { ID: tempId });
 
     if (queryUser === undefined) {
-      await addDoc(storeOwners, {
-        ID: "userID",
-        createTime: Date.now(),
+      addDoc(storeOwners, {
+        id: "",
+        createTime: serverTimestamp(),
         image: userData.photoURL,
         name: userData.displayName,
         phone: userData.phoneNumber,
         email: userData.email
-      });
+      }).then((data) =>
+        updateDoc(data, {
+          id: data.id
+        })
+      );
     }
   };
 
@@ -99,7 +114,6 @@ const LandingPage = () => {
     <Container maxWidth="lg">
       <CreateStoreForm />
       <div className="create-table-wrapper">
-        
         <DataTable data={tableData} />
       </div>
       <div className="go-button">

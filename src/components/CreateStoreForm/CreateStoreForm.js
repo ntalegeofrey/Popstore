@@ -17,7 +17,6 @@ const CreateStoreForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userPhoto, setUserPhoto] = useState(null);
-  const [items, setItems] = useState([]);
 
   const text = useSelector((state) => state.csvText.text);
 
