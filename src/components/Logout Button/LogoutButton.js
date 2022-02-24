@@ -11,6 +11,7 @@ const LogoutButton = ({ user }) => {
       .auth()
       .signOut()
       .then(() => {
+        localStorage.removeItem("poolfarm_user_id");
         navigate("/");
       })
       .catch((error) => {

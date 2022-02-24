@@ -1,26 +1,52 @@
 import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { InputLabel, OutlinedInput } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Grid from "@mui/material/Grid";
 import LogoutButton from "../../components/Logout Button/LogoutButton";
 import DataTable from "../../components/Data_Table/DataTable";
+import firebase from "../../service/firebase";
+import { InputLabel, OutlinedInput } from "@mui/material";
 import { useSelector } from "react-redux";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  db,
+  collection,
+  getDocs,
+  query,
+  where,
+  addDoc
+} from "../../service/firebase";
+import { signInWithGoogle } from "../../service/firebase";
 
 const MapYourData = () => {
   const tableData = useSelector((state) => state.csvText.tableData);
+  const navigate = useNavigate();
   const [age, setAge] = React.useState("");
   const [options, setOptions] = useState([]);
+  const [storeName, setStoreName] = useState("");
+  const [storeOwner, setStoreOwner] = useState("");
+  const [description, setDescription] = useState("");
+  const [currency, setCurrency] = useState("");
+
+  const [userPhoto, setUserPhoto] = useState(null);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserData(user);
+        setUserPhoto(user.multiFactor.user.photoURL);
+      }
+    });
+  }, [navigate]);
+
   const [data, setData] = useState(tableData);
   let temp = [];
 
   const handleChange = (event, ele, i) => {
-    console.log(i);
     var newList = [];
     temp = data;
     temp.map((ele) => {
@@ -34,11 +60,35 @@ const MapYourData = () => {
     setAge(event.target.value);
   };
 
-  //   ele.map((elem) => {
-  //     //   console.log(elem);
-  //     });
-  // newList = ele.filter((item) => ele.indexOf(item) !== i);
-  // ele.map((item) => console.log(ele.indexOf(item) === i));
+  const handleCreatePopstore = async () => {
+    if (userData) {
+      console.log(userData.email);
+      var id;
+      const userRef = collection(db, "StoreOwners");
+      const q = query(userRef, where("email", "==", userData.email));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        id = doc.id;
+        localStorage.setItem("poolfarm_user_id", doc.id);
+      });
+      const allStores = collection(db, `/StoreOwners/${id}/allStores`);
+      await addDoc(allStores, {
+        columnList: JSON.stringify(data),
+        createAt: Date.now(),
+        currency,
+        description,
+        link: "http://pool-farm.bothofus.se/home",
+        storeName,
+        storeOwner,
+        ownerID: id,
+        storeID: allStores.id
+      });
+      navigate("/my-popstore", { state: id });
+    } else {
+      signInWithGoogle();
+    }
+  };
+
   useEffect(() => {
     tableData[0].map((ele) => {
       temp.push({
@@ -50,7 +100,7 @@ const MapYourData = () => {
   }, []);
   return (
     <Container maxWidth="lg">
-      <Typography style={{ marginTop: "20px" }} variant="h5">
+      <Typography style={{ marginTop: "20px" }} variant="h4">
         Map your Data
       </Typography>
       <div style={{ marginTop: "20px" }}>
@@ -72,7 +122,11 @@ const MapYourData = () => {
                     </Typography>
                   </Grid>
                   <Grid item md={6}>
-                    <OutlinedInput variant="outlined" id="store-name" />
+                    <OutlinedInput
+                      onChange={(e) => setStoreName(e.target.value)}
+                      variant="outlined"
+                      id="store-name"
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -90,7 +144,11 @@ const MapYourData = () => {
                     Store owner
                   </Grid>
                   <Grid item md={6}>
-                    <OutlinedInput variant="outlined" id="store-name" />
+                    <OutlinedInput
+                      onChange={(e) => setStoreOwner(e.target.value)}
+                      variant="outlined"
+                      id="store-owner"
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -110,7 +168,11 @@ const MapYourData = () => {
                     Description
                   </Grid>
                   <Grid item md={6}>
-                    <OutlinedInput variant="outlined" id="store-name" />
+                    <OutlinedInput
+                      onChange={(e) => setDescription(e.target.value)}
+                      variant="outlined"
+                      id="description"
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -128,14 +190,18 @@ const MapYourData = () => {
                     Currency
                   </Grid>
                   <Grid item md={6}>
-                    <OutlinedInput variant="outlined" id="store-name" />
+                    <OutlinedInput
+                      onChange={(e) => setCurrency(e.target.value)}
+                      variant="outlined"
+                      id="currency"
+                    />
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
           <Grid item md={4}>
-            <LogoutButton />
+            {userPhoto ? <LogoutButton user={userPhoto} /> : null}
           </Grid>
         </Grid>
       </div>
@@ -161,39 +227,13 @@ const MapYourData = () => {
             );
           })}
         </Grid>
-        {/* <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel id="1-label">{1}</InputLabel>
-          <Select
-            labelId={`1-label`}
-            id={`${1}`}
-            value={age}
-            label={1}
-            onChange={handleChange}
-          >
-            <MenuItem value="select">Select</MenuItem>
-            <MenuItem value="ignore">Ignore</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel id="2-label">{2}</InputLabel>
-          <Select
-            labelId={`2-label`}
-            id={`${2}`}
-            value={age}
-            label={2}
-            onChange={handleChange}
-          >
-            <MenuItem value="select">Select</MenuItem>
-            <MenuItem value="ignore">Ignore</MenuItem>
-          </Select>
-        </FormControl> */}
         <DataTable data={data} />
       </div>
       <div style={{ marginTop: "20px", marginBottom: "20px", float: "right" }}>
-        <Button component={Link} to="/map-your-data" variant="text">
+        <Button onClick={() => navigate("/my-popstore")} variant="text">
           Cancel
         </Button>
-        <Button component={Link} to="/map-your-data" variant="contained">
+        <Button onClick={handleCreatePopstore} variant="contained">
           Create Popstore
         </Button>
       </div>
