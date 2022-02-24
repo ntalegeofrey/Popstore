@@ -8,15 +8,18 @@ import { signInWithGoogle } from "../../service/firebase";
 import LogoutButton from "../Logout Button/LogoutButton";
 import firebase from "../../service/firebase";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateText } from "../../redux/csvText";
+import * as XLSX from "xlsx";
 import "../CreateStoreForm/styles.css";
 
 const CreateStoreForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userPhoto, setUserPhoto] = useState(null);
-  const [text, setText] = useState("");
+
+  const text = useSelector((state) => state.csvText.text);
+
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -30,6 +33,37 @@ const CreateStoreForm = () => {
 
   const handleText = (e) => {
     dispatch(updateText(e.target.value));
+  };
+  
+
+  const readExcel = (file) => {
+    const promise = new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
+
+      fileReader.onload = (e) => {
+        const bufferArray = e.target.result;
+
+        const wb = XLSX.read(bufferArray, { type: "buffer" });
+
+        const wsname = wb.SheetNames[0];
+
+        const ws = wb.Sheets[wsname];
+
+        const data = XLSX.utils.sheet_to_csv(ws);
+        console.log(data);
+        resolve(data);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+    promise.then((d) => {
+      console.log(d);
+      dispatch(updateText(d));
+    });
   };
 
   return (
@@ -53,6 +87,7 @@ const CreateStoreForm = () => {
             )}
           </Grid>
         </Grid>
+    
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <TextField
@@ -60,11 +95,19 @@ const CreateStoreForm = () => {
               label="Create Popstore from a spreadsheet"
               fullWidth
               variant="outlined"
+              value={text}
               multiline
               onChange={(e) => handleText(e)}
             />
           </Grid>
         </Grid>
+        <input
+          type="file"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            readExcel(file);
+          }}
+        />
       </Box>
     </div>
   );

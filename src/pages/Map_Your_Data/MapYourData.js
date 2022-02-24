@@ -11,22 +11,22 @@ import DataTable from "../../components/Data_Table/DataTable";
 import firebase from "../../service/firebase";
 import { InputLabel, OutlinedInput } from "@mui/material";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   db,
   collection,
   getDocs,
   query,
   where,
-  addDoc
+  serverTimestamp,
+  addDoc,
+  updateDoc
 } from "../../service/firebase";
 import { signInWithGoogle } from "../../service/firebase";
 
 const MapYourData = () => {
   const tableData = useSelector((state) => state.csvText.tableData);
   const navigate = useNavigate();
-  const [age, setAge] = React.useState("");
-  const [options, setOptions] = useState([]);
   const [storeName, setStoreName] = useState("");
   const [storeOwner, setStoreOwner] = useState("");
   const [description, setDescription] = useState("");
@@ -47,17 +47,18 @@ const MapYourData = () => {
   let temp = [];
 
   const handleChange = (event, ele, i) => {
-    var newList = [];
-    temp = data;
-    temp.map((ele) => {
-      var tempArray = [...ele];
-      tempArray.splice(i, 1);
-      newList.push(tempArray);
-    });
-    setData(newList);
-    console.log(newList);
-
-    setAge(event.target.value);
+    if (event.target.value === "ignore") {
+      var newList = [];
+      temp = data;
+      temp.forEach((ele) => {
+        var tempArray = [...ele];
+        tempArray.splice(i, 1);
+        newList.push(tempArray);
+      });
+      setData(newList);
+    }else{
+      
+    }
   };
 
   const handleCreatePopstore = async () => {
@@ -72,16 +73,21 @@ const MapYourData = () => {
         localStorage.setItem("poolfarm_user_id", doc.id);
       });
       const allStores = collection(db, `/StoreOwners/${id}/allStores`);
-      await addDoc(allStores, {
+      addDoc(allStores, {
         columnList: JSON.stringify(data),
-        createAt: Date.now(),
+        createAt: serverTimestamp(),
         currency,
         description,
-        link: "http://pool-farm.bothofus.se/home",
+        link: "",
         storeName,
         storeOwner,
         ownerID: id,
-        storeID: allStores.id
+        storeID: ""
+      }).then((data) => {
+        updateDoc(data, {
+          storeID: data.id,
+          link: `https://bothofus-poolfarm-fe.herokuapp.com/${id}/${data.id}`
+        });
       });
       navigate("/my-popstore", { state: id });
     } else {
@@ -89,15 +95,6 @@ const MapYourData = () => {
     }
   };
 
-  useEffect(() => {
-    tableData[0].map((ele) => {
-      temp.push({
-        name: ele,
-        opt: "select"
-      });
-    });
-    setOptions(temp);
-  }, []);
   return (
     <Container maxWidth="lg">
       <Typography style={{ marginTop: "20px" }} variant="h4">
@@ -200,13 +197,13 @@ const MapYourData = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item md={4}>
+          <Grid container justifyContent="flex-end" item md={4}>
             {userPhoto ? <LogoutButton user={userPhoto} /> : null}
           </Grid>
         </Grid>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <Grid container spacing={2}>
+        <Grid justifyContent="center" container spacing={2}>
           {tableData[0].map((ele, i) => {
             return (
               <Grid key={i} item>
