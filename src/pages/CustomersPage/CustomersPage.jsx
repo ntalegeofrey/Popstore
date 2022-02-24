@@ -5,10 +5,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
+import Loading from "../../components/Loading";
 import useActions from "./actions";
-import Typography from "@mui/material/Typography";
 
 const Item = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
@@ -24,7 +25,7 @@ const CustomersPage = () => {
     updateSelectedCustomer,
   } = useActions();
 
-  if (!selectedCustomer || !customersByOrder) return <div>Loading</div>;
+  if (!selectedCustomer || !customersByOrder) return <Loading />;
   return (
     <Box>
       <Grid container my={3}>
