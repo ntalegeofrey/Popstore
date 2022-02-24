@@ -18,7 +18,9 @@ import {
   getDocs,
   query,
   where,
-  addDoc
+  serverTimestamp,
+  addDoc,
+  updateDoc
 } from "../../service/firebase";
 import { signInWithGoogle } from "../../service/firebase";
 
@@ -68,16 +70,21 @@ const MapYourData = () => {
         localStorage.setItem("poolfarm_user_id", doc.id);
       });
       const allStores = collection(db, `/StoreOwners/${id}/allStores`);
-      await addDoc(allStores, {
+      addDoc(allStores, {
         columnList: JSON.stringify(data),
-        createAt: Date.now(),
+        createAt: serverTimestamp(),
         currency,
         description,
-        link: "http://pool-farm.bothofus.se/home",
+        link: "",
         storeName,
         storeOwner,
         ownerID: id,
-        storeID: allStores.id
+        storeID: ""
+      }).then((data) => {
+        updateDoc(data, {
+          storeID: data.id,
+          link: `https://bothofus-poolfarm-fe.herokuapp.com/${id}/${data.id}`
+        });
       });
       navigate("/my-popstore", { state: id });
     } else {
