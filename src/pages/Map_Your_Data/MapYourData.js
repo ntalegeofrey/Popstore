@@ -11,7 +11,7 @@ import DataTable from "../../components/Data_Table/DataTable";
 import firebase from "../../service/firebase";
 import { InputLabel, OutlinedInput } from "@mui/material";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   db,
   collection,
@@ -27,7 +27,6 @@ import { signInWithGoogle } from "../../service/firebase";
 const MapYourData = () => {
   const tableData = useSelector((state) => state.csvText.tableData);
   const navigate = useNavigate();
-  const [options, setOptions] = useState([]);
   const [storeName, setStoreName] = useState("");
   const [storeOwner, setStoreOwner] = useState("");
   const [description, setDescription] = useState("");
@@ -48,14 +47,18 @@ const MapYourData = () => {
   let temp = [];
 
   const handleChange = (event, ele, i) => {
-    var newList = [];
-    temp = data;
-    temp.map((ele) => {
-      var tempArray = [...ele];
-      tempArray.splice(i, 1);
-      newList.push(tempArray);
-    });
-    setData(newList);
+    if (event.target.value === "ignore") {
+      var newList = [];
+      temp = data;
+      temp.forEach((ele) => {
+        var tempArray = [...ele];
+        tempArray.splice(i, 1);
+        newList.push(tempArray);
+      });
+      setData(newList);
+    }else{
+      
+    }
   };
 
   const handleCreatePopstore = async () => {
@@ -92,15 +95,6 @@ const MapYourData = () => {
     }
   };
 
-  useEffect(() => {
-    tableData[0].map((ele) => {
-      temp.push({
-        name: ele,
-        opt: "select"
-      });
-    });
-    setOptions(temp);
-  }, []);
   return (
     <Container maxWidth="lg">
       <Typography style={{ marginTop: "20px" }} variant="h4">

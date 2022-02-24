@@ -81,15 +81,10 @@ const LandingPage = () => {
     var queryUser;
     var tempId;
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-    console.log("Snap", querySnapshot);
-    console.log("q", q);
     querySnapshot.forEach((doc) => {
-      console.log("doc", doc);
       queryUser = doc.data();
       tempId = doc.id;
       localStorage.setItem("poolfarm_user_id", doc.id);
-      console.log(doc.id);
     });
     console.log(queryUser);
     // await updateDoc(queryUser, { ID: tempId });

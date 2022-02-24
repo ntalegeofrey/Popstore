@@ -34,6 +34,7 @@ const CreateStoreForm = () => {
   const handleText = (e) => {
     dispatch(updateText(e.target.value));
   };
+  
 
   const readExcel = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -102,7 +103,6 @@ const CreateStoreForm = () => {
         </Grid>
         <input
           type="file"
-          accept=".xlsx"
           onChange={(e) => {
             const file = e.target.files[0];
             readExcel(file);
