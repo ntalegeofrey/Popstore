@@ -31,6 +31,7 @@ const MapYourData = () => {
   const [storeOwner, setStoreOwner] = useState("");
   const [description, setDescription] = useState("");
   const [currency, setCurrency] = useState("");
+  const [enableButton, setEnableButton] = useState(false);
 
   const [userPhoto, setUserPhoto] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -56,8 +57,7 @@ const MapYourData = () => {
         newList.push(tempArray);
       });
       setData(newList);
-    }else{
-      
+    } else {
     }
   };
 
@@ -94,6 +94,18 @@ const MapYourData = () => {
       signInWithGoogle();
     }
   };
+  useEffect(() => {
+    if (
+      storeName.length > 3 &&
+      storeOwner.length > 3 &&
+      description.length > 3 &&
+      currency.length > 1
+    ) {
+      setEnableButton(true);
+    } else {
+      setEnableButton(false);
+    }
+  }, [storeName, storeOwner, description, currency]);
 
   return (
     <Container maxWidth="lg">
@@ -230,7 +242,11 @@ const MapYourData = () => {
         <Button onClick={() => navigate("/my-popstore")} variant="text">
           Cancel
         </Button>
-        <Button onClick={handleCreatePopstore} variant="contained">
+        <Button
+          disabled={!enableButton}
+          onClick={handleCreatePopstore}
+          variant="contained"
+        >
           Create Popstore
         </Button>
       </div>
