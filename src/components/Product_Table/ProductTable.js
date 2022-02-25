@@ -38,7 +38,7 @@ const ProductTable = ({ tableData }) => {
                 {row.name}
               </TableCell>
               <TableCell align="right">
-                <Link to={`${tableData[i].ownerID}/${row.name}`}>
+                <Link to={`${tableData[i].ownerID}/${tableData[i].storeID}`}>
                   {row.link}
                 </Link>
               </TableCell>

@@ -7,7 +7,9 @@ import {
   setDoc,
   addDoc,
   query,
-  where
+  where,
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -23,7 +25,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export { collection, addDoc, getDocs, setDoc, query, where };
+export { collection, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
 export const auth = firebase.auth();
 
 const provider = new firebase.auth.GoogleAuthProvider();
