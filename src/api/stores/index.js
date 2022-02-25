@@ -1,19 +1,17 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { query, getDoc, doc } from "firebase/firestore";
 import { db } from "../../service/firebase";
 
-const getStoresRef = ({ storeOwnerID }) =>
-  collection(db, "StoreOwners", storeOwnerID, "allStores");
+// const getStoresRef = ({ storeOwnerID, storeID }) =>
+//   collection(db, "StoreOwners", storeOwnerID, "allStores");
 
-const getStoreID = async ({ storeOwnerID, storeName }) => {
-  const storeQuery = query(
-    getStoresRef({ storeOwnerID }),
-    where("name", "==", storeName)
-  );
+const getStoreName = async ({ storeOwnerID, storeID }) => {
+  const docRef = doc(db, "StoreOwners", storeOwnerID, "allStores", storeID);
+  const storeQuery = query(docRef);
 
-  const storeSnapShot = await getDocs(storeQuery);
+  const storeSnapShot = await getDoc(storeQuery);
 
-  const [{ id: storeID }] = storeSnapShot.docs;
-  return storeID;
+  const { name } = storeSnapShot.data();
+  return name;
 };
 
-export { getStoreID };
+export { getStoreName };

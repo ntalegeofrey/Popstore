@@ -2,18 +2,15 @@ import React from "react";
 
 import { useParams } from "react-router-dom";
 
-import { getStoreID } from "../../api/stores";
 import { getAllOrdersByStore } from "../../api/orders";
 
 export default function useActions() {
-  const { storeOwnerID, storeName } = useParams();
+  const { storeOwnerID, storeID } = useParams();
   const [customersByOrder, setCustomersByOrder] = React.useState([]);
   const [selectedCustomer, setSelectedCustomer] = React.useState();
   const [totalOrderPrice, setTotalOrderPrice] = React.useState(0);
 
   const getOrders = async () => {
-    const storeID = await getStoreID({ storeOwnerID, storeName });
-
     return getAllOrdersByStore({ storeOwnerID, storeID });
   };
 
