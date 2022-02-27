@@ -38,7 +38,7 @@ const ProductTable = ({ tableData }) => {
                 {row.name}
               </TableCell>
               <TableCell align="right">
-                <Link to={`${tableData[i].ownerID}/${tableData[i].storeID}`}>
+                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}`}>
                   {row.link}
                 </Link>
               </TableCell>
@@ -46,17 +46,17 @@ const ProductTable = ({ tableData }) => {
                 <Link to="/edit">{row.edit}</Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`${tableData[i].ownerID}/${row.name}/orders`}>
+                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/orders`}>
                   {row.orders}
                 </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`${tableData[i].ownerID}/${row.name}/customers`}>
+                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/customers`}>
                   {row.customers}
                 </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`${tableData[i].ownerID}/${row.name}/packing`}>
+                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/packagings`}>
                   {row.packaging}
                 </Link>
               </TableCell>

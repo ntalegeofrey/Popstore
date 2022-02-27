@@ -6,7 +6,16 @@ import DataTable from "../../components/Data_Table/DataTable";
 import { useSelector, useDispatch } from "react-redux";
 import { updateTableData } from "../../redux/csvText";
 import { Link } from "react-router-dom";
-
+import {
+  db,
+  collection,
+  getDocs,
+  query,
+  where,
+  serverTimestamp,
+  addDoc,
+  updateDoc
+} from "../../service/firebase";
 const NewPopstore = () => {
   const dispatch = useDispatch();
 
@@ -31,6 +40,20 @@ const NewPopstore = () => {
   useEffect(() => {
     handleCSV(text);
   }, [text]);
+
+  useEffect(async () => {
+    const columns = collection(
+      db,
+      "StoreOwners",
+      "tD4KfLi7mKakIAl3wvcQuBR1Wyw2",
+      "allStores",
+      "YcgLsohfAT8ZLZkVdcPK",
+      "Colums"
+    );
+    const querySnapshot = await getDocs(columns);
+    console.log("columns", querySnapshot);
+  }, []);
+
   return (
     <Container maxWidth="lg">
       <CreateStoreForm />

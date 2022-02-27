@@ -32,38 +32,83 @@ const MapYourData = () => {
   const [description, setDescription] = useState("");
   const [currency, setCurrency] = useState("");
   const [enableButton, setEnableButton] = useState(false);
-
+  const [userID, setUserID] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [priceColumn, setPriceColumn] = useState([]);
+  const [nameColumn, setNameColumn] = useState([]);
+  const [oColumns, setOColumns] = useState([]);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUserData(user);
+        setUserID(user.multiFactor.user.uid);
         setUserPhoto(user.multiFactor.user.photoURL);
       }
     });
   }, [navigate]);
 
   const [data, setData] = useState(tableData);
-  let temp = [];
-
+  var otherColumns = [];
   const handleChange = (event, ele, i) => {
+    console.log(oColumns);
     if (event.target.value === "ignore") {
-      var newList = [];
-      temp = data;
-      temp.forEach((ele) => {
-        var tempArray = [...ele];
-        tempArray.splice(i, 1);
-        newList.push(tempArray);
+      oColumns.forEach((elem) => {
+        if (elem.name.toLowerCase() === ele.toLowerCase()) {
+          ele.visibility = false;
+        }
       });
-      setData(newList);
     } else {
+      oColumns.forEach((elem) => {
+        if (elem.name.toLowerCase() === ele.toLowerCase()) {
+          ele.visibility = true;
+        }
+      });
     }
   };
 
+  useEffect(() => {
+    tableData[0].forEach((ele) => {
+      if (ele.toLowerCase() === "price") {
+        var index = tableData[0].indexOf(ele);
+        let temp = [];
+        let colArray = [];
+        temp = data;
+        temp.forEach((elem) => {
+          colArray.push(elem[index]);
+        });
+        setPriceColumn(colArray);
+      } else if (ele.toLowerCase() === "name") {
+        var index = tableData[0].indexOf(ele);
+        let temp = [];
+        let colArray = [];
+        temp = data;
+        temp.forEach((elem) => {
+          colArray.push(elem[index]);
+        });
+        setNameColumn(colArray);
+      } else {
+        var index = tableData[0].indexOf(ele);
+        let temp = [];
+        let colArray = [];
+        temp = data;
+        temp.forEach((elem) => {
+          colArray.push(elem[index]);
+        });
+        otherColumns.push({
+          name: ele,
+          cols: colArray,
+          visibility: true
+        });
+      }
+    });
+    setOColumns(otherColumns);
+    console.log("other", otherColumns);
+  }, []);
+
   const handleCreatePopstore = async () => {
     if (userData) {
-      console.log(userData.email);
+      console.log(userID);
       var id;
       const userRef = collection(db, "StoreOwners");
       const q = query(userRef, where("email", "==", userData.email));
@@ -74,7 +119,6 @@ const MapYourData = () => {
       });
       const allStores = collection(db, `/StoreOwners/${id}/allStores`);
       addDoc(allStores, {
-        columnList: JSON.stringify(data),
         createAt: serverTimestamp(),
         currency,
         description,
@@ -82,11 +126,33 @@ const MapYourData = () => {
         storeName,
         storeOwner,
         ownerID: id,
+        // ownerID: userID,
         storeID: ""
       }).then((data) => {
+        var columnRef = collection(
+          db,
+          `/StoreOwners/${id}/allStores/${data.id}/Colums`
+        );
         updateDoc(data, {
           storeID: data.id,
           link: `https://bothofus-poolfarm-fe.herokuapp.com/${id}/${data.id}`
+        });
+        addDoc(columnRef, {
+          items: priceColumn,
+          name: "Price",
+          visibility: true
+        });
+        addDoc(columnRef, {
+          items: nameColumn,
+          name: "Name",
+          visibility: true
+        });
+        oColumns.forEach((ele) => {
+          addDoc(columnRef, {
+            items: ele.cols,
+            name: ele.name,
+            visibility: ele.visibility
+          });
         });
       });
       navigate("/my-popstore", { state: id });
