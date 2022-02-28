@@ -3,12 +3,19 @@ import React from "react";
 import { useParams } from "react-router-dom";
 
 import { getAllOrdersByStore } from "../../api/orders";
+import { getStoreByID } from "../../api/stores";
 
 export default function useActions() {
   const { storeOwnerID, storeID } = useParams();
   const [customersByOrder, setCustomersByOrder] = React.useState([]);
   const [selectedCustomer, setSelectedCustomer] = React.useState();
   const [totalOrderPrice, setTotalOrderPrice] = React.useState(0);
+  const [store, setStore] = React.useState();
+
+  const getStore = async () => {
+    const storeSnapShot = await getStoreByID({ storeOwnerID, storeID });
+    setStore(storeSnapShot);
+  };
 
   const getOrders = async () => {
     return getAllOrdersByStore({ storeOwnerID, storeID });
@@ -51,7 +58,7 @@ export default function useActions() {
   const calculateTotalOrderPrice = () => {
     const totalPrice = selectedCustomer.OrderedProducts.reduce(
       (totalPrice, currentOrder) => {
-        return totalPrice + Number(currentOrder.price);
+        return totalPrice + Number(currentOrder.price * currentOrder.quantity);
       },
       0
     );
@@ -70,6 +77,7 @@ export default function useActions() {
 
   React.useEffect(() => {
     groupCustomersByOrder();
+    getStore();
   }, []);
 
   return {
@@ -77,5 +85,6 @@ export default function useActions() {
     selectedCustomer,
     updateSelectedCustomer,
     totalOrderPrice,
+    store,
   };
 }

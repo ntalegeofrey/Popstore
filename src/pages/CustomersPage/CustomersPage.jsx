@@ -8,6 +8,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+
+import { DateRangePicker } from "react-date-range";
+
+import { addDays } from "date-fns";
+
 import Loading from "../../components/Loading";
 import useActions from "./actions";
 
@@ -22,8 +29,17 @@ const CustomersPage = () => {
     customersByOrder,
     selectedCustomer,
     totalOrderPrice,
+    store,
     updateSelectedCustomer,
   } = useActions();
+
+  const [state, setState] = React.useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 7),
+      key: "selection",
+    },
+  ]);
 
   if (!selectedCustomer || !customersByOrder) return <Loading />;
   return (
@@ -49,6 +65,16 @@ const CustomersPage = () => {
               ))}
             </Select>
           </FormControl>
+        </Grid>
+        <Grid xs={12} mt={3}>
+          <DateRangePicker
+            onChange={(item) => setState([item.selection])}
+            showSelectionPreview={true}
+            moveRangeOnFirstSelection={false}
+            months={2}
+            ranges={state}
+            direction="horizontal"
+          />
         </Grid>
       </Grid>
 
@@ -84,7 +110,7 @@ const CustomersPage = () => {
           </Item>
         </Grid>
         <Grid item xs={6}>
-          <Item>{totalOrderPrice} SEK</Item>
+          <Item>{`${totalOrderPrice} ${store["currency "]}`}</Item>
         </Grid>
       </Grid>
 
@@ -102,7 +128,7 @@ const CustomersPage = () => {
           <Grid item xs={3}>
             <Item>
               {Number(orderedProduct.quantity) * Number(orderedProduct.price)}{" "}
-              SEK
+              {store["currency "]}
             </Item>
           </Grid>
         </Grid>

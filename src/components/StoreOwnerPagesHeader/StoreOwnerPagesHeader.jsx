@@ -25,7 +25,7 @@ const Header = styled(Box)({
 });
 
 const StoreOwnerPagesHeader = () => {
-  const { pageTitle, storeName, userPhoto } = useActions();
+  const { pageTitle, store, userPhoto } = useActions();
 
   return (
     <Header>
@@ -38,11 +38,15 @@ const StoreOwnerPagesHeader = () => {
             <Link to="/my-popstore">Close</Link>
           </span>
         )}
-        <Typography variant={pageTitle ? "body1" : "h6"}>
-          {storeName}
-        </Typography>
+
+        {pageTitle || (
+          <Box>
+            <Typography variant="h6">{store.name}</Typography>
+            <Typography>{store.description}</Typography>
+          </Box>
+        )}
       </Box>
-      <LogoutButton user={userPhoto} />
+      {pageTitle && <LogoutButton user={userPhoto} />}
     </Header>
   );
 };
