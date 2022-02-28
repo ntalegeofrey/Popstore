@@ -7,7 +7,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 
-
 const ProductTable = ({ tableData }) => {
   const [productList, setProductList] = useState([]);
   useEffect(() => {
@@ -43,20 +42,30 @@ const ProductTable = ({ tableData }) => {
                 </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to="/edit">{row.edit}</Link>
+                <Link
+                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/edit`}
+                >
+                  {row.edit}
+                </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/orders`}>
+                <Link
+                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/orders`}
+                >
                   {row.orders}
                 </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/customers`}>
+                <Link
+                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/customers`}
+                >
                   {row.customers}
                 </Link>
               </TableCell>
               <TableCell align="right">
-                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/packagings`}>
+                <Link
+                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/packagings`}
+                >
                   {row.packaging}
                 </Link>
               </TableCell>

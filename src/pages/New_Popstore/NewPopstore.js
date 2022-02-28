@@ -10,11 +10,6 @@ import {
   db,
   collection,
   getDocs,
-  query,
-  where,
-  serverTimestamp,
-  addDoc,
-  updateDoc
 } from "../../service/firebase";
 const NewPopstore = () => {
   const dispatch = useDispatch();
