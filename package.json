@@ -24,7 +24,6 @@
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11",
     "reduxjs-toolkit-persist": "^7.2.1",
-    "web-vitals": "^2.1.4",
     "xlsx": "^0.18.2"
   },
   "scripts": {

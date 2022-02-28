@@ -26,10 +26,11 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [tableData, setTableData] = useState([]);
+  // const [userId, setUserId] = useState(null);
   const text = useSelector((state) => state.csvText.text);
 
   var rows = [];
-
+  var userId;
   // const sampledata= `
   // Reference, Name, Price, Quantity
   // 1, Wine 1, 12, 2
@@ -60,7 +61,8 @@ const LandingPage = () => {
   useEffect(async () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.multiFactor.user);
+        console.log(user.multiFactor.user.uid);
+        userId = user.multiFactor.user.uid;
         dispatch(addUserInfo(user.multiFactor.user));
         localStorage.setItem(
           "popstore_user_token",
@@ -91,17 +93,18 @@ const LandingPage = () => {
 
     if (queryUser === undefined) {
       addDoc(storeOwners, {
-        id: "",
+        id: userId,
         createTime: serverTimestamp(),
         image: userData.photoURL,
         name: userData.displayName,
         phone: userData.phoneNumber,
         email: userData.email
-      }).then((data) =>
-        updateDoc(data, {
-          id: data.id
-        })
-      );
+      });
+      // .then((data) =>
+      //   updateDoc(data, {
+      //     id: data.id
+      //   })
+      // );
     }
   };
 
