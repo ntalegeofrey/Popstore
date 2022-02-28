@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 
 import theme from "./config/theme";
 import MapYourData from "./pages/Map_Your_Data/MapYourData";
+import EditPopstore from "./pages/EditPopstore/EditPopstore";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
           <Route exact path="/my-popstore" element={<MyPopstore />} />
           <Route path="/new-popstore" element={<NewPopstore />} />
           <Route path="/map-your-data" element={<MapYourData />} />
+          <Route path="/:storeOwnerID/:storeID/edit" element={<EditPopstore />} />
+
           <Route path=":storeOwnerID/:storeID" element={<StoreOwnerPages />}>
             <Route index element={<PopStore />} />
             <Route path="orders" element={<OrdersPage />} />
