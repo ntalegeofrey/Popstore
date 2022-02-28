@@ -3,18 +3,19 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
-import Grid from "@mui/material/Grid";
 
 import LogoutButton from "../../components/Logout Button/LogoutButton";
 import useActions from "./actions";
 
-const PageHeader = styled(Typography)({
+const PageHeader = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "pageTitle",
+})(({ pageTitle }) => ({
   textTransform: "capitalize",
-  fontWeight: 500,
-  fontSize: 22,
+  fontWeight: pageTitle ? "normal" : "600",
+  fontSize: pageTitle ? 22 : 26,
   display: "inline-block",
   marginRight: "2rem",
-});
+}));
 
 const Header = styled(Box)({
   display: "flex",
@@ -24,18 +25,24 @@ const Header = styled(Box)({
 });
 
 const StoreOwnerPagesHeader = () => {
-  const { pageTitle, storeName } = useActions();
+  const { pageTitle, storeName, userPhoto } = useActions();
 
   return (
     <Header>
       <Box>
-        <PageHeader variant="h4">{pageTitle} list</PageHeader>
-        <span>
-          <Link to="/my-popstore">Close</Link>
-        </span>
-        <Typography>{storeName}</Typography>
+        <PageHeader pageTitle={pageTitle} variant="h4">
+          {pageTitle ? `${pageTitle} list` : "PopStore"}
+        </PageHeader>
+        {pageTitle && (
+          <span>
+            <Link to="/my-popstore">Close</Link>
+          </span>
+        )}
+        <Typography variant={pageTitle ? "body1" : "h6"}>
+          {storeName}
+        </Typography>
       </Box>
-      <LogoutButton />
+      <LogoutButton user={userPhoto} />
     </Header>
   );
 };

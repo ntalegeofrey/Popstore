@@ -11,7 +11,7 @@ import DataTable from "../../components/Data_Table/DataTable";
 import firebase from "../../service/firebase";
 import { InputLabel, OutlinedInput } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   db,
   collection,
@@ -22,144 +22,100 @@ import {
   addDoc,
   updateDoc
 } from "../../service/firebase";
-import { signInWithGoogle } from "../../service/firebase";
+import EditTable from "../../components/Data_Table/EditTable";
 
-const MapYourData = () => {
-  const tableData = useSelector((state) => state.csvText.tableData);
+const EditPopstore = () => {
+  const { storeOwnerID, storeID } = useParams();
   const navigate = useNavigate();
+
+  const [tableData, setTableData] = useState([]);
+  const [selectors, setSelectors] = useState([]);
+  const [ids, setIds] = useState([]);
+  const [userPhoto, setUserPhoto] = useState(null);
   const [storeName, setStoreName] = useState("");
   const [storeOwner, setStoreOwner] = useState("");
   const [description, setDescription] = useState("");
   const [currency, setCurrency] = useState("");
   const [enableButton, setEnableButton] = useState(false);
-  const [userID, setUserID] = useState(null);
-  const [userPhoto, setUserPhoto] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const [priceColumn, setPriceColumn] = useState([]);
-  const [nameColumn, setNameColumn] = useState([]);
-  const [oColumns, setOColumns] = useState([]);
+  const [removedList, setRemovedList] = useState([]);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUserData(user);
-        setUserID(user.multiFactor.user.uid);
         setUserPhoto(user.multiFactor.user.photoURL);
       }
     });
   }, [navigate]);
 
-  const [data, setData] = useState(tableData);
-  var otherColumns = [];
-  const handleChange = (event, ele, i) => {
-    console.log(oColumns);
-    if (event.target.value === "ignore") {
-      oColumns.forEach((elem) => {
-        if (elem.name.toLowerCase() === ele.toLowerCase()) {
-          ele.visibility = false;
-        }
-      });
-    } else {
-      oColumns.forEach((elem) => {
-        if (elem.name.toLowerCase() === ele.toLowerCase()) {
-          ele.visibility = true;
-        }
-      });
-    }
-  };
+  const columns = collection(
+    db,
+    `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
+  );
+  const store = collection(db, `/StoreOwners/${storeOwnerID}/allStores`);
+  useEffect(async () => {
+    var temp = [];
+    var tempID = [];
+    const querySnapshot = await getDocs(store);
+    const querySnapshotColumns = await getDocs(columns);
 
-  useEffect(() => {
-    tableData[0].forEach((ele) => {
-      if (ele.toLowerCase() === "price") {
-        var index = tableData[0].indexOf(ele);
-        let temp = [];
-        let colArray = [];
-        temp = data;
-        temp.forEach((elem) => {
-          colArray.push(elem[index]);
-        });
-        setPriceColumn(colArray);
-      } else if (ele.toLowerCase() === "name") {
-        var index = tableData[0].indexOf(ele);
-        let temp = [];
-        let colArray = [];
-        temp = data;
-        temp.forEach((elem) => {
-          colArray.push(elem[index]);
-        });
-        setNameColumn(colArray);
-      } else {
-        var index = tableData[0].indexOf(ele);
-        let temp = [];
-        let colArray = [];
-        temp = data;
-        temp.forEach((elem) => {
-          colArray.push(elem[index]);
-        });
-        otherColumns.push({
-          name: ele,
-          cols: colArray,
-          visibility: true
-        });
-      }
+    querySnapshot.forEach((doc) => {
+      var data = doc.data();
+      setStoreName(data.storeName);
+      setStoreOwner(data.storeOwner);
+      setDescription(data.description);
+      setCurrency(data.currency);
     });
-    setOColumns(otherColumns);
-    console.log("other", otherColumns);
+    querySnapshotColumns.forEach((doc) => {
+      var data = doc.data();
+      temp.push(data.items);
+      tempID.push(doc.id);
+    });
+    setSelectors(temp);
+    setIds(tempID);
   }, []);
 
-  const handleCreatePopstore = async () => {
-    if (userData) {
-      console.log(userID);
-      var id;
-      const userRef = collection(db, "StoreOwners");
-      const q = query(userRef, where("email", "==", userData.email));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        id = doc.id;
-        localStorage.setItem("poolfarm_user_id", doc.id);
+  var removedArray = [];
+  const handleChange = (event, ele, i) => {
+    var data = selectors;
+    var currIds = ids;
+    console.log(i);
+    if (event.target.value === "ignore") {
+      var rmv = data.splice(i, 1);
+      currIds.splice(i, 1);
+      console.log(rmv[0][0]);
+      removedArray.push({
+        cols: rmv,
+        name: rmv[0][0]
       });
-      const allStores = collection(db, `/StoreOwners/${id}/allStores`);
-      addDoc(allStores, {
-        createAt: serverTimestamp(),
-        currency,
-        description,
-        link: "",
-        storeName,
-        storeOwner,
-        ownerID: id,
-        // ownerID: userID,
-        storeID: ""
-      }).then((data) => {
-        console.log("map", data)
-        var columnRef = collection(
-          db,
-          `/StoreOwners/${id}/allStores/${data.id}/Colums`
-        );
-        updateDoc(data, {
-          storeID: data.id,
-          link: `https://bothofus-poolfarm-fe.herokuapp.com/${id}/${data.id}`
-        });
-        addDoc(columnRef, {
-          items: priceColumn,
-          name: "Price",
-          visibility: true
-        });
-        addDoc(columnRef, {
-          items: nameColumn,
-          name: "Name",
-          visibility: true
-        });
-        oColumns.forEach((ele) => {
-          addDoc(columnRef, {
-            items: ele.cols,
-            name: ele.name,
-            visibility: ele.visibility
-          });
-        });
-      });
-      navigate("/my-popstore", { state: id });
+      setRemovedList([...removedList, removedArray]);
     } else {
-      signInWithGoogle();
     }
+    setSelectors([...data]);
+    setIds(currIds);
+    console.log(removedArray);
+  };
+
+  const handleEditPopstore = () => {
+    removedList.map((ele) => {
+      console.log(ele[0]);
+      var columnID = collection(
+        db,
+        `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
+      );
+      var q = query(columnID, where("name", "==", ele[0].name.toLowerCase()));
+      updateDoc(q, {
+        visibility: false
+      });
+    });
+    // removedList.map((ele) => {
+    //   var columnID = collection(
+    //     db,
+    //     `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
+    //   );
+    //   var q = query(columnID, where("name" "==", ))
+    //    updateDoc(columnID, {
+    //     visibility: false
+    //   });
+    // });
   };
   useEffect(() => {
     if (
@@ -177,7 +133,7 @@ const MapYourData = () => {
   return (
     <Container maxWidth="lg">
       <Typography style={{ marginTop: "20px" }} variant="h4">
-        Map your Data
+        Edit your Data
       </Typography>
       <div style={{ marginTop: "20px" }}>
         <Grid container spacing={2}>
@@ -199,6 +155,7 @@ const MapYourData = () => {
                   </Grid>
                   <Grid item md={6}>
                     <OutlinedInput
+                      value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
                       variant="outlined"
                       id="store-name"
@@ -221,6 +178,7 @@ const MapYourData = () => {
                   </Grid>
                   <Grid item md={6}>
                     <OutlinedInput
+                      value={storeOwner}
                       onChange={(e) => setStoreOwner(e.target.value)}
                       variant="outlined"
                       id="store-owner"
@@ -245,6 +203,7 @@ const MapYourData = () => {
                   </Grid>
                   <Grid item md={6}>
                     <OutlinedInput
+                      value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       variant="outlined"
                       id="description"
@@ -267,6 +226,7 @@ const MapYourData = () => {
                   </Grid>
                   <Grid item md={6}>
                     <OutlinedInput
+                      value={currency}
                       onChange={(e) => setCurrency(e.target.value)}
                       variant="outlined"
                       id="currency"
@@ -283,17 +243,17 @@ const MapYourData = () => {
       </div>
       <div style={{ marginTop: "20px" }}>
         <Grid justifyContent="center" container spacing={2}>
-          {tableData[0].map((ele, i) => {
+          {selectors.map((ele, i) => {
             return (
               <Grid key={i} item>
                 <FormControl sx={{ minWidth: 120 }}>
-                  <InputLabel id={`${ele}-label`}>{ele}</InputLabel>
+                  <InputLabel id={`${ele}-label`}>{ele[0]}</InputLabel>
                   <Select
-                    labelId={`${ele}-label`}
+                    labelId={`${ele[0]}-label`}
                     id={`${ele}`}
                     // value={ele}
                     defaultValue=""
-                    label={ele}
+                    label={ele[0]}
                     onChange={(e) => handleChange(e, ele, i)}
                   >
                     <MenuItem value="select">Select</MenuItem>
@@ -304,7 +264,7 @@ const MapYourData = () => {
             );
           })}
         </Grid>
-        <DataTable data={data} />
+        {selectors.length > 0 ? <EditTable data={selectors} /> : null}
       </div>
       <div style={{ marginTop: "20px", marginBottom: "20px", float: "right" }}>
         <Button onClick={() => navigate("/my-popstore")} variant="text">
@@ -312,14 +272,14 @@ const MapYourData = () => {
         </Button>
         <Button
           disabled={!enableButton}
-          onClick={handleCreatePopstore}
+          onClick={handleEditPopstore}
           variant="contained"
         >
-          Create Popstore
+          Edit Popstore
         </Button>
       </div>
     </Container>
   );
 };
 
-export default MapYourData;
+export default EditPopstore;
