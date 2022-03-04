@@ -33,7 +33,7 @@ const ProductTable = ({ tableData }) => {
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" style={{fontWeight: "bold"}}>
                 {row.name}
               </TableCell>
               <TableCell align="right">

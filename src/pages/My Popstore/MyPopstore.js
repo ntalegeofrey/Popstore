@@ -25,13 +25,11 @@ const MyPopstore = () => {
             `/StoreOwners/${user.uid}/allStores`
         );
         const querySnapshot = await getDocs(allStores);
-        console.log('test 1')
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
-          console.log('test 2')
-          console.log(doc.id, " => ", doc.data());
+          temp.push(doc.data());
         });
-
+        setTableData(temp);
       } else {
         navigate("/");
       }
