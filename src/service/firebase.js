@@ -2,6 +2,8 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getFirestore } from "firebase/firestore";
 import {
+  doc,
+  getDoc,
   collection,
   getDocs,
   setDoc,
@@ -25,7 +27,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export { collection, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
+export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
 export const auth = firebase.auth();
 
 const provider = new firebase.auth.GoogleAuthProvider();

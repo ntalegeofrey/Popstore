@@ -11,18 +11,21 @@ const LogoutButton = ({ user }) => {
       .auth()
       .signOut()
       .then(() => {
-        localStorage.removeItem("poolfarm_user_id");
+        localStorage.clear();
         navigate("/");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+    const goToProfile = () => {
+        navigate("/popstore/all");
+    };
   return (
-    <div onClick={handleLogout}>
-      <div>
-        <Avatar alt="Remy Sharp" src={user} sx={{ width: 56, height: 56 }} />
-        <Typography variant="p">Logout</Typography>
+    <div style={{display: 'flex', justifyContent: "center"}}>
+      <div style={{cursor: "pointer"}}>
+        <Avatar onClick={goToProfile} alt="" src={user} sx={{ width: 56, height: 56 }} />
+        <Typography onClick={handleLogout} variant="p" style={{color: "#fc5603", paddingTop: "1rem", display: "block"}}>Logout</Typography>
       </div>
     </div>
   );

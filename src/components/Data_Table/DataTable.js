@@ -1,42 +1,28 @@
 import React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import  {TableContainer, Table, TableBody, TableHead, TableCell, TableRow }from "@mui/material";
+import styles from "./Sheets.module.css"
 
-const DataTable = ({ data }) => {
+const DataTable = ({ sheet }) => {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableBody>
-          {data.map((row) => (
-            <TableRow
-              key={row[0]}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row[0]}
-              </TableCell>
-              {row.map((elem, j) => {
-                return (
-                  <TableCell
-                    style={{
-                      display: j === 0 ? "none" : ""
-                    }}
-                    key={j}
-                    align="right"
-                  >
-                    {row[j]}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <TableContainer>
+          <Table>
+              <TableBody>
+                  { sheet?.map((row, rowIndex) => {
+                          return (
+                              <TableRow key={`row-${rowIndex}`}>
+                                  { row.cells.map((cell, cellIndex) => (
+                                      <TableCell
+                                          key={`cell-${rowIndex}-${cellIndex}`}
+                                          className={styles['cell']}>
+                                          {cell}
+                                      </TableCell>
+                                  ))}
+                              </TableRow>
+                          )
+                  })}
+              </TableBody>
+          </Table>
+      </TableContainer>
   );
 };
 

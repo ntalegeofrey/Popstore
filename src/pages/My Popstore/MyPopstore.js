@@ -13,13 +13,25 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 const MyPopstore = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [userPhoto, setUserPhoto] = useState(null);
+  const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        setUserPhoto(user.multiFactor.user.photoURL);
+        setUser(user);
+        let temp = [];
+        const allStores = collection(
+            db,
+            `/StoreOwners/${user.uid}/allStores`
+        );
+        const querySnapshot = await getDocs(allStores);
+        console.log('test 1')
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          console.log('test 2')
+          console.log(doc.id, " => ", doc.data());
+        });
+
       } else {
         navigate("/");
       }
@@ -27,17 +39,6 @@ const MyPopstore = () => {
   }, [navigate]);
 
   useEffect(async () => {
-    var temp = [];
-    const allStores = collection(
-      db,
-      `/StoreOwners/${localStorage.getItem("poolfarm_user_id")}/allStores`
-    );
-    const querySnapshot = await getDocs(allStores);
-    querySnapshot.forEach((doc) => {
-      temp.push(doc.data());
-    });
-    console.log(temp);
-    setTableData(temp);
   }, []);
 
   return (
@@ -51,13 +52,13 @@ const MyPopstore = () => {
           </Grid>
           <Grid item xs={2}>
             <div className="logout-button">
-              <LogoutButton user={userPhoto} />
+              <LogoutButton user={user?.photoURL} />
             </div>
           </Grid>
         </Grid>
       </div>
       <div className="new-popstore-button">
-        <Button component={Link} to="/new-popstore" variant="contained">
+        <Button component={Link} to="/" variant="contained">
           New Popstore
         </Button>
       </div>

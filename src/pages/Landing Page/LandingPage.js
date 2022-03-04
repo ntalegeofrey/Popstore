@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import CreateStoreForm from "../../components/CreateStoreForm/CreateStoreForm";
+import {
+  Button, Grid, TextField, Input
+} from '@mui/material';
 import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import { useNavigate, Link } from "react-router-dom";
+import {useNavigate, Link, useParams} from "react-router-dom";
 import firebase from "../../service/firebase";
 import { useDispatch } from "react-redux";
 import user, { addUserInfo } from "../../redux/user";
 import { updateTableData } from "../../redux/csvText";
+import { v4 as uuidv4 } from 'uuid'
 import { useSelector } from "react-redux";
 import DataTable from "../../components/Data_Table/DataTable";
+import textToCellsParser from "../../functions/textToCellsParser";
 import {
   db,
   collection,
@@ -18,67 +21,94 @@ import {
   serverTimestamp,
   addDoc,
   setDoc,
-  updateDoc
+  updateDoc,
+  signInWithGoogle
 } from "../../service/firebase";
 import "./styles.css";
+import * as XLSX from "xlsx";
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [tableData, setTableData] = useState([]);
-  // const [userId, setUserId] = useState(null);
-  const text = useSelector((state) => state.csvText.text);
-
-  var rows = [];
+  const data = useSelector((state) => state.csvText.tableData);
   var userId;
-  // const sampledata= `
-  // Reference, Name, Price, Quantity
-  // 1, Wine 1, 12, 2
-  // 2, Wine 2, 21, 7
-  // 3, Wine 3, 12, 9
-  // 4, Wine 4, 12, 12
-  // 5, Wine 5, 12, 8
-  // `
 
-  const handleCSV = (data) => {
-    if (data) {
-      data
-        .trim()
-        .split("\n")
-        .map((ele) => {
-          var elem = ele.split(",");
-          rows.push(elem);
-        });
-      setTableData(rows);
-      dispatch(updateTableData(rows));
-    }
+  const [sheetData, setSheetData] = useState()
+  const [pastedData, setPastedData] = useState('')
+  const [sheetUrl, setSheetUrl] = useState()
+  const [creating, setCreating] = useState(false)
+
+  const handlePaste = (e) => {
+    const data = e.clipboardData.getData('text/plain')
+    setPastedData(data)
+    const cells = textToCellsParser(data)
+    setSheetData(cells)
+    console.log(cells)
+  }
+
+  const readExcel = (file) => {
+    const promise = new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
+
+      fileReader.onload = (e) => {
+        const bufferArray = e.target.result;
+
+        const wb = XLSX.read(bufferArray, { type: "buffer" });
+
+        const wsname = wb.SheetNames[0];
+
+        const ws = wb.Sheets[wsname];
+
+        const data = XLSX.utils.sheet_to_txt(ws);
+        resolve(textToCellsParser(data));
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+    promise.then((d) => {
+      setSheetData(d)
+    });
   };
 
-  useEffect(() => {
-    handleCSV(text);
-  }, [text]);
+  const saveSheet = async (e) => {
+    localStorage.setItem('sheetData', JSON.stringify(sheetData))
+    e.preventDefault()
+    await CheckLogin()
+  }
+
+  const CheckLogin = async () => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      navigate('/popstore/create')
+    } else {
+      await signInWithGoogle()
+    }
+  }
+
+  const clearSheet = () => {
+    setSheetData([])
+    setSheetUrl('')
+    setPastedData('')
+  }
 
   useEffect(async () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.multiFactor.user.uid);
-        userId = user.multiFactor.user.uid;
-        dispatch(addUserInfo(user.multiFactor.user));
-        localStorage.setItem(
-          "popstore_user_token",
-          user.multiFactor.user.accessToken
-        );
-        checkIfExists(user.multiFactor.user);
-        navigate("/my-popstore");
-      } else {
-        navigate("/");
+        if (localStorage.getItem('sheetData') !== null) {
+          navigate('/popstore/create')
+        } else {
+          navigate("/")
+        }
       }
     });
   }, [navigate, dispatch]);
 
   const checkIfExists = async (userData) => {
     const storeOwners = collection(db, "StoreOwners");
-    console.log("store", storeOwners);
     const q = query(storeOwners, where("email", "==", userData.email));
     var queryUser;
     var tempId;
@@ -88,8 +118,6 @@ const LandingPage = () => {
       tempId = doc.id;
       localStorage.setItem("poolfarm_user_id", doc.id);
     });
-    console.log(queryUser);
-    // await updateDoc(queryUser, { ID: tempId });
 
     if (queryUser === undefined) {
       addDoc(storeOwners, {
@@ -100,24 +128,68 @@ const LandingPage = () => {
         phone: userData.phoneNumber,
         email: userData.email
       });
-      // .then((data) =>
-      //   updateDoc(data, {
-      //     id: data.id
-      //   })
-      // );
     }
   };
 
   return (
     <Container maxWidth="lg">
-      <CreateStoreForm />
+      <Grid container spacing={2}>
+        <Grid item xs>
+          <h1>Create Popstore from a spreadsheet</h1>
+        </Grid>
+      </Grid>
+      <form onSubmit={saveSheet}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
+            <TextField
+                fullWidth
+                id="outlined-basic"
+                label="Create Popstore from a spreadsheet"
+                helperText=""
+                variant="outlined"
+                onPaste={handlePaste}
+                value={pastedData}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
+            <p>Or import an excel sheet</p>
+            <Input
+                type="file"
+                variant="outlined"
+                label="Create Popstore from a spreadsheet"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  readExcel(file);
+                }}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
+          <Grid item xs={6} md={4}>
+            <Button
+                color="primary"
+                variant="contained"
+                disabled={!sheetData || creating || typeof sheetUrl !== 'undefined'}
+                onClick={saveSheet}>
+              Go
+            </Button>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <Button
+                color="secondary"
+                variant="contained"
+                disabled={creating || typeof sheetData === 'undefined'}
+                onClick={clearSheet}>
+              Clear
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
       <div className="create-table-wrapper">
-        <DataTable data={tableData} />
-      </div>
-      <div className="go-button">
-        <Button component={Link} to="/map-your-data" variant="contained">
-          Go
-        </Button>
+        <DataTable sheet={sheetData} />
       </div>
     </Container>
   );

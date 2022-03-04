@@ -23,8 +23,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route exact path="/my-popstore" element={<MyPopstore />} />
-          <Route path="/new-popstore" element={<NewPopstore />} />
+          <Route exact path="/popstore/all" element={<MyPopstore />} />
+          <Route path="/popstore/create" element={<NewPopstore />} />
           <Route path="/map-your-data" element={<MapYourData />} />
           <Route path="/:storeOwnerID/:storeID/edit" element={<EditPopstore />} />
 

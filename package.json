@@ -25,6 +25,9 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "reduxjs-toolkit-persist": "^7.2.1",
+    "sweetalert2": "^11.4.4",
+    "sweetalert2-react-content": "^4.2.0",
+    "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.2",
     "yup": "^0.32.11"

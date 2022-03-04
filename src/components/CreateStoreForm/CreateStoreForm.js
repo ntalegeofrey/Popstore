@@ -9,7 +9,8 @@ import LogoutButton from "../Logout Button/LogoutButton";
 import firebase from "../../service/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateText } from "../../redux/csvText";
+import { updateTableData } from "../../redux/csvText";
+import  textToCellsParser from "../../functions/textToCellsParser";
 import * as XLSX from "xlsx";
 import "../CreateStoreForm/styles.css";
 
@@ -17,8 +18,8 @@ const CreateStoreForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userPhoto, setUserPhoto] = useState(null);
+  const [pastedData, setPastedData] = useState()
 
-  const text = useSelector((state) => state.csvText.text);
 
 
   useEffect(() => {
@@ -31,9 +32,12 @@ const CreateStoreForm = () => {
     });
   }, [navigate]);
 
-  const handleText = (e) => {
-    dispatch(updateText(e.target.value));
-  };
+  const handlePaste = (e) => {
+    const data = e.target.value;
+    setPastedData(data)
+    const cells = textToCellsParser(data)
+    dispatch(updateTableData(cells))
+  }
   
 
   const readExcel = (file) => {
@@ -61,8 +65,7 @@ const CreateStoreForm = () => {
     });
 
     promise.then((d) => {
-      console.log(d);
-      dispatch(updateText(d));
+      dispatch(updateTableData(d));
     });
   };
 
@@ -95,9 +98,9 @@ const CreateStoreForm = () => {
               label="Create Popstore from a spreadsheet"
               fullWidth
               variant="outlined"
-              value={text}
+              value={pastedData}
               multiline
-              onChange={(e) => handleText(e)}
+              onChange={(e) => handlePaste(e)}
             />
           </Grid>
         </Grid>
