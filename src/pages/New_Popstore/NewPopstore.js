@@ -56,7 +56,6 @@ const NewPopstore = () => {
         let data = JSON.parse(localStorage.getItem('sheetData'));
         setSheetData(data);
         setColumns(data[0].cells);
-        console.log(sheetData);
       } else {
         navigate("/");
       }
@@ -136,6 +135,21 @@ const NewPopstore = () => {
       })
       return;
     }
+
+    if(
+        columns['Reference ID'] == columns['Price']
+        || columns['Reference ID'] == columns['Name']
+        || columns['Price'] == columns['Name']
+    ){
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please select different columns for Reference ID, Price and Name',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      return;
+    }
+
     let productsPrices = [];
 
     let products = [];
@@ -150,7 +164,7 @@ const NewPopstore = () => {
           sheetData[i].cells[nameColumn].replace(/\s/g, '').toLowerCase(),
           sheetData[i].cells[priceColumn],
         ]);
-        productsPrices.push(sheetData[i].cells[priceColumn]);
+        productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
       }
     } else {
       for (let i = 0; i < sheetData.length; i++) {
@@ -162,11 +176,13 @@ const NewPopstore = () => {
           sheetData[i].cells[nameColumn].replace(/\s/g, '').toLowerCase(),
           sheetData[i].cells[priceColumn],
         ]);
-        productsPrices.push(sheetData[i].cells[priceColumn]);
+        productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
       }
     }
 
-    if(!productsPrices.some(isNaN)){
+    // Reset the column name to 0
+    productsPrices[0] = 0;
+    if(productsPrices.includes(NaN)){
       await MySwal.fire({
         title: 'Error!',
         text: 'Price for all products must be a number',
@@ -175,6 +191,7 @@ const NewPopstore = () => {
       })
       return;
     }
+
 
     const storesRef = doc(collection(db, "StoreOwners"), user.uid);
     const storeRef = doc(collection(storesRef, "allStores"));
@@ -189,6 +206,7 @@ const NewPopstore = () => {
       createAt: serverTimestamp(),
       columnsList: JSON.stringify(products),
       link: 'https://popstore.bothofus.se/store/' + storeRef.id,
+      columns: columns,
     }
 
     await setDoc(storeRef, store);
