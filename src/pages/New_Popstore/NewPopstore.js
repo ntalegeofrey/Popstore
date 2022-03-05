@@ -160,8 +160,8 @@ const NewPopstore = () => {
           continue;
         }
         products.push([
-          sheetData[i].cells[referenceIdColumn],
-          sheetData[i].cells[nameColumn].replace(/\s/g, '').toLowerCase(),
+          i,
+          sheetData[i].cells[nameColumn],
           sheetData[i].cells[priceColumn],
         ]);
         productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
@@ -173,7 +173,7 @@ const NewPopstore = () => {
         }
         products.push([
           sheetData[i].cells[referenceIdColumn],
-          sheetData[i].cells[nameColumn].replace(/\s/g, '').toLowerCase(),
+          sheetData[i].cells[nameColumn],
           sheetData[i].cells[priceColumn],
         ]);
         productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
