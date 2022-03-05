@@ -2,20 +2,17 @@ import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import EditableDataTable from "../../components/Data_Table/EditableDataTable";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {useNavigate} from "react-router-dom";
 import firebase, {
   db,
   doc,
-  getDocs,
   setDoc,
   collection,
   serverTimestamp
 } from "../../service/firebase";
 import {
   Grid,
-  Input,
   MenuItem,
   Select,
   Table,
@@ -120,16 +117,6 @@ const NewPopstore = () => {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add description for PopStore',
-        icon: 'error',
-        confirmButtonText: 'Ok'
-      })
-      return;
-    }
-
-    if ( storeCurrency.trim() == '') {
-      await MySwal.fire({
-        title: 'Error!',
-        text: 'Please add a currency for PopStore',
         icon: 'error',
         confirmButtonText: 'Ok'
       })
@@ -287,17 +274,6 @@ const NewPopstore = () => {
                   variant="outlined"
                   value={storeDescription}
                   onChange={(e) => setStoreDescription(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={4} md={4}>
-              <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Store Currency"
-                  helperText=""
-                  variant="outlined"
-                  value={storeCurrency}
-                  onChange={(e) => setStoreCurrency(e.target.value)}
               />
             </Grid>
           </Grid>
