@@ -280,12 +280,13 @@ const NewPopstore = () => {
         </form>
         <div className="create-table-wrapper">
           <TableContainer>
-            <Table>
+            <Table style={{ tableLayout: 'fixed'}}>
               <TableHead>
                 <TableRow>
                   {columns?.map((column, index) => (
                       <TableCell key={index}>
                         <Select
+                            fullWidth={true}
                             id={`${column}-${index}`}
                             label="Select Column"
                         >
