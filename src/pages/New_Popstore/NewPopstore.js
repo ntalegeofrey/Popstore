@@ -38,6 +38,7 @@ const NewPopstore = () => {
   const [sheetData, setSheetData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [dbColumns, setDbColumns] = useState(['Name', 'Reference ID', 'Price', 'Ignore']);
+  const [col, setCol] = useState({});
 
   const MySwal = withReactContent(Swal)
 
@@ -56,12 +57,12 @@ const NewPopstore = () => {
       } else {
         navigate("/");
       }
-
-      if (localStorage.getItem('columns') == null) {
-        localStorage.setItem('columns', JSON.stringify({
-          'Name': -1, 'Reference ID': -1, 'Price': -1
-        }));
-      }
+      localStorage.setItem('columns', JSON.stringify({
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+      }));
+      setCol({
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+      });
 
     });
   }, [navigate, dispatch]);
@@ -216,11 +217,48 @@ const NewPopstore = () => {
     navigate('/');
   };
 
-  const updateSelectedColumn = async (e, col, index) => {
-    e.preventDefault();
+  const updateSelectedColumn = async (e, column, index, c) => {
     let cols = localStorage.getItem('columns');
     cols = JSON.parse(cols);
-    cols[col] = index;
+    cols[column] = index;
+    // Check if columns does not have same/duplicate names
+    if(
+        (cols['Reference ID'] == cols['Price'] && (cols['Price'] !== -1 || cols['Reference ID'] !== -1 ))
+        || (cols['Reference ID'] == cols['Name'] && (cols['Name'] !== -1 || cols['Reference ID'] !== -1))
+        || (cols['Price'] == cols['Name'] && (cols['Price'] !== -1 || cols['Name'] !== -1))
+    ){
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please select different columns for Reference ID, Price and Name',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      document.getElementById(`${c}-${index}`).textContent = 'Select Column';
+      return;
+    }
+
+    // Check price column for numeric values
+    let productsPrices = [];
+    for (let i = 0; i < sheetData.length; i++) {
+      if(sheetData[i].cells[cols['Price']] == undefined){
+        continue;
+      }
+      productsPrices.push(parseFloat(sheetData[i].cells[cols['Price']]));
+    }
+    productsPrices[0] = 0;
+    if(productsPrices.includes(NaN)){
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Price for all products must be a number',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      document.getElementById(`${c}-${index}`).textContent = 'Select Column';
+      return;
+    }
+    // Same column information
+    setCol(cols);
+    document.getElementById(`${c}-${index}`).textContent = column;
     localStorage.setItem('columns', JSON.stringify(cols));
   };
 
@@ -292,7 +330,7 @@ const NewPopstore = () => {
                         >
                           <MenuItem value='Select Column' selected={true}>Select Column</MenuItem>
                           {dbColumns.map((dbColumn, i) => (
-                              <MenuItem value={{dbColumn: index}} onClick={(e => updateSelectedColumn(e, dbColumn, index))}>{dbColumn}</MenuItem>
+                              <MenuItem disabled={col[dbColumn] != -1 && dbColumn != 'Ignore' && col[dbColumn] != index} value={{dbColumn: index}} onClick={(e => updateSelectedColumn(e, dbColumn, index, column))} key={`${index}-${dbColumn}`}>{dbColumn}</MenuItem>
                           ))}
                         </Select>
                       </TableCell>
