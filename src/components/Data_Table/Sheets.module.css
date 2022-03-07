@@ -1,0 +1,6 @@
+.cell {
+    white-space: pre-line;
+  }
+tbody > tr:first-child > td {
+    font-weight: bold;
+  }

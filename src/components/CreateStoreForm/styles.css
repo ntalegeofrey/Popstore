@@ -1,0 +1,9 @@
+.create-store-wrapper{
+    padding-top: 30px;
+}
+
+.login-button-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
