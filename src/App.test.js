@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('Validate popstore', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const divElements = screen.getAllByText(/Create Popstore from a spreadsheet/i);
+  expect(divElements[0]).toBeInTheDocument();
 });

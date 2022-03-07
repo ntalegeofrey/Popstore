@@ -5,7 +5,6 @@ import {
 import Container from "@mui/material/Container";
 import {useNavigate} from "react-router-dom";
 import firebase from "../../service/firebase";
-import { useDispatch } from "react-redux";
 import DataTable from "../../components/Data_Table/DataTable";
 import textToCellsParser from "../../functions/textToCellsParser";
 import { signInWithGoogle } from "../../service/firebase";
@@ -13,7 +12,6 @@ import "./styles.css";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [sheetData, setSheetData] = useState()
   const [pastedData, setPastedData] = useState('')
@@ -58,7 +56,7 @@ const LandingPage = () => {
         }
       }
     });
-  }, [navigate, dispatch]);
+  }, [navigate]);
 
   return (
     <Container maxWidth="lg">
