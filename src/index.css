@@ -8,3 +8,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.Mui-selected {
+  background-color: transparent !important;
+}
+.Mui-selected:hover {
+  background-color: rgba(25, 118, 210, 0.12) !important;
+}

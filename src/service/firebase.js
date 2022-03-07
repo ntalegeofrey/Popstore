@@ -31,6 +31,8 @@ export const db = getFirestore(app);
 export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.addScope("email");
+provider.addScope("profile");
 export const signInWithGoogle = async () => await signInWithPopup(auth, provider);
 
 export default firebase;
