@@ -37,7 +37,7 @@ const ProductTable = ({ tableData }) => {
                 {row.name}
               </TableCell>
               <TableCell align="right">
-                <Link to={`/store/${tableData[i].storeID}`}>
+                <Link to={`/store/${tableData[i].ownerID}/${tableData[i].storeID}`}>
                   {row.link}
                 </Link>
               </TableCell>

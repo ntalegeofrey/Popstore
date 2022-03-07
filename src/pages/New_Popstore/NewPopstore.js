@@ -177,7 +177,7 @@ const NewPopstore = () => {
       storeID: storeRef.id,
       createAt: serverTimestamp(),
       columnsList: JSON.stringify(products),
-      link: 'https://popstore.bothofus.se/store/' + storeRef.id,
+      link: `https://popstore.bothofus.se/store/${user.uid}/${storeRef.id}`,
       columns: columns,
     }
 
