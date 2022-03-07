@@ -7,8 +7,8 @@ cache:
 stages:
   - init
   - test
-  #- build # not needed for now as we are using heroku for deployment
   - deploy
+# - build # not needed for now as we are using heroku for deployment
 
 init:
   stage: init
