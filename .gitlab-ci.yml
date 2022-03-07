@@ -36,7 +36,7 @@ deploy:
   stage: deploy
   image: node:14.19.0
   script:
-    - git push https://$HEROKU_USER:$HEROKU_API_KEY@git.heroku.com/poolfarm.git main:master
+    - git push https://$HEROKU_USER:$HEROKU_API_KEY@git.heroku.com/poolfarm.git HEAD:master
     - echo "Deployed to production server"
   environment:
     name: production
