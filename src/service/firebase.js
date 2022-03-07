@@ -13,6 +13,7 @@ import {
   updateDoc,
   serverTimestamp
 } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -28,11 +29,8 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
-export const auth = firebase.auth();
-
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
-
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+export const signInWithGoogle = async () => await signInWithPopup(auth, provider);
 
 export default firebase;
