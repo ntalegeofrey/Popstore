@@ -124,7 +124,7 @@ const PopStore = () => {
                                     defaultValue={0}
                                     onChange={(e) => {
                                         let newOrder = [...order];
-                                        newOrder[index] = {...newOrder[index], quantity: e.target.value < 0 ? 0 : parseInt(e.target.value)};
+                                        newOrder[index] = {...newOrder[index], quantity: e.target.value < 0 ? 0 : parseInt(e.target.value), id: index};
                                         setOrder(newOrder);
                                     }}
                                 />
