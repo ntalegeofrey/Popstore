@@ -1,5 +1,10 @@
 # Popstore CI/CD pipeline for Heroku
 
+before_script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - gem install dpl
+
 cache:
   paths:
     - node_modules/
@@ -34,9 +39,9 @@ test:
 
 deploy:
   stage: deploy
-  image: node:14.19.0
+  image: ruby:latest
   script:
-    - git push https://$HEROKU_USER:$HEROKU_API_KEY@git.heroku.com/poolfarm.git main
+    - dpl --provider=heroku --app=poolfarm --api-key=$HEROKU_API_KEY
     - echo "Deployed to production server"
   environment:
     name: production
