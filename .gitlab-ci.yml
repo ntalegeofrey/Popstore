@@ -38,8 +38,8 @@ deploy:
   script:
     - git push https://$HEROKU_USER:$HEROKU_API_KEY@git.heroku.com/poolfarm.git HEAD:master
     - echo "Deployed to production server"
-    environment:
-      name: production
-      url: https://poolfarm.herokuapp.com/
-    only:
-      - master
+  environment:
+    name: production
+    url: https://poolfarm.herokuapp.com/
+  only:
+    - master
