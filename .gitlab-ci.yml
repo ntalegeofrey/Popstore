@@ -22,16 +22,6 @@ test:
   script:
     - npm run test
 
-#build:
-#  stage: init
-#  image: node:14.19.0
-#  script:
-#    - npm run build
-#  artifacts:
-#    paths:
-#      - build/
-#    when: always
-
 deploy:
   stage: deploy
   image: node:14.19.0
@@ -43,3 +33,12 @@ deploy:
     url: https://poolfarm.herokuapp.com/
   only:
     - master
+#build:
+#  stage: init
+#  image: node:14.19.0
+#  script:
+#    - npm run build
+#  artifacts:
+#    paths:
+#      - build/
+#    when: always
