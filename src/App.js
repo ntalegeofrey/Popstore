@@ -25,7 +25,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route exact path="/popstore/all" element={<MyPopstore />} />
           <Route path="/popstore/create" element={<NewPopstore />} />
-          <Route path="/map-your-data" element={<MapYourData />} />
+          <Route path="/store/:storeID" element={<MapYourData />} />
           <Route path="/:storeOwnerID/:storeID/edit" element={<EditPopstore />} />
 
           <Route path=":storeOwnerID/:storeID" element={<StoreOwnerPages />}>
