@@ -37,34 +37,34 @@ const ProductTable = ({ tableData }) => {
                 {row.name}
               </TableCell>
               <TableCell align="right">
-                <Link to={`\/${tableData[i].ownerID}/${tableData[i].storeID}`}>
+                <Link to={`/store/${tableData[i].storeID}`}>
                   {row.link}
                 </Link>
               </TableCell>
               <TableCell align="right">
                 <Link
-                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/edit`}
+                  to={`/popstore/edit/${tableData[i].storeID}`}
                 >
                   {row.edit}
                 </Link>
               </TableCell>
               <TableCell align="right">
                 <Link
-                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/orders`}
+                  to={`/popstore/orders/${tableData[i].storeID}`}
                 >
                   {row.orders}
                 </Link>
               </TableCell>
               <TableCell align="right">
                 <Link
-                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/customers`}
+                  to={`/popstore/customers/${tableData[i].storeID}`}
                 >
                   {row.customers}
                 </Link>
               </TableCell>
               <TableCell align="right">
                 <Link
-                  to={`\/${tableData[i].ownerID}/${tableData[i].storeID}/packagings`}
+                  to={`/popstore/packaging/${tableData[i].storeID}`}
                 >
                   {row.packaging}
                 </Link>
