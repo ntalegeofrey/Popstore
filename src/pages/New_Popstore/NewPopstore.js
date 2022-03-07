@@ -239,12 +239,29 @@ const NewPopstore = () => {
 
     // Check price column for numeric values
     let productsPrices = [];
+    let productsNames = [];
     for (let i = 0; i < sheetData.length; i++) {
-      if(sheetData[i].cells[cols['Price']] == undefined){
+      if(sheetData[i].cells[cols['Price']] == undefined || sheetData[i].cells[cols['Name']] == undefined){
         continue;
       }
       productsPrices.push(parseFloat(sheetData[i].cells[cols['Price']]));
+      productsNames.push(parseFloat(sheetData[i].cells[cols['Name']]));
     }
+
+    let validNames = true;
+    productsNames.forEach( (el, i) => { if(!Object.is(el, NaN)){validNames = false;}});
+    
+    if(!validNames){
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Name for all products cannot by only number',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      document.getElementById(`${c}-${index}`).textContent = 'Select Column';
+      return;
+    }
+
     productsPrices[0] = 0;
     if(productsPrices.includes(NaN)){
       await MySwal.fire({
