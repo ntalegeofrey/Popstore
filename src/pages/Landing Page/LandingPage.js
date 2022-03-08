@@ -89,6 +89,9 @@ const LandingPage = () => {
                 value={pastedData}
             />
           </Grid>
+          <Grid item xs={12} md={8}>
+            <small>No need upload title/description along with your data (as column titles), this is added in the next step</small>
+          </Grid>
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
