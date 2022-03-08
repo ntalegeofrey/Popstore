@@ -9,14 +9,16 @@ import DataTable from "../../components/Data_Table/DataTable";
 import textToCellsParser from "../../functions/textToCellsParser";
 import { signInWithGoogle } from "../../service/firebase";
 import "./styles.css";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const [sheetData, setSheetData] = useState()
+  const [sheetData, setSheetData] = useState([])
   const [pastedData, setPastedData] = useState('')
-  const [sheetUrl, setSheetUrl] = useState()
-  const [creating, setCreating] = useState(false)
+
+  const MySwal = withReactContent(Swal)
 
   const handlePaste = (e) => {
     const data = e.clipboardData.getData('text/plain')
@@ -26,6 +28,16 @@ const LandingPage = () => {
   }
 
   const saveSheet = async (e) => {
+    const validation = sheetData.every(item => Array.isArray(item.cells) && item.cells.length);
+    if(!validation) {
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please paste correct sheet data to proceed',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      return
+    }
     localStorage.setItem('sheetData', JSON.stringify(sheetData))
     e.preventDefault()
     await CheckLogin()
@@ -42,7 +54,6 @@ const LandingPage = () => {
 
   const clearSheet = () => {
     setSheetData([])
-    setSheetUrl()
     setPastedData('')
   }
 
@@ -85,7 +96,7 @@ const LandingPage = () => {
             <Button
                 color="primary"
                 variant="contained"
-                disabled={!sheetData || creating || typeof sheetUrl !== 'undefined'}
+                disabled={!sheetData.length}
                 onClick={saveSheet}>
               Go
             </Button>
@@ -94,7 +105,7 @@ const LandingPage = () => {
             <Button
                 color="secondary"
                 variant="contained"
-                disabled={creating || typeof sheetData === 'undefined'}
+                disabled={typeof sheetData === 'undefined' || !sheetData.length}
                 onClick={clearSheet}>
               Clear
             </Button>
