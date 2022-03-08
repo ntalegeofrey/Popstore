@@ -42,7 +42,7 @@ const LandingPage = () => {
 
   const clearSheet = () => {
     setSheetData([])
-    setSheetUrl('')
+    setSheetUrl()
     setPastedData('')
   }
 
