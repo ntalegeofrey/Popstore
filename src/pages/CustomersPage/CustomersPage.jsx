@@ -10,7 +10,7 @@ import { db, collection, getDocs, where, query } from "../../service/firebase";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import {MenuItem, Select, TextField} from "@mui/material";
 
-const MyPopstore = () => {
+const CustomersPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const { storeId } = useParams();
@@ -165,16 +165,30 @@ const MyPopstore = () => {
                       </h4>
                     </Grid>
                   </Grid>
+                  <Grid container spacing={2}>
+                    <Grid item xs={5} md={5}>
+                      <h5>Product</h5>
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                      <h5>Price</h5>
+                    </Grid>
+                    <Grid item xs={3} md={3}>
+                      <h5>Quantity</h5>
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                      <h5>Total</h5>
+                    </Grid>
+                  </Grid>
                   {orders?.map((order, index) => {
                     return (
                     <Grid container spacing={2} key={index}>
-                      <Grid item xs={2} md={2}>
+                      <Grid item xs={5} md={5}>
                         <p>{store.columnsList[order.id][1]}</p>
                       </Grid>
                       <Grid item xs={2} md={2}>
                         <p>{store.columnsList[order.id][2]} SEK</p>
                       </Grid>
-                      <Grid item xs={2} md={2}>
+                      <Grid item xs={3} md={3}>
                         <p>{order.quantity}</p>
                       </Grid>
                       <Grid item xs={2} md={2}>
@@ -190,4 +204,4 @@ const MyPopstore = () => {
   );
 };
 
-export default MyPopstore;
+export default CustomersPage;

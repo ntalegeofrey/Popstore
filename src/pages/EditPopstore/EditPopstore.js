@@ -26,7 +26,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Loading from "../../components/Loading";
 
-const NewPopstore = () => {
+const EditPopstore = () => {
   const navigate = useNavigate();
   const { storeId } = useParams();
   const [user, setUser] = useState();
@@ -241,4 +241,4 @@ const NewPopstore = () => {
   );
 };
 
-export default NewPopstore;
+export default EditPopstore;
