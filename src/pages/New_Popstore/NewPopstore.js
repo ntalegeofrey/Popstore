@@ -179,6 +179,7 @@ const NewPopstore = () => {
       columnsList: JSON.stringify(products),
       link: `https://popstore.bothofus.se/store/${user.uid}/${storeRef.id}`,
       columns: columns,
+      locked: false,
     }
 
     await setDoc(storeRef, store);

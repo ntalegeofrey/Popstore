@@ -12,8 +12,7 @@ import firebase, {
 } from "../../service/firebase";
 import {
   Grid,
-  MenuItem,
-  Select,
+  Switch,
   Table,
   TableBody,
   TableCell, TableContainer,
@@ -103,6 +102,7 @@ const NewPopstore = () => {
       storeName: store.storeName,
       storeOwner: store.storeOwner,
       description: store.description,
+      locked: store.locked,
     }
 
     const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
@@ -177,6 +177,13 @@ const NewPopstore = () => {
                   variant="outlined"
                   value={store.description}
                   onChange={(e) => setStore({...store, description: e.target.value})}
+              />
+            </Grid>
+            <Grid item xs={4} md={4} alignSelf="center">
+              Store Locked:
+              <Switch
+                  checked={store.locked}
+                  onChange={(e) => setStore({...store, locked: e.target.checked})}
               />
             </Grid>
           </Grid>

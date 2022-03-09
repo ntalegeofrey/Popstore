@@ -135,6 +135,7 @@ const PopStore = () => {
                                     variant="outlined"
                                     value={order[index]?.quantity}
                                     defaultValue={0}
+                                    disabled={store.locked}
                                     onChange={(e) => {
                                         let newOrder = [...order];
                                         newOrder[index] = {...newOrder[index], quantity: e.target.value < 0 ? 0 : parseInt(e.target.value), id: index};
@@ -149,7 +150,7 @@ const PopStore = () => {
                     })}
                 </Grid>
             </div>
-            <div style={{padding: '1rem'}}>
+            { !store.locked && <div style={{padding: '1rem'}}>
                 <Grid container spacing={2}>
                     <Grid item xs={1} md={1} alignSelf="center">
                         <label>Email:</label>
@@ -190,7 +191,7 @@ const PopStore = () => {
                         </Button>
                     </Grid>
                 </Grid>
-            </div>
+            </div> }
         </Container>
     </div>
   );
