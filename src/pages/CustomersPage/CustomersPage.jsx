@@ -1,140 +1,193 @@
-import React from "react";
-import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Box from "@mui/material/Box";
+import React, { useEffect, useState } from "react";
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
+import LogoutButton from "../../components/Logout Button/LogoutButton";
+import Grid from "@mui/material/Grid";
+import ProductTable from "../../components/Product_Table/ProductTable";
+import Button from "@mui/material/Button";
+import firebase, {doc, getDoc} from "../../service/firebase";
+import { db, collection, getDocs, where, query } from "../../service/firebase";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import {MenuItem, Select, TextField} from "@mui/material";
 
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
+const MyPopstore = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState();
+  const { storeId } = useParams();
+  const [store, setStore] = useState({});
+  const [customer, setCustomer] = useState({});
+  const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        let temp = [];
+        const allStores = collection(
+            db,
+            `/StoreOwners/${user.uid}/allStores`
+        );
+        const querySnapshot = await getDocs(allStores);
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          temp.push(doc.data());
+        });
+        setTableData(temp);
+        const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
+        const store = await getDoc(doc(storesRef, storeId));
+        if(store.exists()){
+          let data = store.data();
+          data.columnsList = JSON.parse(data.columnsList);
+          setStore(data);
+        }
+        const customersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/customers`);
+        const Customers = await getDocs(customersRef);
+        temp = [];
+        Customers.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          temp.push(doc.data());
+        });
+        setCustomers(temp);
+      } else {
+        navigate("/");
+      }
+    });
+  }, [navigate]);
 
-import { DateRangePicker } from "react-date-range";
+  const getCustomerOrders = async (c) => {
+    setCustomer(c);
+    const ordersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`);
+    const q = query(ordersRef, where("email", "==", c.email));
+    const querySnapshot = await getDocs(q);
+    let temp = [];
+    querySnapshot.forEach((doc) => {
+      let d = doc.data();
+      d.order = JSON.parse(d.order);
+      temp.push(d);
+    });
+    let orders = [];
+    temp.forEach((o) => {
+      o.order.forEach((p) => {
+        if(p !== null){
+          // check if order already exists
+          let index = orders.findIndex((e) => e.id == p.id);
+          if(index == -1){
+            orders.push(p);
+          } else {
+            orders[index].quantity += p.quantity;
+          }
+        }
+      });
+    });
+    return orders;
+  };
+  useEffect(async () => {
+  }, []);
 
-import { addDays } from "date-fns";
-
-import Loading from "../../components/Loading";
-import useActions from "./actions";
-
-const Item = styled(Box)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  color: theme.palette.text.secondary,
-}));
-
-const CustomersPage = () => {
-  const {
-    customersByOrder,
-    selectedCustomer,
-    totalOrderPrice,
-    store,
-    updateSelectedCustomer,
-  } = useActions();
-
-  const [state, setState] = React.useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      key: "selection",
-    },
-  ]);
-
-  if (!selectedCustomer || !customersByOrder) return <Loading />;
   return (
-    <Box>
-      <Grid container my={3}>
-        <Grid item xs={4}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={selectedCustomer.customerEmail}
-              label="Age"
-              onChange={updateSelectedCustomer}
-            >
-              {customersByOrder.map((customerByOrder) => (
-                <MenuItem
-                  value={customerByOrder.customerEmail}
-                  key={customerByOrder.customerEmail}
+      <Container maxWidth="lg">
+        <div className="popstore-wrapper">
+          <Grid className="pop-header-wrapper" container spacing={2}>
+            <Grid item xs={4} md={4}>
+              <Typography style={{ marginBottom: "20px" }} variant="h4">
+                Customers List
+              </Typography>
+            </Grid>
+            <Grid item xs={4} md={4} alignSelf="center">
+              <Link to='/popstore/all'>
+                Close
+              </Link>
+            </Grid>
+            <Grid item xs={4} md={4}>
+              <div className="logout-button">
+                <LogoutButton user={user?.photoURL} />
+              </div>
+            </Grid>
+          </Grid>
+          <Grid className="pop-header-wrapper" container spacing={2}>
+            <Grid item xs={12} md={12}>
+              <Typography style={{ marginBottom: "1rem" }} variant="h6">
+                {store?.storeName}
+              </Typography>
+            </Grid>
+            <Grid item xs={3} md={3}>
+              <div style={{paddingBottom: '1rem'}}>
+                <Select
+                    fullWidth={true}
+                    id="customer"
+                    label="Select Column"
                 >
-                  {customerByOrder.customerName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid xs={12} mt={3}>
-          <DateRangePicker
-            onChange={(item) => setState([item.selection])}
-            showSelectionPreview={true}
-            moveRangeOnFirstSelection={false}
-            months={2}
-            ranges={state}
-            direction="horizontal"
-          />
-        </Grid>
-      </Grid>
-
-      {customersByOrder
-        .filter(
-          (customerOrder) =>
-            customerOrder.customerEmail === selectedCustomer.customerEmail
-        )
-        .map((customerOrder, index) => (
-          <Grid container key={index} spacing={3} my={1}>
-            <Grid item xs={4}>
-              <Typography variant="h6">
-                {customerOrder.customerName}'s orders
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant="h6">
-                {customerOrder.customerEmail}
-              </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography variant="h6">
-                {customerOrder.customerPhone}
-              </Typography>
+                  {customers?.map((customer, i) => (
+                      <MenuItem
+                          onClick={(e => {
+                            getCustomerOrders(customer).then((o) => { setOrders(o);document.getElementById("customer").textContent = customer.email;});
+                          })}
+                          key={`${i}`}
+                      >
+                        {customer.email}
+                      </MenuItem>
+                  ))}
+                </Select>
+              </div>
             </Grid>
           </Grid>
-        ))}
-
-      <Grid container>
-        <Grid item xs={6}>
-          <Item>
-            <Typography variant="body1">Total</Typography>
-          </Item>
-        </Grid>
-        <Grid item xs={6}>
-          <Item>{`${totalOrderPrice} ${store["currency "]}`}</Item>
-        </Grid>
-      </Grid>
-
-      {selectedCustomer.OrderedProducts.map((orderedProduct, index) => (
-        <Grid container key={index} spacing={2}>
-          <Grid item xs={3}>
-            <Item>{orderedProduct.name}</Item>
-          </Grid>
-          <Grid item xs={3}>
-            <Item>{orderedProduct.price}</Item>
-          </Grid>
-          <Grid item xs={3}>
-            <Item>{orderedProduct.quantity}</Item>
-          </Grid>
-          <Grid item xs={3}>
-            <Item>
-              {Number(orderedProduct.quantity) * Number(orderedProduct.price)}{" "}
-              {store["currency "]}
-            </Item>
-          </Grid>
-        </Grid>
-      ))}
-    </Box>
+        </div>
+        <div style={{backgroundColor: "#fff", padding: '1rem'}}>
+            {Object.keys(customer).length === 0 ?
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={12}>
+                    <h4>Select a customer from dropdown to view his orders</h4>
+                  </Grid>
+                </Grid>
+             :
+                <>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} md={4}>
+                      <h4>{customer?.name || "N/A"}</h4>
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                      <h4>{customer?.email}</h4>
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                      <h4>{customer?.phone}</h4>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} md={4}>
+                      <h4>Total</h4>
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                      <h4>
+                        {(orders.reduce((prev, next) => {
+                          return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
+                        }, 0)).toFixed(2)} SEK
+                      </h4>
+                    </Grid>
+                  </Grid>
+                  {orders?.map((order, index) => {
+                    return (
+                    <Grid container spacing={2} key={index}>
+                      <Grid item xs={2} md={2}>
+                        <p>{store.columnsList[order.id][1]}</p>
+                      </Grid>
+                      <Grid item xs={2} md={2}>
+                        <p>{store.columnsList[order.id][2]} SEK</p>
+                      </Grid>
+                      <Grid item xs={2} md={2}>
+                        <p>{order.quantity}</p>
+                      </Grid>
+                      <Grid item xs={2} md={2}>
+                        <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} SEK</p>
+                      </Grid>
+                    </Grid>
+                    )
+                  })}
+                </>
+            }
+        </div>
+      </Container>
   );
 };
 
-export default CustomersPage;
+export default MyPopstore;

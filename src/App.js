@@ -27,6 +27,7 @@ function App() {
           <Route path="/popstore/create" element={<NewPopstore />} />
           <Route path="/store/:ownerId/:storeId" element={<PopStore />} />
           <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
+          <Route path="/popstore/customers/:storeId" element={<CustomersPage />} />
 
           <Route path=":storeOwnerID/:storeID" element={<StoreOwnerPages />}>
             <Route index element={<PopStore />} />
