@@ -68,10 +68,27 @@ const PopStore = () => {
             return;
         }
 
+        // Check if a customer with this email already exists
+        const customersRef = await collection(db, `/StoreOwners/${ownerId}/allStores/${storeId}/customers`);
+        const customer = await getDoc(doc(customersRef, email));
+        if(!customer.exists()){
+            // Create a new customer
+            const newCustomer = {
+                uid: user.uid || null,
+                email: email.toLowerCase(),
+                phone: phone,
+                name: "",
+                createdAt: serverTimestamp()
+            }
+            let newCustomerRef = await doc(customersRef, email);
+            await setDoc(newCustomerRef, newCustomer);
+        }
+
         const Order = {
             uid: user.uid || null,
-            email: email,
+            email: email.toLowerCase(),
             phone: phone,
+            name: "",
             order: JSON.stringify(order),
             storeId: storeId,
             createdAt: serverTimestamp()
