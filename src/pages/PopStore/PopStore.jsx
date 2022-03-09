@@ -102,9 +102,10 @@ const PopStore = () => {
   }
   const runconvertCurrency = async()=>{
     if(usercurrency){
-      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=10&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
+      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=1&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
         console.log("result from currency")
-        console.log(res)
+        console.log(res.data.data[usercurrency].value)
+        setConvertedPrice(res.data.data[usercurrency].value)
       });
     }
   }
@@ -247,7 +248,7 @@ const PopStore = () => {
                                 <p>{column[1]}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <p>{column[2]} {usercurrency}</p>
+                                <p>{parseInt(column[2])*convertedprice} {usercurrency}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
                                 <TextField

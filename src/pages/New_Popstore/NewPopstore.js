@@ -256,7 +256,9 @@ const NewPopstore = () => {
     localStorage.removeItem('columns');
     navigate('/');
   };
-
+  const updateCurrencyValue = (value) => {
+    setStoreCurrency(value);
+  }
   const updateSelectedColumn = async (e, column, index, c) => {
     let cols = localStorage.getItem('columns');
     cols = JSON.parse(cols);
@@ -378,7 +380,7 @@ const NewPopstore = () => {
               >
                 {Object.keys(currencies).map((currency, i) => (
                     <MenuItem
-                        key={`${ i}`}
+                        key={`${i}`}
                         onClick={(e => updateCurrencyValue(currencies[currency]))}
                     >
                       {currencies[currency]}
