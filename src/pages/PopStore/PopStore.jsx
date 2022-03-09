@@ -10,6 +10,7 @@ import firebase, {collection, db, getDoc, doc, serverTimestamp, setDoc} from "..
 import { useNavigate, useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import axios from 'axios';
 
 const PopStore = () => {
     const [store, setStore] = useState();
@@ -23,7 +24,9 @@ const PopStore = () => {
     const [usercurrency,setUserCurrency] = React.useState();
     const [ip,setIP] = React.useState();
     const [usercountry,setUserCountry] = React.useState();
+    const [storecurrency,setStoreCurrency] = React.useState();
     const [userdata,setUserData] = React.useState();
+    const [convertedprice,setConvertedPrice] = React.useState();
   const eurocurrencies={
     'Albania': 'ALL',
     'Andorra': 'EUR',
@@ -89,23 +92,17 @@ const PopStore = () => {
   }
   
   const convertCurrency =async(country)=>{
-    console.log("user country here")
-    console.log(country)
     Object.keys(eurocurrencies).map(async(key)=>{
       console.log(country)
       if(key===country){
-        console.log('key katched')
         setUserCurrency(eurocurrencies[key])
-        console.log(eurocurrencies[key]);
       }
     });
-    console.log(process.env.REACT_APP_CURRENCY_API_KEY)
-    console.log(usercurrency)
     
   }
   const runconvertCurrency = async()=>{
     if(usercurrency){
-      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=10&base_currency=USD&currencies='+usercurrency).then(res => {
+      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=10&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
         console.log("result from currency")
         console.log(res)
       });
@@ -115,6 +112,12 @@ const PopStore = () => {
     //passing getData method to the lifecycle method
     getData()
   }, [])
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    console.log("storecurrency")
+    console.log(storecurrency)
+    runconvertCurrency()
+  }, [storecurrency])
   React.useEffect( () => {
     //passing getData method to the lifecycle method
     console.log("usercurrency")
@@ -127,7 +130,9 @@ const PopStore = () => {
         if(store.exists()){
             let data = store.data();
             data.columnsList = JSON.parse(data.columnsList);
+            console.log(data)
             setStore(data);
+            setStoreCurrency(data.currency)
             setLoading(false);
         }
         firebase.auth().onAuthStateChanged((user) => {
@@ -242,7 +247,7 @@ const PopStore = () => {
                                 <p>{column[1]}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <p>{column[2]}</p>
+                                <p>{column[2]} {usercurrency}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
                                 <TextField
