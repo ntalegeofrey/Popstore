@@ -48,7 +48,6 @@ const NewPopstore = () => {
         if (store.exists()) {
           let data = store.data();
           data.columnsList = JSON.parse(data.columnsList);
-          console.log(data);
           setStore(data);
           setLoading(false);
         }
