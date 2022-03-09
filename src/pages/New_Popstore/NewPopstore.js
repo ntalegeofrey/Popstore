@@ -371,6 +371,21 @@ const NewPopstore = () => {
                   onChange={(e) => setStoreDescription(e.target.value)}
               />
             </Grid>
+            <Grid item xs={4} md={4}>
+              <Select
+                  fullWidth={true}
+                  label="Select Column"
+              >
+                {Object.keys(currencies).map((currency, i) => (
+                    <MenuItem
+                        key={`${ i}`}
+                        onClick={(e => updateCurrencyValue(currencies[currency]))}
+                    >
+                      {currencies[currency]}
+                    </MenuItem>
+                ))}
+              </Select>
+              </Grid>
             <Grid item xs={12} md={12}>
               <p><small>Reference Id and Description are optional. Reference Id is generated automatically if not selected</small></p>
             </Grid>
