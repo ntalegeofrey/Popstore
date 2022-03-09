@@ -35,7 +35,7 @@ const NewPopstore = () => {
   const [storeCurrency, setStoreCurrency] = useState('SEK');
   const [sheetData, setSheetData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
+  const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Description', 'Ignore']);
   const [col, setCol] = useState({});
 
   const MySwal = withReactContent(Swal)
@@ -56,10 +56,10 @@ const NewPopstore = () => {
         navigate("/");
       }
       localStorage.setItem('columns', JSON.stringify({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
       }));
       setCol({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
       });
 
     });
@@ -71,6 +71,7 @@ const NewPopstore = () => {
     let referenceIdColumn = columns['Reference ID'];
     let priceColumn = columns['Price'];
     let nameColumn = columns['Name'];
+    let descriptionColumn = columns['Description'];
 
     if ( nameColumn === -1) {
       await MySwal.fire({
@@ -82,7 +83,7 @@ const NewPopstore = () => {
       return;
     }
 
-    if ( nameColumn === -1) {
+    if ( priceColumn === -1) {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please select a column for Price of products',
@@ -135,6 +136,7 @@ const NewPopstore = () => {
           i,
           sheetData[i].cells[nameColumn],
           sheetData[i].cells[priceColumn],
+          sheetData[i].cells[descriptionColumn] ? sheetData[i].cells[descriptionColumn] : ''
         ]);
         productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
       }
@@ -147,6 +149,7 @@ const NewPopstore = () => {
           sheetData[i].cells[referenceIdColumn],
           sheetData[i].cells[nameColumn],
           sheetData[i].cells[priceColumn],
+          sheetData[i].cells[descriptionColumn] ? sheetData[i].cells[descriptionColumn] : ''
         ]);
         productsPrices.push(parseFloat(sheetData[i].cells[priceColumn]));
       }
@@ -315,6 +318,9 @@ const NewPopstore = () => {
                   value={storeDescription}
                   onChange={(e) => setStoreDescription(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <p><small>Reference Id and Description are optional. Reference Id is generated automatically if not selected</small></p>
             </Grid>
           </Grid>
         </form>

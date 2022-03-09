@@ -180,7 +180,7 @@ const PopStore = () => {
                             onChange={(e) => setPhone(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={2} md={2} alignSelf="center" textAlign="right">
+                    <Grid item xs={4} md={4} alignSelf="center" textAlign="right">
                         <Button
                             style={{marginLeft: '1rem'}}
                             color="primary"
