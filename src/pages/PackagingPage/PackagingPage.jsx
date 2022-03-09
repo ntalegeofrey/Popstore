@@ -1,147 +1,220 @@
-import React from "react";
-import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
+import React, { useEffect, useState } from "react";
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Select from "@mui/material/Select";
-import Box from "@mui/material/Box";
-import { useParams } from "react-router-dom";
-import { getAllOrdersByStore } from "../../api/orders";
-import Loading from "../../components/Loading";
+import LogoutButton from "../../components/Logout Button/LogoutButton";
+import Grid from "@mui/material/Grid";
+import ProductTable from "../../components/Product_Table/ProductTable";
+import Button from "@mui/material/Button";
+import firebase, {doc, getDoc} from "../../service/firebase";
+import { db, collection, getDocs, where, query } from "../../service/firebase";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import {MenuItem, Select, TextField} from "@mui/material";
 
 const PackagingPage = () => {
-  const { storeOwnerID, storeID } = useParams();
-  const [orders, setOrders] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-
-  const [packaging, setPackaging] = React.useState([]);
-  const [customers, setCustomers] = React.useState([
-    { name: "Bright", quantity: 1 },
-    { name: "John", quantity: 2 },
-    { name: "Quoffie", quantity: 3 },
-    { name: "Edwin", quantity: 4 },
-  ]);
-  const [selectedPackage, setSelectedPackage] = React.useState("");
-
-  const updateSelectedPackage = (event) => {
-    setSelectedPackage(event.target.value);
-  };
-
-  const getOrders = async () => {
-    setLoading(true);
-    const orders = await getAllOrdersByStore({ storeOwnerID, storeID });
-
-    const orderByPackaging = groupOrdersByName(orders.docs);
-
-    setOrders(orders.docs.map((order) => ({ id: order.id, ...order.data() })));
-    setPackaging(orderByPackaging);
-    setLoading(false);
-  };
-
-  const groupOrdersByName = (allOrders) => {
-    const ordersByName = allOrders.reduce((allOrders, currentOrder) => {
-      currentOrder.data().OrderedProducts.forEach((orderedProduct) => {
-        const orderWithSameProductNameExists = allOrders.find(
-          //here
-          (orderByName) => orderByName.name === orderedProduct.name
-        );
-        if (orderWithSameProductNameExists) {
-          allOrders.forEach((order) => {
-            //here
-            if (order.name === orderedProduct.name) {
-              order.quantity += orderedProduct.quantity;
+  const navigate = useNavigate();
+  const [user, setUser] = useState();
+  const { storeId } = useParams();
+  const [store, setStore] = useState({});
+  const [product, setProduct] = useState({});
+  const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [customerProducts, setCustomerProducts] = useState([]);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
+        const store = await getDoc(doc(storesRef, storeId));
+        if(store.exists()){
+          let data = store.data();
+          data.columnsList = JSON.parse(data.columnsList);
+          setStore(data);
+        }
+        const customersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/customers`);
+        const Customers = await getDocs(customersRef);
+        let tempCustomers = [];
+        Customers.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          tempCustomers.push(doc.data());
+        });
+        const ordersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`);
+        const querySnapshot = await getDocs(ordersRef);
+        let tempOrders = [];
+        querySnapshot.forEach((doc, i) => {
+          let d = doc.data();
+          d.order = JSON.parse(d.order);
+          tempOrders.push(d);
+        });
+        let orders = [];
+        tempOrders.forEach((o) => {
+          o.order.forEach((p) => {
+            if(p !== null){
+              // check if order already exists
+              let index = orders.findIndex((e) => e.id == p.id);
+              if(index == -1){
+                orders.push(p);
+              } else {
+                orders[index].quantity += p.quantity;
+              }
             }
           });
-        } else {
-          allOrders.push({
-            name: orderedProduct.name,
-            quantity: orderedProduct.quantity,
-          }); //here
-        }
-      });
-      return allOrders;
-    }, []);
-    return ordersByName;
+        });
+        setOrders(orders);
+        // Loop through customers and make an array of customers along with their product ids
+        let tempCustomerProducts = [];
+        tempCustomers.forEach((c) => {
+          let customer = {
+            email: c.email,
+            name: c.name,
+            products: [],
+          };
+          tempOrders.forEach((o) => {
+            if(o.email == c.email){
+              o.order.forEach((p) => {
+                if(p !== null){
+                  // check if product already exists and update quantity
+                  let index = customer.products.findIndex((e) => e.id == p.id);
+                  if(index == -1){
+                    customer.products.push({id: p.id, quantity: p.quantity});
+                  } else {
+                    customer.products[index].quantity += p.quantity;
+                  }
+                }
+              });
+            }
+          });
+          tempCustomerProducts.push(customer);
+        });
+        setCustomerProducts(tempCustomerProducts);
+      } else {
+        navigate("/");
+      }
+    });
+  }, [navigate]);
+
+  const getProductOrders = (p) => {
+    // get all customers information from customerProducts based on the id of product
+    console.log(p.id);
+    let temp = [];
+    customerProducts.forEach((c) => {
+      let index = c.products.findIndex((e) => e.id == p.id);
+      if(index != -1){
+        temp.push({
+          user: c.email,
+          name: c.name,
+          quantity: c.products[index].quantity,
+        });
+      }
+    });
+    console.log(temp);
+    setCustomers(temp);
+    setProduct(p);
+    document.getElementById("product").textContent = store.columnsList[p.id][1] + " Ordered " + p.quantity;
   };
-
-  const groupOrdersByCustomer = () => {
-    const orderByCustomers = orders.reduce((allCustomers, currentOrder) => {
-      currentOrder.OrderedProducts.forEach((orderedProduct) => {
-        if (orderedProduct.name === selectedPackage) {
-          const customerAdded = allCustomers.find(
-            (customer) => customer.name === currentOrder.customerName
-          );
-          if (!customerAdded) {
-            allCustomers.push({
-              name: currentOrder.customerName,
-              quantity: orderedProduct.quantity,
-            });
-          } else {
-            customerAdded.quantity += orderedProduct.quantity;
-          }
-        }
-      });
-      return allCustomers;
-    }, []);
-
-    setCustomers(orderByCustomers);
-    console.log(orderByCustomers);
-  };
-
-  React.useEffect(() => {
-    getOrders();
+  useEffect(async () => {
   }, []);
 
-  React.useEffect(() => {
-    console.log(orders);
-    if (selectedPackage) groupOrdersByCustomer();
-  }, [selectedPackage]);
-
-  React.useEffect(() => {
-    if (packaging.length) setSelectedPackage(packaging[0].name);
-  }, [packaging]);
-
-  if (loading) return <Loading />;
-
   return (
-    <div>
-      {packaging.map((packing) => (
-        <Grid container key={packing.name}>
-          <Grid item xs={6}>
-            <Typography>{packing.name}</Typography>
+      <Container maxWidth="lg">
+        <div className="popstore-wrapper">
+          <Grid className="pop-header-wrapper" container spacing={2}>
+            <Grid item xs={4} md={4}>
+              <Typography style={{ marginBottom: "20px" }} variant="h4">
+                Packaging List
+              </Typography>
+            </Grid>
+            <Grid item xs={4} md={4} alignSelf="center">
+              <Link to='/popstore/all'>
+                Close
+              </Link>
+            </Grid>
+            <Grid item xs={4} md={4}>
+              <div className="logout-button">
+                <LogoutButton user={user?.photoURL} />
+              </div>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Typography>{packing.quantity}</Typography>
+          <Grid className="pop-header-wrapper" container spacing={2}>
+            <Grid item xs={12} md={12}>
+              <Typography style={{ marginBottom: "1rem" }} variant="h6">
+                {store?.storeName}
+              </Typography>
+            </Grid>
+          </Grid>
+        </div>
+        <div style={{backgroundColor: "#fff", padding: '1rem'}}>
+          <Grid container spacing={2}>
+            <Grid item xs={5} md={5}>
+              <h5>Product</h5>
+            </Grid>
+            <Grid item xs={3} md={3}>
+              <h5>Quantity</h5>
+            </Grid>
+          </Grid>
+          {orders?.map((order, index) => {
+            return (
+                <Grid container spacing={2} key={index}>
+                  <Grid item xs={5} md={5}>
+                    <p>{store.columnsList[order.id][1]}</p>
+                  </Grid>
+                  <Grid item xs={3} md={3}>
+                    <p>{order.quantity}</p>
+                  </Grid>
+                </Grid>
+            )
+          })}
+        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={5} md={5}>
+            <div style={{padding: '1rem 0'}}>
+              <Select
+                  fullWidth={true}
+                  id="product"
+                  label="Select Column"
+              >
+                {orders?.map((order, i) => (
+                    <MenuItem
+                        onClick={(e => getProductOrders(order))}
+                        key={`${i}`}
+                    >
+                      {store.columnsList[order.id][1]} - {order.quantity} Ordered
+                    </MenuItem>
+                ))}
+              </Select>
+            </div>
           </Grid>
         </Grid>
-      ))}
-      <Box my={2}>
-        <Select
-          id="packaging"
-          value={selectedPackage}
-          onChange={updateSelectedPackage}
-        >
-          {packaging.map((packing) => (
-            <MenuItem
-              value={packing.name}
-              key={`${packaging.name}  ${packing.quantity}`}
-            >
-              {`${packing.name} - ${packing.quantity} ordered`}
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
-      <Typography variant="h6">Orders, {selectedPackage}</Typography>
-      {customers.map((customer) => (
-        <Grid container mt={2} key={customer.name}>
-          <Grid item xs={6}>
-            <Typography>{customer.name}</Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography>{customer.quantity}</Typography>
-          </Grid>
-        </Grid>
-      ))}
-    </div>
+        <div style={{backgroundColor: "#fff", padding: '1rem'}}>
+          {product.id !== undefined &&
+              <div>
+                <Grid container spacing={2}>
+                  <Grid item xs={5} md={5}>
+                    <h5>Orders: {store.columnsList[product.id][1]}</h5>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                  <Grid item xs={3} md={3}>
+                    <h5>Customer</h5>
+                  </Grid>
+                  <Grid item xs={3} md={3}>
+                    <h5>Quantity</h5>
+                  </Grid>
+                </Grid>
+                {customers?.map((customer, i) => (
+                    <Grid container spacing={2} key={i}>
+                      <Grid item xs={3} md={3}>
+                        <p>{customer.user}</p>
+                      </Grid>
+                      <Grid item xs={3} md={3}>
+                        <p>{customer.quantity}</p>
+                      </Grid>
+                  </Grid>
+                  ))}
+              </div>
+          }
+        </div>
+        <p>&nbsp;</p>
+      </Container>
   );
 };
 

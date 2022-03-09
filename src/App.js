@@ -29,6 +29,7 @@ function App() {
           <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
           <Route path="/popstore/customers/:storeId" element={<CustomersPage />} />
           <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
+          <Route path="/popstore/packaging/:storeId" element={<PackagingPage />} />
 
           <Route path=":storeOwnerID/:storeID" element={<StoreOwnerPages />}>
             <Route index element={<PopStore />} />
