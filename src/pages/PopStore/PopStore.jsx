@@ -15,6 +15,7 @@ const PopStore = () => {
     const [store, setStore] = useState();
     const [loading, setLoading] = useState(true);
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [user, setUser] = useState();
     const {ownerId, storeId } = useParams();
     const [order, setOrder] = useState([]);
@@ -47,6 +48,16 @@ const PopStore = () => {
             return;
         }
 
+        if(phone.trim() == ""){
+            await MySwal.fire({
+                title: 'Error',
+                text: 'Please enter your phone number',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+
         if(order.length == 0){
             await MySwal.fire({
                 title: 'Error',
@@ -60,6 +71,7 @@ const PopStore = () => {
         const Order = {
             uid: user.uid || null,
             email: email,
+            phone: phone,
             order: JSON.stringify(order),
             storeId: storeId,
             createdAt: serverTimestamp()
@@ -76,6 +88,7 @@ const PopStore = () => {
         })
         setOrder([]);
         setEmail("");
+        setPhone("");
     }
 
   if (loading) return <Loading />;
@@ -138,10 +151,10 @@ const PopStore = () => {
             </div>
             <div style={{padding: '1rem'}}>
                 <Grid container spacing={2}>
-                    <Grid item xs={2} md={2} alignSelf="center">
+                    <Grid item xs={1} md={1} alignSelf="center">
                         <label>Email:</label>
                     </Grid>
-                    <Grid item xs={7} md={7} alignSelf="center">
+                    <Grid item xs={3} md={3} alignSelf="center">
                         <TextField
                             id="outlined-basic"
                             label="Your Email"
@@ -152,7 +165,21 @@ const PopStore = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={3} md={3} alignSelf="center" textAlign="right">
+                    <Grid item xs={1} md={1} alignSelf="center">
+                        <label>Phone:</label>
+                    </Grid>
+                    <Grid item xs={3} md={3} alignSelf="center">
+                        <TextField
+                            id="outlined-basic"
+                            label="Your Phone"
+                            helperText=""
+                            type="phone"
+                            variant="outlined"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={2} md={2} alignSelf="center" textAlign="right">
                         <Button
                             style={{marginLeft: '1rem'}}
                             color="primary"

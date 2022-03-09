@@ -11,12 +11,14 @@ import { signInWithGoogle } from "../../service/firebase";
 import "./styles.css";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import LogoutButton from "../../components/Logout Button/LogoutButton";
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
   const [sheetData, setSheetData] = useState([])
   const [pastedData, setPastedData] = useState('')
+  const [user, setUser] = useState();
 
   const MySwal = withReactContent(Swal)
 
@@ -28,6 +30,7 @@ const LandingPage = () => {
   }
 
   const saveSheet = async (e) => {
+    console.log(sheetData)
     const validation = sheetData.every(item => Array.isArray(item.cells) && item.cells.length);
     if(!validation) {
       await MySwal.fire({
@@ -60,6 +63,7 @@ const LandingPage = () => {
   useEffect(async () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        setUser(user)
         if (localStorage.getItem('sheetData') !== null) {
           navigate('/popstore/create')
         } else {
@@ -88,6 +92,9 @@ const LandingPage = () => {
                 onPaste={handlePaste}
                 value={pastedData}
             />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            {user && <LogoutButton user={user?.photoURL} />}
           </Grid>
           <Grid item xs={12} md={8}>
             <small>No need upload title/description along with your data (as column titles), this is added in the next step</small>

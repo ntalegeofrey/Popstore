@@ -12,7 +12,7 @@ const LogoutButton = ({ user }) => {
       .signOut()
       .then(() => {
         localStorage.clear();
-        navigate("/");
+        window.location.assign('/');
       })
       .catch((error) => {
         console.log(error);
