@@ -1,285 +1,238 @@
 import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Grid from "@mui/material/Grid";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
-import DataTable from "../../components/Data_Table/DataTable";
-import firebase from "../../service/firebase";
-import { InputLabel, OutlinedInput } from "@mui/material";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import {
+import Link from "@mui/material/Link";
+import {useNavigate, useParams} from "react-router-dom";
+import firebase, {
   db,
+  doc,
+  updateDoc,
   collection,
-  getDocs,
-  query,
-  where,
-  serverTimestamp,
-  addDoc,
-  updateDoc
+  serverTimestamp, getDoc
 } from "../../service/firebase";
-import EditTable from "../../components/Data_Table/EditTable";
+import {
+  Grid,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell, TableContainer,
+  TableHead,
+  TableRow,
+  TextField
+} from "@mui/material";
+import LogoutButton from "../../components/Logout Button/LogoutButton";
+import styles from "../../components/Data_Table/Sheets.module.css";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import Loading from "../../components/Loading";
 
-const EditPopstore = () => {
-  const { storeOwnerID, storeID } = useParams();
+const NewPopstore = () => {
   const navigate = useNavigate();
+  const { storeId } = useParams();
+  const [user, setUser] = useState();
+  const [store, setStore] = useState();
+  const [columns, setColumns] = useState([]);
+  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price']);
+  const [col, setCol] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const [tableData, setTableData] = useState([]);
-  const [selectors, setSelectors] = useState([]);
-  const [ids, setIds] = useState([]);
-  const [userPhoto, setUserPhoto] = useState(null);
-  const [storeName, setStoreName] = useState("");
-  const [storeOwner, setStoreOwner] = useState("");
-  const [description, setDescription] = useState("");
-  const [currency, setCurrency] = useState("");
-  const [enableButton, setEnableButton] = useState(false);
-  const [removedList, setRemovedList] = useState([]);
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+  const MySwal = withReactContent(Swal)
+
+  useEffect(async () => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        setUserPhoto(user.multiFactor.user.photoURL);
+        setUser(user);
+        const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
+        const store = await getDoc(doc(storesRef, storeId));
+        if (store.exists()) {
+          let data = store.data();
+          data.columnsList = JSON.parse(data.columnsList);
+          console.log(data);
+          setStore(data);
+          setLoading(false);
+        }
+
+      } else {
+        navigate("/");
       }
+
+      localStorage.setItem('columns', JSON.stringify({
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+      }));
+      setCol({
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+      });
+
     });
   }, [navigate]);
 
-  const columns = collection(
-    db,
-    `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
-  );
-  const store = collection(db, `/StoreOwners/${storeOwnerID}/allStores`);
-  useEffect(async () => {
-    var temp = [];
-    var tempID = [];
-    const querySnapshot = await getDocs(store);
-    const querySnapshotColumns = await getDocs(columns);
+  const updateStore = async (e) => {
+    e.preventDefault();
 
-    querySnapshot.forEach((doc) => {
-      var data = doc.data();
-      setStoreName(data.storeName);
-      setStoreOwner(data.storeOwner);
-      setDescription(data.description);
-      setCurrency(data.currency);
+    if ( store.storeName.trim() == '') {
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please select a name for PopStore',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      return;
+    }
+
+    if ( store.storeOwner.trim() == '') {
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please add an email for PopStore owner',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      return;
+    }
+
+    if ( store.description.trim() == '') {
+      await MySwal.fire({
+        title: 'Error!',
+        text: 'Please add description for PopStore',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+      return;
+    }
+
+    let updatedStore = {
+      storeName: store.storeName,
+      storeOwner: store.storeOwner,
+      description: store.description,
+    }
+
+    const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
+    const storeRef = await (doc(storesRef, storeId));
+
+    await updateDoc(storeRef, updatedStore);
+
+    await MySwal.fire({
+      title: 'Success!',
+      text: 'PopStore updated successfully',
+      icon: 'success',
+      confirmButtonText: 'Ok'
     });
-    querySnapshotColumns.forEach((doc) => {
-      var data = doc.data();
-      temp.push(data.items);
-      tempID.push(doc.id);
-    });
-    setSelectors(temp);
-    setIds(tempID);
+    localStorage.removeItem('columns');
+    navigate('/popstore/all');
+  };
+
+  const cancelStore = async (e) => {
+    e.preventDefault();
+    localStorage.removeItem('columns');
+    navigate('/popstore/all');
+  };
+
+  useEffect(async () => {
+
   }, []);
 
-  var removedArray = [];
-  const handleChange = (event, ele, i) => {
-    var data = selectors;
-    var currIds = ids;
-    console.log(i);
-    if (event.target.value === "ignore") {
-      var rmv = data.splice(i, 1);
-      currIds.splice(i, 1);
-      console.log(rmv[0][0]);
-      removedArray.push({
-        cols: rmv,
-        name: rmv[0][0]
-      });
-      setRemovedList([...removedList, removedArray]);
-    } else {
-    }
-    setSelectors([...data]);
-    setIds(currIds);
-    console.log(removedArray);
-  };
-
-  const handleEditPopstore = () => {
-    removedList.map((ele) => {
-      console.log(ele[0]);
-      var columnID = collection(
-        db,
-        `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
-      );
-      var q = query(columnID, where("name", "==", ele[0].name.toLowerCase()));
-      updateDoc(q, {
-        visibility: false
-      });
-    });
-    // removedList.map((ele) => {
-    //   var columnID = collection(
-    //     db,
-    //     `/StoreOwners/${storeOwnerID}/allStores/${storeID}/Colums`
-    //   );
-    //   var q = query(columnID, where("name" "==", ))
-    //    updateDoc(columnID, {
-    //     visibility: false
-    //   });
-    // });
-  };
-  useEffect(() => {
-    if (
-      storeName.length > 3 &&
-      storeOwner.length > 3 &&
-      description.length > 3 &&
-      currency.length > 1
-    ) {
-      setEnableButton(true);
-    } else {
-      setEnableButton(false);
-    }
-  }, [storeName, storeOwner, description, currency]);
-
+  if (loading) return <Loading />;
   return (
-    <Container maxWidth="lg">
-      <Typography style={{ marginTop: "20px" }} variant="h4">
-        Edit your Data
-      </Typography>
-      <div style={{ marginTop: "20px" }}>
+      <Container maxWidth="lg">
         <Grid container spacing={2}>
-          <Grid item md={8}>
-            <Grid container>
-              <Grid item md={6}>
-                <Grid container>
-                  <Grid
-                    alignItems="center"
-                    justifyContent="center"
-                    container
-                    spacing={2}
-                    item
-                    md={6}
-                  >
-                    <Typography align="left" mt={0} variant="p">
-                      Store name
-                    </Typography>
-                  </Grid>
-                  <Grid item md={6}>
-                    <OutlinedInput
-                      value={storeName}
-                      onChange={(e) => setStoreName(e.target.value)}
-                      variant="outlined"
-                      id="store-name"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item md={6}>
-                <Grid container>
-                  <Grid
-                    alignItems="center"
-                    justifyContent="center"
-                    container
-                    spacing={2}
-                    item
-                    md={6}
-                    md={6}
-                  >
-                    Store owner
-                  </Grid>
-                  <Grid item md={6}>
-                    <OutlinedInput
-                      value={storeOwner}
-                      onChange={(e) => setStoreOwner(e.target.value)}
-                      variant="outlined"
-                      id="store-owner"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid style={{ marginTop: "20px" }} container>
-              <Grid item md={6}>
-                <Grid container>
-                  <Grid
-                    alignItems="center"
-                    justifyContent="center"
-                    container
-                    spacing={2}
-                    item
-                    md={6}
-                    md={6}
-                  >
-                    Description
-                  </Grid>
-                  <Grid item md={6}>
-                    <OutlinedInput
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      variant="outlined"
-                      id="description"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item md={6}>
-                <Grid container>
-                  <Grid
-                    alignItems="center"
-                    justifyContent="center"
-                    container
-                    spacing={2}
-                    item
-                    md={6}
-                    md={6}
-                  >
-                    Currency
-                  </Grid>
-                  <Grid item md={6}>
-                    <OutlinedInput
-                      value={currency}
-                      onChange={(e) => setCurrency(e.target.value)}
-                      variant="outlined"
-                      id="currency"
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid container justifyContent="flex-end" item md={4}>
-            {userPhoto ? <LogoutButton user={userPhoto} /> : null}
+          <Grid item xs>
+            <h1>Edit your Popstore</h1>
           </Grid>
         </Grid>
-      </div>
-      <div style={{ marginTop: "20px" }}>
-        <Grid justifyContent="center" container spacing={2}>
-          {selectors.map((ele, i) => {
-            return (
-              <Grid key={i} item>
-                <FormControl sx={{ minWidth: 120 }}>
-                  <InputLabel id={`${ele}-label`}>{ele[0]}</InputLabel>
-                  <Select
-                    labelId={`${ele[0]}-label`}
-                    id={`${ele}`}
-                    // value={ele}
-                    defaultValue=""
-                    label={ele[0]}
-                    onChange={(e) => handleChange(e, ele, i)}
-                  >
-                    <MenuItem value="select">Select</MenuItem>
-                    <MenuItem value="ignore">Ignore</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            );
-          })}
+        <form onSubmit={updateStore}>
+          <Grid container spacing={2}>
+            <Grid item xs={4} md={4}>
+              <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Store Name"
+                  helperText=""
+                  variant="outlined"
+                  value={store.storeName}
+                  onChange={(e) => setStore({...store, storeName: e.target.value})}
+              />
+            </Grid>
+            <Grid item xs={4} md={4}>
+              <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Store Owner"
+                  helperText=""
+                  type="email"
+                  variant="outlined"
+                  value={store.storeOwner}
+                  onChange={(e) => setStore({...store, storeOwner: e.target.value})}
+              />
+            </Grid>
+            <Grid item xs={4} md={4} alignContent="end">
+              <LogoutButton user={user?.photoURL} />
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={4} md={4}>
+              <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Store Description"
+                  helperText=""
+                  variant="outlined"
+                  value={store.description}
+                  onChange={(e) => setStore({...store, description: e.target.value})}
+              />
+            </Grid>
+          </Grid>
+        </form>
+        <div className="create-table-wrapper">
+          <TableContainer>
+            <Table style={{ tableLayout: 'fixed'}}>
+              <TableHead>
+                <TableRow>
+                  {dbColumns?.map((column, index) => (
+                      <TableCell key={index}>
+                        {column}
+                      </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { store.columnsList?.map((row, rowIndex) => {
+                  return (
+                      <TableRow key={`row-${rowIndex}`}>
+                        { row.map((cell, cellIndex) => (
+                            <TableCell
+                                key={`cell-${rowIndex}-${cellIndex}`}
+                                className={styles['cell']}>
+                              {cell}
+                            </TableCell>
+                        ))}
+                      </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
+          <Grid item xs={6} md={6} alignContent='end'>
+            <Link
+                href="#"
+                onClick={cancelStore}>
+              Cancel
+            </Link>
+            &nbsp;
+            <Button
+                style={{marginLeft: '1rem'}}
+                color="primary"
+                variant="contained"
+                onClick={updateStore}>
+              Update PopStore
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
         </Grid>
-        {selectors.length > 0 ? <EditTable data={selectors} /> : null}
-      </div>
-      <div style={{ marginTop: "20px", marginBottom: "20px", float: "right" }}>
-        <Button onClick={() => navigate("/my-popstore")} variant="text">
-          Cancel
-        </Button>
-        <Button
-          disabled={!enableButton}
-          onClick={handleEditPopstore}
-          variant="contained"
-        >
-          Edit Popstore
-        </Button>
-      </div>
-    </Container>
+      </Container>
   );
 };
 
-export default EditPopstore;
+export default NewPopstore;
