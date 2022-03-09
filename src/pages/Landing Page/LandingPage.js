@@ -97,7 +97,7 @@ const LandingPage = () => {
             {user && <LogoutButton user={user?.photoURL} />}
           </Grid>
           <Grid item xs={12} md={8}>
-            <small>No need upload title/description along with your data (as column titles), this is added in the next step</small>
+            <small>No need to upload title/description along with your data (as column titles), this is added in the next step</small>
           </Grid>
         </Grid>
         <Grid container spacing={2}>
