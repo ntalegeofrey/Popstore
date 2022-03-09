@@ -20,6 +20,107 @@ const PopStore = () => {
     const {ownerId, storeId } = useParams();
     const [order, setOrder] = useState([]);
     const MySwal = withReactContent(Swal)
+    const [usercurrency,setUserCurrency] = React.useState();
+    const [ip,setIP] = React.useState();
+    const [usercountry,setUserCountry] = React.useState();
+    const [userdata,setUserData] = React.useState();
+  const eurocurrencies={
+    'Albania': 'ALL',
+    'Andorra': 'EUR',
+    'Armenia': 'AMD',
+    'Austria': 'EUR',
+    'Azerbaijan': 'AZN',
+    'Belarus': 'BYN',
+    'Belgium': 'EUR',
+    'Bosnia and Herzegovina': 'BAM',
+    'Bulgaria': 'BGN',
+    'Croatia': 'HRK',
+    'Cyprus': 'EUR',
+    'Czechia': 'CZK',
+    'Denmark': 'DKK',
+    'Estonia': 'EUR',
+    'Finland': 'EUR',
+    'France': 'EUR',
+    'Georgia': 'GEL',
+    'Germany': 'EUR',
+    'Greece': 'EUR',
+    'Hungary': 'HUF',
+    'Iceland': 'ISK',
+    'Ireland': 'EUR',
+    'Italy': 'EUR',
+    'Latvia': 'EUR',
+    'Liechtenstein': 'CHF',
+    'Lithuania': 'EUR',
+    'Luxembourg': 'EUR',
+    'Malta': 'EUR',
+    'Moldova': 'MDL',
+    'Monaco': 'EUR',
+    'Montenegro': 'EUR',
+    'Netherlands': 'EUR',
+    'North Macedonia': 'MKD',
+    'Norway': 'NOK',
+    'Poland': 'PLN',
+    'Portugal': 'EUR',
+    'Romania': 'RON',
+    'Russia': 'RUB',
+    'San Marino': 'EUR',
+    'Serbia': 'RSD',
+    'Slovakia': 'EUR',
+    'Slovenia': 'EUR',
+    'Spain': 'EUR',
+    'Sweden': 'SEK',
+    'Switzerland': 'CHF',
+    'Turkey': 'TRY',
+    'Ukraine': 'UAH',
+    'United Kingdom': 'GBP',
+    'Vatican City': 'EUR',
+    'Pakistan': 'PKR',
+  }
+  const getData = async () => {
+    const res = await axios.get('https://geolocation-db.com/json/').then(res => {
+      setIP(res.data.IPv4)
+      setUserData(res.data)
+      setUserCountry(res.data.country_name)
+      console.log(res.data.country_name)
+      console.log("usercountry")
+      convertCurrency(res.data.country_name)
+    })
+    
+  }
+  
+  const convertCurrency =async(country)=>{
+    console.log("user country here")
+    console.log(country)
+    Object.keys(eurocurrencies).map(async(key)=>{
+      console.log(country)
+      if(key===country){
+        console.log('key katched')
+        setUserCurrency(eurocurrencies[key])
+        console.log(eurocurrencies[key]);
+      }
+    });
+    console.log(process.env.REACT_APP_CURRENCY_API_KEY)
+    console.log(usercurrency)
+    
+  }
+  const runconvertCurrency = async()=>{
+    if(usercurrency){
+      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=10&base_currency=USD&currencies='+usercurrency).then(res => {
+        console.log("result from currency")
+        console.log(res)
+      });
+    }
+  }
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    getData()
+  }, [])
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    console.log("usercurrency")
+    console.log(usercurrency)
+    runconvertCurrency()
+  }, [usercurrency])
     useEffect(async () => {
         const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
         const store = await getDoc(doc(storesRef, storeId));
