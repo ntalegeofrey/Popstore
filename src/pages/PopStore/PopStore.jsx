@@ -103,8 +103,6 @@ const PopStore = () => {
   const runconvertCurrency = async()=>{
     if(usercurrency){
       const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=1&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
-        console.log("result from currency")
-        console.log(res.data.data[usercurrency].value)
         setConvertedPrice(res.data.data[usercurrency].value)
       });
     }
@@ -115,14 +113,10 @@ const PopStore = () => {
   }, [])
   React.useEffect( () => {
     //passing getData method to the lifecycle method
-    console.log("storecurrency")
-    console.log(storecurrency)
     runconvertCurrency()
   }, [storecurrency])
   React.useEffect( () => {
     //passing getData method to the lifecycle method
-    console.log("usercurrency")
-    console.log(usercurrency)
     runconvertCurrency()
   }, [usercurrency])
     useEffect(async () => {
@@ -131,7 +125,6 @@ const PopStore = () => {
         if(store.exists()){
             let data = store.data();
             data.columnsList = JSON.parse(data.columnsList);
-            console.log(data)
             setStore(data);
             setStoreCurrency(data.currency)
             setLoading(false);

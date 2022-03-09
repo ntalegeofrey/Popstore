@@ -256,8 +256,8 @@ const NewPopstore = () => {
     localStorage.removeItem('columns');
     navigate('/');
   };
-  const updateCurrencyValue = (value) => {
-    setStoreCurrency(value);
+  const updateCurrencyValue = (e) => {
+    setStoreCurrency(e.target.value);
   }
   const updateSelectedColumn = async (e, column, index, c) => {
     let cols = localStorage.getItem('columns');
@@ -377,13 +377,16 @@ const NewPopstore = () => {
               <Select
                   fullWidth={true}
                   label="Select Column"
+                  value={storeCurrency}
+                  onChange={updateCurrencyValue}
+
               >
                 {Object.keys(currencies).map((currency, i) => (
                     <MenuItem
                         key={`${i}`}
-                        onClick={(e => updateCurrencyValue(currencies[currency]))}
+                        value={currencies[currency]}
                     >
-                      {currencies[currency]}
+                      {currency} - {currencies[currency]}
                     </MenuItem>
                 ))}
               </Select>
