@@ -85,7 +85,7 @@ const PopStore = () => {
         }
 
         const Order = {
-            uid: user.uid || null,
+            uid: user ? user.uid : null,
             email: email.toLowerCase(),
             phone: phone,
             name: "",
