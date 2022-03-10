@@ -10,7 +10,7 @@ import { db, collection, getDocs, where, query } from "../../service/firebase";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import {MenuItem, Select, TextField} from "@mui/material";
 
-const PackagingPage = () => {
+const PackingPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const { storeId } = useParams();
@@ -120,7 +120,7 @@ const PackagingPage = () => {
           <Grid className="pop-header-wrapper" container spacing={2}>
             <Grid item xs={4} md={4}>
               <Typography style={{ marginBottom: "20px" }} variant="h4">
-                Packaging List
+                Packing List
               </Typography>
             </Grid>
             <Grid item xs={4} md={4} alignSelf="center">
@@ -218,4 +218,4 @@ const PackagingPage = () => {
   );
 };
 
-export default PackagingPage;
+export default PackingPage;

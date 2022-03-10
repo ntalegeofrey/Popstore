@@ -7,7 +7,7 @@ import MyPopstore from "./pages/My Popstore/MyPopstore";
 import NewPopstore from "./pages/New_Popstore/NewPopstore";
 import OrdersPage from "./pages/OrdersPage";
 import CustomersPage from "./pages/CustomersPage";
-import PackagingPage from "./pages/PackagingPage";
+import PackagingPage from "./pages/PackingPage";
 import StoreOwnerPages from "./pages/StoreOwnerPages";
 import PopStore from "./pages/PopStore";
 import NotFound from "./pages/NotFound";

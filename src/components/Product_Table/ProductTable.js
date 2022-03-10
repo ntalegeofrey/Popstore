@@ -18,7 +18,7 @@ const ProductTable = ({ tableData }) => {
         edit: "Edit",
         orders: "Orders",
         customers: "Customers",
-        packaging: "Packaging"
+        packaging: "Packing"
       });
     });
     setProductList(rows);
