@@ -10,6 +10,7 @@ import {
   addDoc,
   query,
   where,
+  orderBy,
   updateDoc,
   serverTimestamp
 } from "firebase/firestore";
@@ -28,7 +29,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, updateDoc, serverTimestamp };
+export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, orderBy, updateDoc, serverTimestamp };
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 provider.addScope("email");
