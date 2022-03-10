@@ -42,12 +42,13 @@ const PackingPage = () => {
         let tempOrders = [];
         querySnapshot.forEach((doc, i) => {
           let d = doc.data();
-          d.order = JSON.parse(d.order);
+          console.log(d.order);
+          // d.order = JSON.parse(d.order);
           tempOrders.push(d);
         });
         let orders = [];
         tempOrders.forEach((o) => {
-          o.order.forEach((p) => {
+          JSON.parse(o.order).forEach((p) => {
             if(p !== null){
               // check if order already exists
               let index = orders.findIndex((e) => e.id == p.id);
@@ -70,7 +71,7 @@ const PackingPage = () => {
           };
           tempOrders.forEach((o) => {
             if(o.email == c.email){
-              o.order.forEach((p) => {
+              JSON.parse(o.order).forEach((p) => {
                 if(p !== null){
                   // check if product already exists and update quantity
                   let index = customer.products.findIndex((e) => e.id == p.id);
