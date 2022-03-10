@@ -94,7 +94,6 @@ const PackingPage = () => {
 
   const getProductOrders = (p) => {
     // get all customers information from customerProducts based on the id of product
-    console.log(p.id);
     let temp = [];
     customerProducts.forEach((c) => {
       let index = c.products.findIndex((e) => e.id == p.id);
@@ -106,7 +105,6 @@ const PackingPage = () => {
         });
       }
     });
-    console.log(temp);
     setCustomers(temp);
     setProduct(p);
     document.getElementById("product").textContent = store.columnsList[p.id][1] + " Ordered " + p.quantity;
