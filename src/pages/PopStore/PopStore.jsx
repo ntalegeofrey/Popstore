@@ -12,6 +12,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import isEmail from 'validator/lib/isEmail';
 import isMobilePhone from 'validator/lib/isMobilePhone';
+import sendMail from "../../service/email";
 
 const PopStore = () => {
     const [store, setStore] = useState();
@@ -105,6 +106,31 @@ const PopStore = () => {
             icon: 'success',
             confirmButtonText: 'Ok'
         })
+
+        let storeLink = process.env.REACT_APP_STORE_LINK;
+
+        let orderConfirmationEmail = `
+            <!doctype html>
+            <html lang="en">
+            <head>
+            <style>
+               body{
+                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
+               }
+            </style>
+            <title>PopStore Order</title>
+            </head>
+            <body>
+            <h1>Order Confirmation</h1>
+            <p>Thank you for your order. Your order from <b>${store.storeName}</b> has been placed successfully. You can view your order by visiting the following link:</p>
+            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>PopStore Team</p>
+            </body>
+            </html>
+            `;
+        sendMail(email, "PopStore Order Confirmation", orderConfirmationEmail);
         setOrder([]);
         setEmail("");
         setPhone("");
