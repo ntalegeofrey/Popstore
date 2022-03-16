@@ -22,7 +22,6 @@ const OrderPage = () => {
                 setUser(user);
             }
         });
-        console.log(ownerId, storeId, orderId);
         const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
         const store = await getDoc(doc(storesRef, storeId));
         if (store.exists()) {
