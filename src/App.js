@@ -6,6 +6,8 @@ import LandingPage from "./pages/Landing Page/LandingPage";
 import MyPopstore from "./pages/My Popstore/MyPopstore";
 import NewPopstore from "./pages/New_Popstore/NewPopstore";
 import OrdersPage from "./pages/OrdersPage";
+import OrderPage from "./pages/OrderPage/OrderPage";
+import QRPage from "./pages/QRPage/QRPage";
 import CustomersPage from "./pages/CustomersPage";
 import PackagingPage from "./pages/PackingPage";
 import StoreOwnerPages from "./pages/StoreOwnerPages";
@@ -26,6 +28,8 @@ function App() {
           <Route exact path="/popstore/all" element={<MyPopstore />} />
           <Route path="/popstore/create" element={<NewPopstore />} />
           <Route path="/store/:ownerId/:storeId" element={<PopStore />} />
+          <Route path="/order/:ownerId/:storeId/:orderId" element={<OrderPage />} />
+          <Route path="/QR/:qrCode" element={<QRPage />} />
           <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
           <Route path="/popstore/customers/:storeId" element={<CustomersPage />} />
           <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />

@@ -39,6 +39,58 @@ const NewPopstore = () => {
   const [col, setCol] = useState({});
 
   const MySwal = withReactContent(Swal)
+  const eurocurrencies={
+    'Albania': 'ALL',
+    'Andorra': 'EUR',
+    'Armenia': 'AMD',
+    'Austria': 'EUR',
+    'Azerbaijan': 'AZN',
+    'Belarus': 'BYN',
+    'Belgium': 'EUR',
+    'Bosnia and Herzegovina': 'BAM',
+    'Bulgaria': 'BGN',
+    'Croatia': 'HRK',
+    'Cyprus': 'EUR',
+    'Czechia': 'CZK',
+    'Denmark': 'DKK',
+    'Estonia': 'EUR',
+    'Finland': 'EUR',
+    'France': 'EUR',
+    'Georgia': 'GEL',
+    'Germany': 'EUR',
+    'Greece': 'EUR',
+    'Hungary': 'HUF',
+    'Iceland': 'ISK',
+    'Ireland': 'EUR',
+    'Italy': 'EUR',
+    'Latvia': 'EUR',
+    'Liechtenstein': 'CHF',
+    'Lithuania': 'EUR',
+    'Luxembourg': 'EUR',
+    'Malta': 'EUR',
+    'Moldova': 'MDL',
+    'Monaco': 'EUR',
+    'Montenegro': 'EUR',
+    'Netherlands': 'EUR',
+    'North Macedonia': 'MKD',
+    'Norway': 'NOK',
+    'Poland': 'PLN',
+    'Portugal': 'EUR',
+    'Romania': 'RON',
+    'Russia': 'RUB',
+    'San Marino': 'EUR',
+    'Serbia': 'RSD',
+    'Slovakia': 'EUR',
+    'Slovenia': 'EUR',
+    'Spain': 'EUR',
+    'Sweden': 'SEK',
+    'Switzerland': 'CHF',
+    'Turkey': 'TRY',
+    'Ukraine': 'UAH',
+    'United Kingdom': 'GBP',
+    'Vatican City': 'EUR',
+  }
+  const [currencies, setCurrencies] = useState(eurocurrencies);
 
   useEffect(async () => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -204,7 +256,9 @@ const NewPopstore = () => {
     localStorage.removeItem('columns');
     navigate('/');
   };
-
+  const updateCurrencyValue = (e) => {
+    setStoreCurrency(e.target.value);
+  }
   const updateSelectedColumn = async (e, column, index, c) => {
     let cols = localStorage.getItem('columns');
     cols = JSON.parse(cols);
@@ -319,6 +373,24 @@ const NewPopstore = () => {
                   onChange={(e) => setStoreDescription(e.target.value)}
               />
             </Grid>
+            <Grid item xs={4} md={4}>
+              <Select
+                  fullWidth={true}
+                  label="Select Column"
+                  value={storeCurrency}
+                  onChange={updateCurrencyValue}
+
+              >
+                {Object.keys(currencies).map((currency, i) => (
+                    <MenuItem
+                        key={`${i}`}
+                        value={currencies[currency]}
+                    >
+                      {currency} - {currencies[currency]}
+                    </MenuItem>
+                ))}
+              </Select>
+              </Grid>
             <Grid item xs={12} md={12}>
               <p><small>Reference Id and Description are optional. Reference Id is generated automatically if not selected</small></p>
             </Grid>

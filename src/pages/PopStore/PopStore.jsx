@@ -10,8 +10,10 @@ import firebase, {collection, db, getDoc, doc, serverTimestamp, setDoc} from "..
 import { useNavigate, useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import axios from 'axios';
 import isEmail from 'validator/lib/isEmail';
 import isMobilePhone from 'validator/lib/isMobilePhone';
+import sendMail from "../../service/email";
 
 const PopStore = () => {
     const [store, setStore] = useState();
@@ -22,6 +24,104 @@ const PopStore = () => {
     const {ownerId, storeId } = useParams();
     const [order, setOrder] = useState([]);
     const MySwal = withReactContent(Swal)
+    const [usercurrency,setUserCurrency] = React.useState();
+    const [ip,setIP] = React.useState();
+    const [usercountry,setUserCountry] = React.useState();
+    const [storecurrency,setStoreCurrency] = React.useState();
+    const [userdata,setUserData] = React.useState();
+    const [convertedprice,setConvertedPrice] = React.useState();
+  const eurocurrencies={
+    'Albania': 'ALL',
+    'Andorra': 'EUR',
+    'Armenia': 'AMD',
+    'Austria': 'EUR',
+    'Azerbaijan': 'AZN',
+    'Belarus': 'BYN',
+    'Belgium': 'EUR',
+    'Bosnia and Herzegovina': 'BAM',
+    'Bulgaria': 'BGN',
+    'Croatia': 'HRK',
+    'Cyprus': 'EUR',
+    'Czechia': 'CZK',
+    'Denmark': 'DKK',
+    'Estonia': 'EUR',
+    'Finland': 'EUR',
+    'France': 'EUR',
+    'Georgia': 'GEL',
+    'Germany': 'EUR',
+    'Greece': 'EUR',
+    'Hungary': 'HUF',
+    'Iceland': 'ISK',
+    'Ireland': 'EUR',
+    'Italy': 'EUR',
+    'Latvia': 'EUR',
+    'Liechtenstein': 'CHF',
+    'Lithuania': 'EUR',
+    'Luxembourg': 'EUR',
+    'Malta': 'EUR',
+    'Moldova': 'MDL',
+    'Monaco': 'EUR',
+    'Montenegro': 'EUR',
+    'Netherlands': 'EUR',
+    'North Macedonia': 'MKD',
+    'Norway': 'NOK',
+    'Poland': 'PLN',
+    'Portugal': 'EUR',
+    'Romania': 'RON',
+    'Russia': 'RUB',
+    'San Marino': 'EUR',
+    'Serbia': 'RSD',
+    'Slovakia': 'EUR',
+    'Slovenia': 'EUR',
+    'Spain': 'EUR',
+    'Sweden': 'SEK',
+    'Switzerland': 'CHF',
+    'Turkey': 'TRY',
+    'Ukraine': 'UAH',
+    'United Kingdom': 'GBP',
+    'Vatican City': 'EUR',
+    'Pakistan': 'PKR',
+  }
+  const getData = async () => {
+    const res = await axios.get('https://geolocation-db.com/json/').then(res => {
+      setIP(res.data.IPv4)
+      setUserData(res.data)
+      setUserCountry(res.data.country_name)
+      console.log(res.data.country_name)
+      console.log("usercountry")
+      convertCurrency(res.data.country_name)
+    })
+
+  }
+
+  const convertCurrency =async(country)=>{
+    Object.keys(eurocurrencies).map(async(key)=>{
+      console.log(country)
+      if(key===country){
+        setUserCurrency(eurocurrencies[key])
+      }
+    });
+
+  }
+  const runconvertCurrency = async()=>{
+    if(usercurrency){
+      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=1&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
+        setConvertedPrice(res.data.data[usercurrency].value)
+      });
+    }
+  }
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    getData()
+  }, [])
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    runconvertCurrency()
+  }, [storecurrency])
+  React.useEffect( () => {
+    //passing getData method to the lifecycle method
+    runconvertCurrency()
+  }, [usercurrency])
     useEffect(async () => {
         const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
         const store = await getDoc(doc(storesRef, storeId));
@@ -29,6 +129,7 @@ const PopStore = () => {
             let data = store.data();
             data.columnsList = JSON.parse(data.columnsList);
             setStore(data);
+            setStoreCurrency(data.currency)
             setLoading(false);
         }
         firebase.auth().onAuthStateChanged((user) => {
@@ -105,6 +206,31 @@ const PopStore = () => {
             icon: 'success',
             confirmButtonText: 'Ok'
         })
+
+        let storeLink = process.env.REACT_APP_STORE_LINK;
+
+        let orderConfirmationEmail = `
+            <!doctype html>
+            <html lang="en">
+            <head>
+            <style>
+               body{
+                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
+               }
+            </style>
+            <title>PopStore Order</title>
+            </head>
+            <body>
+            <h1>Order Confirmation</h1>
+            <p>Thank you for your order. Your order from <b>${store.storeName}</b> has been placed successfully. You can view your order by visiting the following link:</p>
+            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>PopStore Team</p>
+            </body>
+            </html>
+            `;
+        sendMail(email, "PopStore Order Confirmation", orderConfirmationEmail);
         setOrder([]);
         setEmail("");
         setPhone("");
@@ -143,7 +269,7 @@ const PopStore = () => {
                                 <p>{column[1]}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <p>{column[2]}</p>
+                                <p>{parseInt(column[2])*convertedprice} {usercurrency}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
                                 <TextField
