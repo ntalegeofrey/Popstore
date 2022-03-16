@@ -11,6 +11,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import axios from 'axios';
+import isEmail from 'validator/lib/isEmail';
+import isMobilePhone from 'validator/lib/isMobilePhone';
+import sendMail from "../../service/email";
 
 const PopStore = () => {
     const [store, setStore] = useState();
@@ -88,9 +91,9 @@ const PopStore = () => {
       console.log("usercountry")
       convertCurrency(res.data.country_name)
     })
-    
+
   }
-  
+
   const convertCurrency =async(country)=>{
     Object.keys(eurocurrencies).map(async(key)=>{
       console.log(country)
@@ -98,7 +101,7 @@ const PopStore = () => {
         setUserCurrency(eurocurrencies[key])
       }
     });
-    
+
   }
   const runconvertCurrency = async()=>{
     if(usercurrency){
@@ -138,7 +141,7 @@ const PopStore = () => {
 
     const saveOrder = async () => {
 
-        if(email.trim() == ""){
+        if(!isEmail(email) || email.trim() == ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your email',
@@ -148,7 +151,7 @@ const PopStore = () => {
             return;
         }
 
-        if(phone.trim() == ""){
+        if(!isMobilePhone(phone) || phone.trim() == ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your phone number',
@@ -185,7 +188,7 @@ const PopStore = () => {
         }
 
         const Order = {
-            uid: user.uid || null,
+            uid: user ? user.uid : null,
             email: email.toLowerCase(),
             phone: phone,
             name: "",
@@ -203,6 +206,31 @@ const PopStore = () => {
             icon: 'success',
             confirmButtonText: 'Ok'
         })
+
+        let storeLink = process.env.REACT_APP_STORE_LINK;
+
+        let orderConfirmationEmail = `
+            <!doctype html>
+            <html lang="en">
+            <head>
+            <style>
+               body{
+                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
+               }
+            </style>
+            <title>PopStore Order</title>
+            </head>
+            <body>
+            <h1>Order Confirmation</h1>
+            <p>Thank you for your order. Your order from <b>${store.storeName}</b> has been placed successfully. You can view your order by visiting the following link:</p>
+            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>PopStore Team</p>
+            </body>
+            </html>
+            `;
+        sendMail(email, "PopStore Order Confirmation", orderConfirmationEmail);
         setOrder([]);
         setEmail("");
         setPhone("");
@@ -234,9 +262,9 @@ const PopStore = () => {
                         <h4>Total</h4>
                     </Grid>
                 </Grid>
-                <Grid container spacing={2}>
+                <div>
                     {store.columnsList?.map((column, index) => {
-                        return <>
+                        return <Grid container spacing={2} key={index} style={{marginBottom: "1rem"}}>
                             <Grid item xs={6} md={6}>
                                 <p>{column[1]}</p>
                             </Grid>
@@ -263,9 +291,9 @@ const PopStore = () => {
                             <Grid item xs={2} md={2}>
                                 <p>{parseFloat(column[2]) * parseFloat(order[index]?.quantity ? order[index]?.quantity : 0)}</p>
                             </Grid>
-                        </>
+                        </Grid>
                     })}
-                </Grid>
+                </div>
             </div>
             { !store.locked && <div style={{padding: '1rem'}}>
                 <Grid container spacing={2}>

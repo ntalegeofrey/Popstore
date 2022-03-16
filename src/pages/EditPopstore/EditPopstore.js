@@ -25,6 +25,7 @@ import styles from "../../components/Data_Table/Sheets.module.css";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Loading from "../../components/Loading";
+import isEmail from 'validator/lib/isEmail';
 
 const EditPopstore = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const EditPopstore = () => {
       return;
     }
 
-    if ( store.storeOwner.trim() == '') {
+    if ( !isEmail(store.storeOwner) || store.storeOwner.trim() == '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add an email for PopStore owner',
