@@ -249,29 +249,29 @@ const PopStore = () => {
             </Grid>
             <div style={{backgroundColor: "#fff", padding: '1rem'}}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6} md={6}>
+                    <Grid item xs={3} md={6}>
                         <h4>Items</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Price</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Quantity</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Total</h4>
                     </Grid>
                 </Grid>
                 <div>
                     {store.columnsList?.map((column, index) => {
                         return <Grid container spacing={2} key={index} style={{marginBottom: "1rem"}}>
-                            <Grid item xs={6} md={6}>
+                            <Grid item xs={3} md={6}>
                                 <p>{column[1]}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <p>{parseInt(column[2])*convertedprice} {usercurrency}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <TextField
                                     id="outlined-basic"
                                     label="Quantity"
@@ -288,19 +288,19 @@ const PopStore = () => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <p>{parseFloat(column[2]) * parseFloat(order[index]?.quantity ? order[index]?.quantity : 0)}</p>
                             </Grid>
                         </Grid>
                     })}
                     <Grid container spacing={2}>
-                        <Grid item xs={8} md={8} textAlign="right">
+                        <Grid item xs={6} md={8} textAlign="right">
                             <p>&nbsp;</p>
                         </Grid>
-                        <Grid item xs={2} md={2}>
+                        <Grid item xs={3} md={2}>
                             <h4>Grand Total</h4>
                         </Grid>
-                        <Grid item xs={2} md={2}>
+                        <Grid item xs={3} md={2}>
                             <h4>
                                 {(order?.reduce((prev, next) => {
                                     if(prev !== null) {
@@ -314,10 +314,10 @@ const PopStore = () => {
             </div>
             { !store.locked && <div style={{padding: '1rem'}}>
                 <Grid container spacing={2}>
-                    <Grid item xs={1} md={1} alignSelf="center">
+                    <Grid item xs={4} md={1} alignSelf="center">
                         <label>Email:</label>
                     </Grid>
-                    <Grid item xs={3} md={3} alignSelf="center">
+                    <Grid item xs={8} md={3} alignSelf="center">
                         <TextField
                             id="outlined-basic"
                             label="Your Email"
@@ -328,10 +328,10 @@ const PopStore = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={1} md={1} alignSelf="center">
+                    <Grid item xs={4} md={1} alignSelf="center">
                         <label>Phone:</label>
                     </Grid>
-                    <Grid item xs={3} md={3} alignSelf="center">
+                    <Grid item xs={8} md={3} alignSelf="center">
                         <TextField
                             id="outlined-basic"
                             label="Your Phone"
@@ -342,7 +342,7 @@ const PopStore = () => {
                             onChange={(e) => setPhone(e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={4} md={4} alignSelf="center" textAlign="right">
+                    <Grid item xs={12} md={4} alignSelf="center" textAlign="right">
                         <Button
                             style={{marginLeft: '1rem'}}
                             color="primary"
