@@ -92,18 +92,6 @@ const OrdersPage = () => {
             <div style={{backgroundColor: "#fff", padding: '1rem'}}>
                 <Grid container spacing={2}>
                     <Grid item xs={5} md={5}>
-                        <h4>Total</h4>
-                    </Grid>
-                    <Grid item xs={2} md={2}>
-                        <h4>
-                            {(orders.reduce((prev, next) => {
-                                return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
-                            }, 0)).toFixed(2)} SEK
-                        </h4>
-                    </Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                    <Grid item xs={5} md={5}>
                         <h5>Product</h5>
                     </Grid>
                     <Grid item xs={2} md={2}>
@@ -134,6 +122,21 @@ const OrdersPage = () => {
                         </Grid>
                     )
                 })}
+                <Grid container spacing={2}>
+                    <Grid item xs={7} md={7} textAlign="right">
+                        <p>&nbsp;</p>
+                    </Grid>
+                    <Grid item xs={3} md={3}>
+                        <h4>Grand Total</h4>
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                        <h4>
+                            {(orders?.reduce((prev, next) => {
+                                return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
+                            }, 0)).toFixed(2)} SEK
+                        </h4>
+                    </Grid>
+                </Grid>
             </div>
         </Container>
     );
