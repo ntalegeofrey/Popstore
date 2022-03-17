@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import Grid from "@mui/material/Grid";
-import ProductTable from "../../components/Product_Table/ProductTable";
-import Button from "@mui/material/Button";
 import firebase, {doc, getDoc} from "../../service/firebase";
-import { db, collection, getDocs, where, query } from "../../service/firebase";
+import { db, collection, getDocs } from "../../service/firebase";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import {MenuItem, Select, TextField} from "@mui/material";
 
 const OrdersPage = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState();
     const { storeId } = useParams();
     const [store, setStore] = useState({});
-    const [customer, setCustomer] = useState({});
-    const [customers, setCustomers] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [tableData, setTableData] = useState([]);
     useEffect(() => {
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {

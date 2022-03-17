@@ -21,8 +21,8 @@ import {
   TableRow,
   TextField
 } from "@mui/material";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
-import styles from "../../components/Data_Table/Sheets.module.css";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
+import styles from "../../components/DataTable/Sheets.module.css";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 

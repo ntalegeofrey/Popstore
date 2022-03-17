@@ -2,20 +2,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
-import LandingPage from "./pages/Landing Page/LandingPage";
-import MyPopstore from "./pages/My Popstore/MyPopstore";
-import NewPopstore from "./pages/New_Popstore/NewPopstore";
+import LandingPage from "./pages/LandingPage/LandingPage";
+import MyPopstore from "./pages/MyPopstore/MyPopstore";
+import NewPopstore from "./pages/NewPopstore/NewPopstore";
 import OrdersPage from "./pages/OrdersPage";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import QRPage from "./pages/QRPage/QRPage";
 import CustomersPage from "./pages/CustomersPage";
 import PackagingPage from "./pages/PackingPage";
-import StoreOwnerPages from "./pages/StoreOwnerPages";
 import PopStore from "./pages/PopStore";
 import NotFound from "./pages/NotFound";
 
 import theme from "./config/theme";
-import MapYourData from "./pages/Map_Your_Data/MapYourData";
 import EditPopstore from "./pages/EditPopstore/EditPopstore";
 
 function App() {
@@ -34,13 +32,6 @@ function App() {
           <Route path="/popstore/customers/:storeId" element={<CustomersPage />} />
           <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
           <Route path="/popstore/packaging/:storeId" element={<PackagingPage />} />
-
-          <Route path=":storeOwnerID/:storeID" element={<StoreOwnerPages />}>
-            <Route index element={<PopStore />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="customers" element={<CustomersPage />} />
-            <Route path="packagings" element={<PackagingPage />} />
-          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

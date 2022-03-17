@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import "./styles.css";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import Grid from "@mui/material/Grid";
-import ProductTable from "../../components/Product_Table/ProductTable";
+import ProductTable from "../../components/ProductTable/ProductTable";
 import Button from "@mui/material/Button";
 import firebase from "../../service/firebase";
 import { db, collection, getDocs, query, orderBy } from "../../service/firebase";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const MyPopstore = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
   useEffect(() => {

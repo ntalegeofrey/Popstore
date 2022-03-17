@@ -5,13 +5,13 @@ import {
 import Container from "@mui/material/Container";
 import {useNavigate} from "react-router-dom";
 import firebase from "../../service/firebase";
-import DataTable from "../../components/Data_Table/DataTable";
+import DataTable from "../../components/DataTable/DataTable";
 import textToCellsParser from "../../functions/textToCellsParser";
 import { signInWithGoogle } from "../../service/firebase";
 import "./styles.css";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
 
 const LandingPage = () => {
   const navigate = useNavigate();

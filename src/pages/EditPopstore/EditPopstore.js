@@ -8,7 +8,7 @@ import firebase, {
   doc,
   updateDoc,
   collection,
-  serverTimestamp, getDoc
+  getDoc
 } from "../../service/firebase";
 import {
   Grid,
@@ -20,8 +20,8 @@ import {
   TableRow,
   TextField
 } from "@mui/material";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
-import styles from "../../components/Data_Table/Sheets.module.css";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
+import styles from "../../components/DataTable/Sheets.module.css";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Loading from "../../components/Loading";
@@ -32,7 +32,6 @@ const EditPopstore = () => {
   const { storeId } = useParams();
   const [user, setUser] = useState();
   const [store, setStore] = useState();
-  const [columns, setColumns] = useState([]);
   const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price', 'Description']);
   const [col, setCol] = useState({});
   const [loading, setLoading] = useState(true);

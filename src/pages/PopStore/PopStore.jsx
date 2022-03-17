@@ -7,7 +7,7 @@ import {
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import firebase, {collection, db, getDoc, doc, serverTimestamp, setDoc} from "../../service/firebase";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import axios from 'axios';

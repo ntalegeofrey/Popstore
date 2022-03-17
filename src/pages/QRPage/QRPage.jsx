@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import LogoutButton from "../../components/Logout Button/LogoutButton";
 import Grid from "@mui/material/Grid";
-import ProductTable from "../../components/Product_Table/ProductTable";
-import Button from "@mui/material/Button";
-import firebase, {doc, getDoc} from "../../service/firebase";
-import { db, collection, getDocs, where, query } from "../../service/firebase";
-import { useNavigate, Link, useParams } from "react-router-dom";
-import {MenuItem, Select, TextField} from "@mui/material";
+import {doc, getDoc} from "../../service/firebase";
+import { db, collection } from "../../service/firebase";
+import { useNavigate, useParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import withReactContent from "sweetalert2-react-content";
