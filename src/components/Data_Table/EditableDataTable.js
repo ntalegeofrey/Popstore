@@ -7,7 +7,6 @@ const EditableDataTable = ({ sheet }) => {
     const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
     useEffect(async () => {
         setColumns(sheet[0].cells);
-        console.log(columns);
     }, []);
   return (
       <>

@@ -42,7 +42,6 @@ const PackingPage = () => {
         let tempOrders = [];
         querySnapshot.forEach((doc, i) => {
           let d = doc.data();
-          console.log(d.order);
           // d.order = JSON.parse(d.order);
           tempOrders.push(d);
         });

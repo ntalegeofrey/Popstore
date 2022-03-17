@@ -51,7 +51,6 @@ const MapYourData = () => {
   const [data, setData] = useState(tableData);
   var otherColumns = [];
   const handleChange = (event, ele, i) => {
-    console.log(oColumns);
     if (event.target.value === "ignore") {
       oColumns.forEach((elem) => {
         if (elem.name.toLowerCase() === ele.toLowerCase()) {
@@ -103,12 +102,10 @@ const MapYourData = () => {
       }
     });
     setOColumns(otherColumns);
-    console.log("other", otherColumns);
   }, []);
 
   const handleCreatePopstore = async () => {
     if (userData) {
-      console.log(userID);
       var id;
       const userRef = collection(db, "StoreOwners");
       const q = query(userRef, where("email", "==", userData.email));
@@ -129,7 +126,6 @@ const MapYourData = () => {
         // ownerID: userID,
         storeID: ""
       }).then((data) => {
-        console.log("map", data)
         var columnRef = collection(
           db,
           `/StoreOwners/${id}/allStores/${data.id}/Colums`

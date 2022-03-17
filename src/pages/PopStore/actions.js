@@ -53,9 +53,6 @@ export default function useActions() {
       .filter((product) => product.data().name.toLowerCase() === "price")[0]
       .data()["items"];
 
-    console.log(productNames);
-    console.log(productPrices);
-
     setProducts(
       productNames.map((name, index) => ({
         name,
@@ -67,7 +64,6 @@ export default function useActions() {
   };
 
   const updateProductQuantity = (event, productName) => {
-    console.log(event.target.value);
     setProducts(
       products.map((product) => {
         if (product.name === productName) {
@@ -104,7 +100,6 @@ export default function useActions() {
       storeID: storeID,
       orderedAt: serverTimestamp(),
     };
-    console.log("order created", order);
 
     // Add a new document with a generated id.
     const allOrdersRef = collection(
@@ -116,7 +111,6 @@ export default function useActions() {
     const myPromise = new Promise(async (resolve, reject) => {
       try {
         const docRef = await addDoc(allOrdersRef, order);
-        console.log("Document written with ID: ", docRef.id);
         resetProducts();
         resolve("");
       } catch (e) {

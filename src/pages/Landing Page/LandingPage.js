@@ -30,7 +30,6 @@ const LandingPage = () => {
   }
 
   const saveSheet = async (e) => {
-    console.log(sheetData)
     const validation = sheetData.every(item => Array.isArray(item.cells) && item.cells.length);
     if(!validation) {
       await MySwal.fire({

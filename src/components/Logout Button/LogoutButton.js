@@ -13,9 +13,6 @@ const LogoutButton = ({ user }) => {
       .then(() => {
         localStorage.clear();
         window.location.assign('/');
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
     const goToProfile = () => {

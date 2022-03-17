@@ -55,7 +55,6 @@ const CreateStoreForm = () => {
         const ws = wb.Sheets[wsname];
 
         const data = XLSX.utils.sheet_to_csv(ws);
-        console.log(data);
         resolve(data);
       };
 

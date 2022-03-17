@@ -87,8 +87,6 @@ const PopStore = () => {
       setIP(res.data.IPv4)
       setUserData(res.data)
       setUserCountry(res.data.country_name)
-      console.log(res.data.country_name)
-      console.log("usercountry")
       convertCurrency(res.data.country_name)
     })
 
@@ -96,7 +94,6 @@ const PopStore = () => {
 
   const convertCurrency =async(country)=>{
     Object.keys(eurocurrencies).map(async(key)=>{
-      console.log(country)
       if(key===country){
         setUserCurrency(eurocurrencies[key])
       }
