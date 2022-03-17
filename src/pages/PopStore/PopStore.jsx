@@ -293,6 +293,23 @@ const PopStore = () => {
                             </Grid>
                         </Grid>
                     })}
+                    <Grid container spacing={2}>
+                        <Grid item xs={8} md={8} textAlign="right">
+                            <p>&nbsp;</p>
+                        </Grid>
+                        <Grid item xs={2} md={2}>
+                            <h4>Grand Total</h4>
+                        </Grid>
+                        <Grid item xs={2} md={2}>
+                            <h4>
+                                {(order?.reduce((prev, next) => {
+                                    if(prev !== null) {
+                                        return prev + parseFloat(store?.columnsList[next.id][2]) * parseFloat(next.quantity)
+                                    }
+                                }, 0))?.toFixed(2)} SEK
+                            </h4>
+                        </Grid>
+                    </Grid>
                 </div>
             </div>
             { !store.locked && <div style={{padding: '1rem'}}>
