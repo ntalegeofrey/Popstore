@@ -221,13 +221,14 @@ const EditPopstore = () => {
         </div>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
-          <Grid item xs={6} md={6} alignContent='end'>
+          <Grid item xs={6} md={2} alignContent='end'>
             <Link
                 href="#"
                 onClick={cancelStore}>
               Cancel
             </Link>
-            &nbsp;
+          </Grid>
+          <Grid item xs={6} md={10} alignContent='end'>
             <Button
                 style={{marginLeft: '1rem'}}
                 color="primary"

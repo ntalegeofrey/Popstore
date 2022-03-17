@@ -143,20 +143,20 @@ const PackingPage = () => {
         </div>
         <div style={{backgroundColor: "#fff", padding: '1rem'}}>
           <Grid container spacing={2}>
-            <Grid item xs={5} md={5}>
+            <Grid item xs={8} md={5}>
               <h5>Product</h5>
             </Grid>
-            <Grid item xs={3} md={3}>
+            <Grid item xs={4} md={3}>
               <h5>Quantity</h5>
             </Grid>
           </Grid>
           {orders?.map((order, index) => {
             return (
                 <Grid container spacing={2} key={index}>
-                  <Grid item xs={5} md={5}>
+                  <Grid item xs={8} md={5}>
                     <p>{store.columnsList[order.id][1]}</p>
                   </Grid>
-                  <Grid item xs={3} md={3}>
+                  <Grid item xs={4} md={3}>
                     <p>{order.quantity}</p>
                   </Grid>
                 </Grid>
@@ -187,24 +187,24 @@ const PackingPage = () => {
           {product.id !== undefined &&
               <div>
                 <Grid container spacing={2}>
-                  <Grid item xs={5} md={5}>
+                  <Grid item xs={8} md={5}>
                     <h5>Orders: {store.columnsList[product.id][1]}</h5>
                   </Grid>
                 </Grid>
                 <Grid container spacing={2}>
-                  <Grid item xs={3} md={3}>
+                  <Grid item xs={8} md={3}>
                     <h5>Customer</h5>
                   </Grid>
-                  <Grid item xs={3} md={3}>
+                  <Grid item xs={4} md={3}>
                     <h5>Quantity</h5>
                   </Grid>
                 </Grid>
                 {customers?.map((customer, i) => (
                     <Grid container spacing={2} key={i}>
-                      <Grid item xs={3} md={3}>
+                      <Grid item xs={8} md={3}>
                         <p>{customer.user}</p>
                       </Grid>
-                      <Grid item xs={3} md={3}>
+                      <Grid item xs={4} md={3}>
                         <p>{customer.quantity}</p>
                       </Grid>
                   </Grid>
