@@ -89,12 +89,12 @@ const CustomersPage = () => {
       <Container maxWidth="lg">
         <div className="popstore-wrapper">
           <Grid className="pop-header-wrapper" container spacing={2}>
-            <Grid item xs={4} md={4}>
+            <Grid item xs={6} md={4}>
               <Typography style={{ marginBottom: "20px" }} variant="h4">
                 Customers List
               </Typography>
             </Grid>
-            <Grid item xs={4} md={4} alignSelf="center">
+            <Grid item xs={2} md={4} alignSelf="center">
               <Link to='/popstore/all'>
                 Close
               </Link>
@@ -111,7 +111,7 @@ const CustomersPage = () => {
                 {store?.storeName}
               </Typography>
             </Grid>
-            <Grid item xs={3} md={3}>
+            <Grid item xs={6} md={3}>
               <div style={{paddingBottom: '1rem'}}>
                 <Select
                     fullWidth={true}
@@ -143,56 +143,56 @@ const CustomersPage = () => {
              :
                 <>
                   <Grid container spacing={2}>
-                    <Grid item xs={4} md={4}>
+                    <Grid item xs={2} md={4}>
                       <h4>{customer?.name || "N/A"}</h4>
                     </Grid>
-                    <Grid item xs={4} md={4}>
+                    <Grid item xs={5} md={4}>
                       <h4>{customer?.email}</h4>
                     </Grid>
-                    <Grid item xs={4} md={4}>
+                    <Grid item xs={5} md={4}>
                       <h4>{customer?.phone}</h4>
                     </Grid>
                   </Grid>
                   <Grid container spacing={2}>
-                    <Grid item xs={5} md={5}>
+                    <Grid item xs={3} md={5}>
                       <h5>Product</h5>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                       <h5>Price</h5>
                     </Grid>
                     <Grid item xs={3} md={3}>
                       <h5>Quantity</h5>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                       <h5>Total</h5>
                     </Grid>
                   </Grid>
                   {orders?.map((order, index) => {
                     return (
                     <Grid container spacing={2} key={index}>
-                      <Grid item xs={5} md={5}>
+                      <Grid item xs={3} md={5}>
                         <p>{store.columnsList[order.id][1]}</p>
                       </Grid>
-                      <Grid item xs={2} md={2}>
+                      <Grid item xs={3} md={2}>
                         <p>{store.columnsList[order.id][2]} SEK</p>
                       </Grid>
                       <Grid item xs={3} md={3}>
                         <p>{order.quantity}</p>
                       </Grid>
-                      <Grid item xs={2} md={2}>
+                      <Grid item xs={3} md={2}>
                         <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} SEK</p>
                       </Grid>
                     </Grid>
                     )
                   })}
                   <Grid container spacing={2}>
-                    <Grid item xs={7} md={7}>
+                    <Grid item xs={6} md={7}>
                       <p>&nbsp;</p>
                     </Grid>
                     <Grid item xs={3} md={3}>
                       <h4>Grand Total</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                       <h4>
                         {(orders.reduce((prev, next) => {
                           return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
