@@ -33,7 +33,7 @@ const EditPopstore = () => {
   const [user, setUser] = useState();
   const [store, setStore] = useState();
   const [columns, setColumns] = useState([]);
-  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price']);
+  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price', 'Description']);
   const [col, setCol] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -57,10 +57,10 @@ const EditPopstore = () => {
       }
 
       localStorage.setItem('columns', JSON.stringify({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
       }));
       setCol({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
       });
 
     });
