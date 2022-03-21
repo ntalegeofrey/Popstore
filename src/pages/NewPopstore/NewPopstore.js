@@ -321,6 +321,13 @@ const NewPopstore = () => {
     localStorage.setItem('columns', JSON.stringify(cols));
   };
 
+  const updateCurrencyColumn = async (e, column) => {
+    e.preventDefault();
+    if(document.getElementById(`currency`)) {
+      document.getElementById(`currency`).textContent = column;
+    }
+  };
+
   useEffect(async () => {
 
   }, []);
@@ -379,12 +386,13 @@ const NewPopstore = () => {
                   label="Select Column"
                   value={storeCurrency}
                   onChange={updateCurrencyValue}
-
+                  id="currency"
               >
                 {Object.keys(currencies).map((currency, i) => (
                     <MenuItem
                         key={`${i}`}
                         value={currencies[currency]}
+                        onClick={(e => updateCurrencyColumn(e, currency + " - " + currencies[currency]))}
                     >
                       {currency} - {currencies[currency]}
                     </MenuItem>
