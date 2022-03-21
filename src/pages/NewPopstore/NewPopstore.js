@@ -289,10 +289,10 @@ const NewPopstore = () => {
       }
     });
 
-    if(!validNames && cols['Name'] !== -1){
+    if(cols['Name'] === -1){
       await MySwal.fire({
         title: 'Error!',
-        text: 'Name for all products cannot by only number. It should contain letters as well',
+        text: 'Please select a column for the products name',
         icon: 'error',
         confirmButtonText: 'Ok'
       })
