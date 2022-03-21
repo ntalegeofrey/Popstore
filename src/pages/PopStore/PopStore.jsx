@@ -83,29 +83,29 @@ const PopStore = () => {
     'Pakistan': 'PKR',
   }
   const getData = async () => {
-    const res = await axios.get('https://geolocation-db.com/json/').then(res => {
-      setIP(res.data.IPv4)
-      setUserData(res.data)
-      setUserCountry(res.data.country_name)
-      convertCurrency(res.data.country_name)
-    })
+    // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
+    //   setIP(res.data.IPv4)
+    //   setUserData(res.data)
+    //   setUserCountry(res.data.country_name)
+    //   convertCurrency(res.data.country_name)
+    // })
 
   }
 
   const convertCurrency =async(country)=>{
-    Object.keys(eurocurrencies).map(async(key)=>{
-      if(key===country){
-        setUserCurrency(eurocurrencies[key])
-      }
-    });
+    // Object.keys(eurocurrencies).map(async(key)=>{
+    //   if(key===country){
+    //     setUserCurrency(eurocurrencies[key])
+    //   }
+    // });
 
   }
   const runconvertCurrency = async()=>{
-    if(usercurrency){
-      const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=1&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
-        setConvertedPrice(res.data.data[usercurrency].value)
-      });
-    }
+    // if(usercurrency){
+    //   const res = await axios.get('https://api.currencyapi.com/v3/latest?apikey='+process.env.REACT_APP_CURRENCY_API_KEY+'&value=1&base_currency='+storecurrency+'&currencies='+usercurrency).then(res => {
+    //     setConvertedPrice(res.data.data[usercurrency].value)
+    //   });
+    // }
   }
   React.useEffect( () => {
     //passing getData method to the lifecycle method
@@ -126,6 +126,7 @@ const PopStore = () => {
             let data = store.data();
             data.columnsList = JSON.parse(data.columnsList);
             setStore(data);
+            console.log(data.currency);
             setStoreCurrency(data.currency)
             setLoading(false);
         }
@@ -266,7 +267,7 @@ const PopStore = () => {
                                 <p>{column[1]}</p>
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{parseInt(column[2])*convertedprice} {usercurrency}</p>
+                                <p>{parseInt(column[2])} {store.currency}</p>
                             </Grid>
                             <Grid item xs={3} md={2}>
                                 <TextField
@@ -286,7 +287,7 @@ const PopStore = () => {
                                 />
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{parseFloat(column[2]) * parseFloat(order[index]?.quantity ? order[index]?.quantity : 0)}</p>
+                                <p>{parseFloat(column[2]) * parseFloat(order[index]?.quantity ? order[index]?.quantity : 0)} {store.currency}</p>
                             </Grid>
                         </Grid>
                     })}
@@ -303,7 +304,7 @@ const PopStore = () => {
                                     if(prev !== null) {
                                         return prev + parseFloat(store?.columnsList[next.id][2]) * parseFloat(next.quantity)
                                     }
-                                }, 0))?.toFixed(2)} SEK
+                                }, 0))?.toFixed(2)} {store.currency}
                             </h4>
                         </Grid>
                     </Grid>
