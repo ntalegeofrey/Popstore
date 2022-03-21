@@ -284,7 +284,7 @@ const NewPopstore = () => {
 
     let validNames = true;
     productsNames.forEach( (el, i) => {
-      if(!Object.is(el, NaN)) {
+      if(!Object.is(el, null)) {
         validNames = false;
       }
     });
