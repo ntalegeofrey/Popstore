@@ -321,10 +321,14 @@ const NewPopstore = () => {
     localStorage.setItem('columns', JSON.stringify(cols));
   };
 
-  const updateCurrencyColumn = async (e, column) => {
+  const updateCurrencyColumn = async (e, country, currency) => {
     e.preventDefault();
     if(document.getElementById(`currency`)) {
-      document.getElementById(`currency`).textContent = column;
+      if(currency == "EUR") {
+        document.getElementById(`currency`).textContent = currency;
+      } else {
+        document.getElementById(`currency`).textContent = country + " - " + currency;
+      }
     }
   };
 
@@ -392,7 +396,7 @@ const NewPopstore = () => {
                     <MenuItem
                         key={`${i}`}
                         value={currencies[currency]}
-                        onClick={(e => updateCurrencyColumn(e, currency + " - " + currencies[currency]))}
+                        onClick={(e => updateCurrencyColumn(e, currency, currencies[currency]))}
                     >
                       {currency} - {currencies[currency]}
                     </MenuItem>
