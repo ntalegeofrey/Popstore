@@ -279,7 +279,7 @@ const NewPopstore = () => {
         continue;
       }
       productsPrices.push(parseFloat(sheetData[i].cells[cols['Price']]));
-      productsNames.push(parseFloat(sheetData[i].cells[cols['Name']]));
+      productsNames.push(Number(sheetData[i].cells[cols['Name']]));
     }
 
     let validNames = true;
