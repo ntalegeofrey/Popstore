@@ -88,13 +88,13 @@ const OrdersPage = () => {
                     <Grid item xs={5} md={5}>
                         <h5>Product</h5>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item display={{xs: "none", md: "grid"}} md={2}>
                         <h5>Price</h5>
                     </Grid>
-                    <Grid item xs={3} md={3}>
+                    <Grid item xs={4} md={3}>
                         <h5>Quantity</h5>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h5>Total</h5>
                     </Grid>
                 </Grid>
@@ -104,26 +104,26 @@ const OrdersPage = () => {
                             <Grid item xs={5} md={5}>
                                 <p>{store.columnsList[order.id][1]}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item display={{xs: "none", md: "grid"}} xs={0} md={2}>
                                 <p>{store.columnsList[order.id][2]} {store?.currency}</p>
                             </Grid>
-                            <Grid item xs={3} md={3}>
+                            <Grid item xs={4} md={3}>
                                 <p>{order.quantity}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} {store?.currency}</p>
                             </Grid>
                         </Grid>
                     )
                 })}
                 <Grid container spacing={2}>
-                    <Grid item xs={7} md={7} textAlign="right">
+                    <Grid item xs={5} md={7} textAlign="right">
                         <p>&nbsp;</p>
                     </Grid>
-                    <Grid item xs={3} md={3}>
+                    <Grid item xs={4} md={3}>
                         <h4>Grand Total</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>
                             {(orders?.reduce((prev, next) => {
                                 return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
