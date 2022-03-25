@@ -105,13 +105,13 @@ const OrdersPage = () => {
                                 <p>{store.columnsList[order.id][1]}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <p>{store.columnsList[order.id][2]} SEK</p>
+                                <p>{store.columnsList[order.id][2]} {store?.currency}</p>
                             </Grid>
                             <Grid item xs={3} md={3}>
                                 <p>{order.quantity}</p>
                             </Grid>
                             <Grid item xs={2} md={2}>
-                                <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} SEK</p>
+                                <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} {store?.currency}</p>
                             </Grid>
                         </Grid>
                     )
@@ -127,7 +127,7 @@ const OrdersPage = () => {
                         <h4>
                             {(orders?.reduce((prev, next) => {
                                 return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
-                            }, 0)).toFixed(2)} SEK
+                            }, 0)).toFixed(2)} {store?.currency}
                         </h4>
                     </Grid>
                 </Grid>
