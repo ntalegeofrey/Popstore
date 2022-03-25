@@ -35,7 +35,7 @@ const NewPopstore = () => {
   const [storeCurrency, setStoreCurrency] = useState('SEK');
   const [sheetData, setSheetData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Description', 'Ignore']);
+  const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
   const [col, setCol] = useState({});
 
   const MySwal = withReactContent(Swal)
@@ -108,10 +108,10 @@ const NewPopstore = () => {
         navigate("/");
       }
       localStorage.setItem('columns', JSON.stringify({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
       }));
       setCol({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
       });
 
     });

@@ -32,7 +32,7 @@ const EditPopstore = () => {
   const { storeId } = useParams();
   const [user, setUser] = useState();
   const [store, setStore] = useState();
-  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price', 'Description']);
+  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price']);
   const [col, setCol] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -56,10 +56,10 @@ const EditPopstore = () => {
       }
 
       localStorage.setItem('columns', JSON.stringify({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
       }));
       setCol({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, "Description": -1, 'Ignore': 9
+        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
       });
 
     });
@@ -205,11 +205,13 @@ const EditPopstore = () => {
                   return (
                       <TableRow key={`row-${rowIndex}`}>
                         { row.map((cell, cellIndex) => (
+                            cellIndex != 3 ? (
                             <TableCell
                                 key={`cell-${rowIndex}-${cellIndex}`}
                                 className={styles['cell']}>
                               {cell}
                             </TableCell>
+                            ) : ('')
                         ))}
                       </TableRow>
                   )
