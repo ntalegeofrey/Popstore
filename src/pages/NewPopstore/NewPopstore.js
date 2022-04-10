@@ -289,19 +289,6 @@ const NewPopstore = () => {
       }
     });
 
-    if(cols['Name'] === -1){
-      await MySwal.fire({
-        title: 'Error!',
-        text: 'Please select a column for the products name',
-        icon: 'error',
-        confirmButtonText: 'Ok'
-      })
-      if(document.getElementById(`${c}-${index}`)) {
-        document.getElementById(`${c}-${index}`).textContent = 'Select Column';
-      }
-      return;
-    }
-
     productsPrices[0] = 0;
     if(cols['Price'] !== -1 && productsPrices.includes(NaN)){
       await MySwal.fire({
