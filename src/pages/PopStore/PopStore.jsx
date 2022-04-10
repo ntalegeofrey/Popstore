@@ -302,7 +302,7 @@ const PopStore = () => {
                                 />
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{parseFloat(column[2]) * parseFloat(Number(order[index]?.quantity) ? order[index]?.quantity : 0)} {store.currency}</p>
+                                <p>{Number(Number(column[2]) * Number(Number(order[index]?.quantity) ? order[index]?.quantity : 0)).toFixed(2)} {store.currency}</p>
                             </Grid>
                         </Grid>
                     })}
