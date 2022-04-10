@@ -13,11 +13,9 @@ const sendMail = ( email, subject, content ) => {
         },
         process.env.REACT_APP_EMAILJS_USER_ID
     ).then(
-        ( response ) => {
-            console.log( 'SUCCESS!', response.status, response.text );
+        (  ) => {
         },
-        ( error ) => {
-            console.log( 'FAILED...', error );
+        (  ) => {
         }
     );
 };
