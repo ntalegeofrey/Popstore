@@ -126,7 +126,6 @@ const PopStore = () => {
             let data = store.data();
             data.columnsList = JSON.parse(data.columnsList);
             setStore(data);
-            console.log(data.currency);
             setStoreCurrency(data.currency)
             setLoading(false);
         }
@@ -279,15 +278,31 @@ const PopStore = () => {
                                     value={order[index]?.quantity}
                                     defaultValue={0}
                                     disabled={store.locked}
+                                    InputLabelProps={{ shrink: true }}
                                     onChange={(e) => {
-                                        let newOrder = [...order];
-                                        newOrder[index] = {...newOrder[index], quantity: e.target.value < 0 ? 0 : parseInt(e.target.value), id: index};
-                                        setOrder(newOrder);
+                                        if(!e.target.value || Number(e.target.value) < 0){
+                                            e.target.value = (0).toString();
+                                            // set default value and value of TextField to 0
+                                            order[index] = {
+                                                ...order[index],
+                                                quantity: 0,
+                                                id: index
+                                            }
+
+                                        } else {
+                                            let newOrder = [...order];
+                                            newOrder[index] = {
+                                                ...newOrder[index],
+                                                quantity: Number(e.target.value) < 0 ? 0 : parseInt(e.target.value),
+                                                id: index
+                                            };
+                                            setOrder(newOrder);
+                                        }
                                     }}
                                 />
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{parseFloat(column[2]) * parseFloat(order[index]?.quantity ? order[index]?.quantity : 0)} {store.currency}</p>
+                                <p>{parseFloat(column[2]) * parseFloat(Number(order[index]?.quantity) ? order[index]?.quantity : 0)} {store.currency}</p>
                             </Grid>
                         </Grid>
                     })}
@@ -301,8 +316,8 @@ const PopStore = () => {
                         <Grid item xs={3} md={2}>
                             <h4>
                                 {(order?.reduce((prev, next) => {
-                                    if(prev !== null) {
-                                        return prev + parseFloat(store?.columnsList[next.id][2]) * parseFloat(next.quantity)
+                                    if((prev !== null || true) && (next !== null && next !== undefined)) {
+                                        return Number(prev + Number(store?.columnsList[next.id][2]) * Number(next.quantity))
                                     }
                                 }, 0))?.toFixed(2)} {store.currency}
                             </h4>
