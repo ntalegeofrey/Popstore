@@ -61,45 +61,45 @@ const OrderPage = () => {
             </div>
             <div style={{backgroundColor: "#fff", padding: '1rem'}}>
                 <Grid container spacing={2}>
-                    <Grid item xs={6} md={6}>
+                    <Grid item xs={3} md={6}>
                         <h4>Items</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Price</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Quantity</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Total</h4>
                     </Grid>
                 </Grid>
                 <div>
                     {order?.order?.map((product, index) => {
                         return <Grid container spacing={2} key={index} style={{marginBottom: "1rem"}}>
-                            <Grid item xs={6} md={6}>
+                            <Grid item xs={3} md={6}>
                                 <p>{store?.columnsList[product.id][1]}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <p>{store?.columnsList[product.id][2]} {store?.currency}</p>
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 {product.quantity}
                             </Grid>
-                            <Grid item xs={2} md={2}>
+                            <Grid item xs={3} md={2}>
                                 <p>{parseFloat(store?.columnsList[product.id][2]) * parseFloat(product?.quantity ? product?.quantity : 0)} {store?.currency}</p>
                             </Grid>
                         </Grid>
                     })}
                 </div>
                 <Grid container spacing={2}>
-                    <Grid item xs={8} md={8} textAlign="right">
+                    <Grid item xs={6} md={8} textAlign="right">
                         <p>&nbsp;</p>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>Grand Total</h4>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item xs={3} md={2}>
                         <h4>
                             {(order?.order?.reduce((prev, next) => {
                                 return prev + parseFloat(store?.columnsList[next.id][2]) * parseFloat(next.quantity)
