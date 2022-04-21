@@ -271,7 +271,7 @@ const PopStore = () => {
                                 <p>{column[1]}</p>
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{parseInt(column[2])} {store.currency}</p>
+                                <p>{column[2]} {store.currency}</p>
                             </Grid>
                             <Grid item xs={3} md={2}>
                                 <TextField
