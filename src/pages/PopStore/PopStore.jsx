@@ -30,6 +30,7 @@ const PopStore = () => {
     const [storecurrency,setStoreCurrency] = React.useState();
     const [userdata,setUserData] = React.useState();
     const [convertedprice,setConvertedPrice] = React.useState();
+    let total = 0;
   const eurocurrencies={
     'Albania': 'ALL',
     'Andorra': 'EUR',
@@ -135,6 +136,10 @@ const PopStore = () => {
             }
         });
     }, []);
+
+  const getTotal = () => {
+      console.log(order);
+  }
 
     const saveOrder = async () => {
 
@@ -315,11 +320,11 @@ const PopStore = () => {
                         </Grid>
                         <Grid item xs={3} md={2}>
                             <h4>
-                                {(order?.reduce((prev, next) => {
-                                    if((prev !== null || true) && (next !== null && next !== undefined)) {
-                                        return Number(prev + Number(store?.columnsList[next.id][2]) * Number(next.quantity))
-                                    }
-                                }, 0))?.toFixed(2)} {store.currency}
+                                {order?.map((item, index) => {
+                                        if(item){
+                                            total += (Number(item.quantity) * Number(store?.columnsList[item.id][2]));
+                                        }
+                                })} {Number(total).toFixed(2)} {store.currency}
                             </h4>
                         </Grid>
                     </Grid>
