@@ -307,7 +307,7 @@ const PopStore = () => {
                                 />
                             </Grid>
                             <Grid item xs={3} md={2}>
-                                <p>{Number(Number(column[2]) * Number(Number(order[index]?.quantity) ? order[index]?.quantity : 0)).toFixed(2)} {store.currency}</p>
+                                <p>{Number(Number(column[2].replace(/,/, '')) * Number(Number(order[index]?.quantity) ? order[index]?.quantity : 0)).toFixed(2)} {store.currency}</p>
                             </Grid>
                         </Grid>
                     })}
@@ -322,7 +322,7 @@ const PopStore = () => {
                             <h4>
                                 {order?.map((item, index) => {
                                         if(item){
-                                            total += (Number(item.quantity) * Number(store?.columnsList[item.id][2]));
+                                            total += (Number(item.quantity) * Number((store?.columnsList[item.id][2]).replace(/,/, '')));
                                         }
                                 })} {Number(total).toFixed(2)} {store.currency}
                             </h4>
