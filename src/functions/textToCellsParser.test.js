@@ -10,7 +10,7 @@ A2	B2`
         const testInput = `B1	"C1\nc1"
 B2	C2`
         const cells = textToCellsParser(testInput)
-        expect(cells).toStrictEqual([{ cells: ['B1','C1\nc1'] }, { cells: ['B2','C2'] }]);
+        expect(cells).toStrictEqual([{ cells: ['B1','C1'] }, { cells: ['c1'] }, { cells: ['B2','C2'] }]);
     });
 })
 
