@@ -179,7 +179,7 @@ const PopStore = () => {
         if(!customer.exists()){
             // Create a new customer
             const newCustomer = {
-                uid: user.uid || null,
+                uid: null,
                 email: email.toLowerCase(),
                 phone: phone,
                 name: "",
@@ -190,7 +190,7 @@ const PopStore = () => {
         }
 
         const Order = {
-            uid: user ? user.uid : null,
+            uid: null,
             email: email.toLowerCase(),
             phone: phone,
             name: "",
