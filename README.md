@@ -2,7 +2,8 @@
 
 ---
 
-- [Installation Process](#section-1)
+- [Setup Process](#section-1)
+- [CI/CD](#section-11)
 - [FOSS](#section-2)
 - [Project Overview](#section-3)
 - [Contributors](#section-4)
@@ -11,7 +12,7 @@
 
 <a name="section-1"></a>
 
-## Installation Process
+## Setup Process
 
 ### Step-1: Clone GitLab repo for this project locally
 
@@ -88,6 +89,29 @@ To deploy your application to firebase hosting you need to run this command.
 ```
 firebase deploy --only hosting
 ```
+
+<a name="section-11"></a>
+## CI/CD
+
+This application has a CI/CD pipeline setup to automatically build and deploy your application to firebase hosting. The pipeline is triggered whenever a merge request is merged to `main` branch. The pipeline automatically builds and deploy the application to firebase hosting.
+If you need to manually deploy your application to firebase hosting after making some changes, please follow the Step-7 in the above setup process.
+
+All env variables are added to the variables section of CI/CD on GitLab project settings. Following type of variables are added there:
+
+* Firebase Configs
+* EmailsJS Configs
+
+The CI/CD has the following stages for `main` branch:
+
+* Init
+* Test
+* Build
+* Deploy
+
+While for other branches:
+
+* Init
+* Test
 
 <a name="section-2"></a>
 ## FOSS
