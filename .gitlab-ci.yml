@@ -1,9 +1,9 @@
 # Popstore CI/CD pipeline for Heroku
 
-before_script:
-  - apt-get update -qy
-  - apt-get install -y ruby-dev
-  - gem install dpl
+#before_script:
+#  - apt-get update -qy
+#  - apt-get install -y ruby-dev
+#  - gem install dpl
 
 cache:
   paths:
@@ -70,9 +70,9 @@ build:
 
 deploy:
   stage: deploy
-  image: ruby:latest
+  image: node:14.19.0
   script:
-    - dpl --provider=firebase --token=$FIREBASE_DEPLOY --project=popsto-re --only=hosting
+    - firebase deploy --only hosting --token $FIREBASE_DEPLOY --project popsto-re --non-interactive
     - echo "Deployed to production server (Firebase Hosting)"
   environment:
     name: production
