@@ -72,7 +72,7 @@ deploy:
   stage: deploy
   image: ruby:latest
   script:
-    - dpl firebase --token $FIREBASE_DEPLOY --project popsto-re --only hosting
+    - dpl --provider=firebase --token=$FIREBASE_DEPLOY --project=popsto-re --only=hosting
     - echo "Deployed to production server (Firebase Hosting)"
   environment:
     name: production
