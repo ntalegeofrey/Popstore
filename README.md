@@ -7,6 +7,7 @@
 - [FOSS](#section-2)
 - [Project Overview](#section-3)
 - [Contributors](#section-4)
+- [Known Package Vulnerabilities](#section-5)
 
 
 
@@ -185,3 +186,15 @@ Module 3 is about "My PopStore". The owner sees a list of all stores and the res
 - Yousef
 - Hamid
 - Kim
+
+<a name="section-5"></a>
+# Known Package Vulnerabilities
+
+Following packages being used by the project have known vulnerabilities:
+
+**Package Name:** `nth-check`<br>
+**Vulnerability Severity:** *Moderate*<br>
+**Vulnerability:** `Inefficient Regular Expression Complexity in nth-check`<br>
+**More Info:** [https://github.com/advisories/GHSA-rp65-9cf3-cjxr](https://github.com/advisories/GHSA-rp65-9cf3-cjxr)
+
+---
