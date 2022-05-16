@@ -2,48 +2,42 @@ import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import firebase, {doc, getDoc} from "../../service/firebase";
-import { db, collection, getDocs, where, query } from "../../service/firebase";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import {doc, getDoc} from "../../service/firebase";
+import { db, collection } from "../../service/firebase";
+import { useNavigate, useParams } from "react-router-dom";
 
 const OrderPage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState();
     const { ownerId, storeId, orderId } = useParams();
     const [store, setStore] = useState({});
     const [order, setOrder] = useState({});
-    useEffect(async () => {
-        firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
-                setUser(user);
+    useEffect( () => {
+        (async () => {
+            const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
+            const store = await getDoc(doc(storesRef, storeId));
+            if (store.exists()) {
+                let data = store.data();
+                data.columnsList = JSON.parse(data.columnsList);
+                setStore(data);
             }
-        });
-        const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
-        const store = await getDoc(doc(storesRef, storeId));
-        if (store.exists()) {
-            let data = store.data();
-            data.columnsList = JSON.parse(data.columnsList);
-            setStore(data);
-        }
-        const orderRef = await collection(db, `/StoreOwners/${ownerId}/allStores/${storeId}/Orders`);
-        const order = await getDoc(doc(orderRef, orderId));
-        if (order.exists()) {
-            let orderData = order.data();
-            orderData.order = JSON.parse(orderData.order);
-            let temp = [];
-            orderData.order.forEach((p) => {
-                if(p !== null){
-                    if(p.quantity != 0) {
-                        temp.push(p);
+            const orderRef = await collection(db, `/StoreOwners/${ownerId}/allStores/${storeId}/Orders`);
+            const order = await getDoc(doc(orderRef, orderId));
+            if (order.exists()) {
+                let orderData = order.data();
+                orderData.order = JSON.parse(orderData.order);
+                let temp = [];
+                orderData.order.forEach((p) => {
+                    if(p !== null){
+                        if(p.quantity != 0) {
+                            temp.push(p);
+                        }
                     }
-                }
-            });
-            orderData.order = temp;
-            setOrder(orderData);
-        }
-    }, [navigate]);
-    useEffect(async () => {
-    }, []);
+                });
+                orderData.order = temp;
+                setOrder(orderData);
+            }
+        })();
+    }, [navigate, ownerId, storeId, orderId]);
 
     return (
         <Container maxWidth="lg">

@@ -6,11 +6,10 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import firebase, {collection, db, getDoc, doc, serverTimestamp, setDoc} from "../../service/firebase";
+import {collection, db, getDoc, doc, serverTimestamp, setDoc} from "../../service/firebase";
 import { useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import axios from 'axios';
 import isEmail from 'validator/lib/isEmail';
 import isMobilePhone from 'validator/lib/isMobilePhone';
 import sendMail from "../../service/email";
@@ -20,69 +19,12 @@ const PopStore = () => {
     const [loading, setLoading] = useState(true);
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [user, setUser] = useState();
     const {ownerId, storeId } = useParams();
     const [order, setOrder] = useState([]);
     const MySwal = withReactContent(Swal)
-    const [usercurrency,setUserCurrency] = React.useState();
-    const [ip,setIP] = React.useState();
-    const [usercountry,setUserCountry] = React.useState();
+    const [usercurrency] = React.useState();
     const [storecurrency,setStoreCurrency] = React.useState();
-    const [userdata,setUserData] = React.useState();
-    const [convertedprice,setConvertedPrice] = React.useState();
     let total = 0;
-  const eurocurrencies={
-    'Albania': 'ALL',
-    'Andorra': 'EUR',
-    'Armenia': 'AMD',
-    'Austria': 'EUR',
-    'Azerbaijan': 'AZN',
-    'Belarus': 'BYN',
-    'Belgium': 'EUR',
-    'Bosnia and Herzegovina': 'BAM',
-    'Bulgaria': 'BGN',
-    'Croatia': 'HRK',
-    'Cyprus': 'EUR',
-    'Czechia': 'CZK',
-    'Denmark': 'DKK',
-    'Estonia': 'EUR',
-    'Finland': 'EUR',
-    'France': 'EUR',
-    'Georgia': 'GEL',
-    'Germany': 'EUR',
-    'Greece': 'EUR',
-    'Hungary': 'HUF',
-    'Iceland': 'ISK',
-    'Ireland': 'EUR',
-    'Italy': 'EUR',
-    'Latvia': 'EUR',
-    'Liechtenstein': 'CHF',
-    'Lithuania': 'EUR',
-    'Luxembourg': 'EUR',
-    'Malta': 'EUR',
-    'Moldova': 'MDL',
-    'Monaco': 'EUR',
-    'Montenegro': 'EUR',
-    'Netherlands': 'EUR',
-    'North Macedonia': 'MKD',
-    'Norway': 'NOK',
-    'Poland': 'PLN',
-    'Portugal': 'EUR',
-    'Romania': 'RON',
-    'Russia': 'RUB',
-    'San Marino': 'EUR',
-    'Serbia': 'RSD',
-    'Slovakia': 'EUR',
-    'Slovenia': 'EUR',
-    'Spain': 'EUR',
-    'Sweden': 'SEK',
-    'Switzerland': 'CHF',
-    'Turkey': 'TRY',
-    'Ukraine': 'UAH',
-    'United Kingdom': 'GBP',
-    'Vatican City': 'EUR',
-    'Pakistan': 'PKR',
-  }
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
     //   setIP(res.data.IPv4)
@@ -90,15 +32,6 @@ const PopStore = () => {
     //   setUserCountry(res.data.country_name)
     //   convertCurrency(res.data.country_name)
     // })
-
-  }
-
-  const convertCurrency =async(country)=>{
-    // Object.keys(eurocurrencies).map(async(key)=>{
-    //   if(key===country){
-    //     setUserCurrency(eurocurrencies[key])
-    //   }
-    // });
 
   }
   const runconvertCurrency = async()=>{
@@ -120,26 +53,19 @@ const PopStore = () => {
     //passing getData method to the lifecycle method
     runconvertCurrency()
   }, [usercurrency])
-    useEffect(async () => {
-        const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
-        const store = await getDoc(doc(storesRef, storeId));
-        if(store.exists()){
-            let data = store.data();
-            data.columnsList = JSON.parse(data.columnsList);
-            setStore(data);
-            setStoreCurrency(data.currency)
-            setLoading(false);
-        }
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                setUser(user);
+    useEffect( () => {
+        (async () => {
+            const storesRef = await collection(db, `/StoreOwners/${ownerId}/allStores`);
+            const store = await getDoc(doc(storesRef, storeId));
+            if (store.exists()) {
+                let data = store.data();
+                data.columnsList = JSON.parse(data.columnsList);
+                setStore(data);
+                setStoreCurrency(data.currency)
+                setLoading(false);
             }
-        });
-    }, []);
-
-  const getTotal = () => {
-      console.log(order);
-  }
+        })();
+    }, [ownerId, storeId]);
 
     const saveOrder = async () => {
 
@@ -320,7 +246,7 @@ const PopStore = () => {
                         </Grid>
                         <Grid item xs={3} md={2}>
                             <h4>
-                                {order?.map((item, index) => {
+                                {order?.forEach((item, index) => {
                                         if(item){
                                             total += (Number(item.quantity) * Number((store?.columnsList[item.id][2]).replace(/,/, '')));
                                         }

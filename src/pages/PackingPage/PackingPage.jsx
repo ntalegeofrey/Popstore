@@ -88,7 +88,7 @@ const PackingPage = () => {
         navigate("/");
       }
     });
-  }, [navigate]);
+  }, [navigate, storeId]);
 
   const getProductOrders = (p) => {
     // get all customers information from customerProducts based on the id of product
@@ -107,8 +107,6 @@ const PackingPage = () => {
     setProduct(p);
     document.getElementById("product").textContent = store.columnsList[p.id][1] + " Ordered " + p.quantity;
   };
-  useEffect(async () => {
-  }, []);
 
   return (
       <Container maxWidth="lg">

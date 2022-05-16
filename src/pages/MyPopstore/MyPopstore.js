@@ -35,9 +35,6 @@ const MyPopstore = () => {
     });
   }, [navigate]);
 
-  useEffect(async () => {
-  }, []);
-
   return (
     <Container maxWidth="lg">
       <div className="popstore-wrapper">

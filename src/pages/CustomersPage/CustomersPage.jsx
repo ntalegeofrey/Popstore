@@ -49,7 +49,7 @@ const CustomersPage = () => {
         navigate("/");
       }
     });
-  }, [navigate]);
+  }, [navigate, storeId]);
 
   const getCustomerOrders = async (c) => {
     setCustomer(c);
@@ -78,8 +78,6 @@ const CustomersPage = () => {
     });
     return orders;
   };
-  useEffect(async () => {
-  }, []);
 
   return (
       <Container maxWidth="lg">

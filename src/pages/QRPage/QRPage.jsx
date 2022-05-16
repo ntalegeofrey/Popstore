@@ -14,28 +14,28 @@ const QRPage = () => {
     const navigate = useNavigate();
     const [qr, setQr] = useState({});
     const { qrCode } = useParams();
-    useEffect(async () => {
-        const qrRef = await collection(db, `/QR`);
-        const qr = await getDoc(doc(qrRef, qrCode));
-        if (qr.exists()) {
-            let data = qr.data();
-            setQr(data);
-            setTimeout(() => {
-                window.location.assign(data.link);
-            }, 1500);
-        } else {
-            const MySwal = withReactContent(Swal)
-            await MySwal.fire({
-                title: 'Error',
-                text: 'Invalid QR Code',
-                icon: 'error',
-                confirmButtonText: 'Ok'
-            })
-            navigate("/");
-        }
-    }, [navigate]);
-    useEffect(async () => {
-    }, []);
+    useEffect( () => {
+        (async () => {
+            const qrRef = await collection(db, `/QR`);
+            const qr = await getDoc(doc(qrRef, qrCode));
+            if (qr.exists()) {
+                let data = qr.data();
+                setQr(data);
+                setTimeout(() => {
+                    window.location.assign(data.link);
+                }, 1500);
+            } else {
+                const MySwal = withReactContent(Swal)
+                await MySwal.fire({
+                    title: 'Error',
+                    text: 'Invalid QR Code',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                })
+                navigate("/");
+            }
+        })();
+    }, [navigate, qrCode]);
 
     return (
         <Container maxWidth="lg">

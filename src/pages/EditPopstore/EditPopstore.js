@@ -32,13 +32,12 @@ const EditPopstore = () => {
   const { storeId } = useParams();
   const [user, setUser] = useState();
   const [store, setStore] = useState();
-  const [dbColumns, setDbColumns] = useState(['Reference ID', 'Name', 'Price']);
-  const [col, setCol] = useState({});
+  const [dbColumns] = useState(['Reference ID', 'Name', 'Price']);
   const [loading, setLoading] = useState(true);
 
   const MySwal = withReactContent(Swal)
 
-  useEffect(async () => {
+  useEffect( () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
@@ -58,12 +57,9 @@ const EditPopstore = () => {
       localStorage.setItem('columns', JSON.stringify({
         'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
       }));
-      setCol({
-        'Name': -1, 'Reference ID': -1, 'Price': -1, 'Ignore': 9
-      });
 
     });
-  }, [navigate]);
+  }, [navigate, storeId]);
 
   const updateStore = async (e) => {
     e.preventDefault();
@@ -125,10 +121,6 @@ const EditPopstore = () => {
     localStorage.removeItem('columns');
     navigate('/popstore/all');
   };
-
-  useEffect(async () => {
-
-  }, []);
 
   if (loading) return <Loading />;
   return (

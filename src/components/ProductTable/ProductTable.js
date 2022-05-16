@@ -11,7 +11,7 @@ const ProductTable = ({ tableData }) => {
   const [productList, setProductList] = useState([]);
   useEffect(() => {
     var rows = [];
-    tableData.map((element) => {
+    tableData.forEach((element) => {
       rows.push({
         name: element.storeName,
         link: "Link",
