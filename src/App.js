@@ -5,13 +5,13 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MyPopstore from "./pages/MyPopstore/MyPopstore";
 import NewPopstore from "./pages/NewPopstore/NewPopstore";
-import OrdersPage from "./pages/OrdersPage";
+import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import QRPage from "./pages/QRPage/QRPage";
-import CustomersPage from "./pages/CustomersPage";
-import PackagingPage from "./pages/PackingPage";
-import PopStore from "./pages/PopStore";
-import NotFound from "./pages/NotFound";
+import CustomersPage from "./pages/CustomersPage/CustomersPage";
+import PackagingPage from "./pages/PackingPage/PackingPage";
+import PopStore from "./pages/PopStore/PopStore";
+import NotFound from "./pages/NotFound/NotFound";
 
 import theme from "./config/theme";
 import EditPopstore from "./pages/EditPopstore/EditPopstore";
