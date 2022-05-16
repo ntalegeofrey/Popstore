@@ -2,12 +2,12 @@
 
 ---
 
-- [Setup Process](#section-1)
-- [CI/CD](#section-11)
-- [FOSS](#section-2)
-- [Project Overview](#section-3)
-- [Contributors](#section-4)
-- [Known Package Vulnerabilities](#section-5)
+- [Setup Process](https://gitlab.com/CorentinBrasri/popsto.re#section-1)
+- [CI/CD](https://gitlab.com/CorentinBrasri/popsto.re#section-11)
+- [FOSS](https://gitlab.com/CorentinBrasri/popsto.re#section-2)
+- [Project Overview](https://gitlab.com/CorentinBrasri/popsto.re#section-3)
+- [Contributors](https://gitlab.com/CorentinBrasri/popsto.re#section-4)
+- [Known Package Vulnerabilities](https://gitlab.com/CorentinBrasri/popsto.re#section-5)
 
 
 
