@@ -51,9 +51,7 @@ const OrdersPage = () => {
                 navigate("/");
             }
         });
-    }, [navigate]);
-    useEffect(async () => {
-    }, []);
+    }, [navigate, storeId]);
 
     return (
         <Container maxWidth="lg">

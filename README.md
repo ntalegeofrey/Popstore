@@ -2,11 +2,12 @@
 
 ---
 
-- [Setup Process](#section-1)
-- [CI/CD](#section-11)
-- [FOSS](#section-2)
-- [Project Overview](#section-3)
-- [Contributors](#section-4)
+- [Setup Process](https://gitlab.com/CorentinBrasri/popsto.re#section-1)
+- [CI/CD](https://gitlab.com/CorentinBrasri/popsto.re#section-11)
+- [FOSS](https://gitlab.com/CorentinBrasri/popsto.re#section-2)
+- [Project Overview](https://gitlab.com/CorentinBrasri/popsto.re#section-3)
+- [Contributors](https://gitlab.com/CorentinBrasri/popsto.re#section-4)
+- [Known Package Vulnerabilities](https://gitlab.com/CorentinBrasri/popsto.re#section-5)
 
 
 
@@ -45,8 +46,36 @@ or if you prefer yarn
 yarn install
 ```
 
+### Step-4: Setup env variables
 
-### Step-4: Start your application
+Rename `.env.example` file to `.env` or `.env.local`. Then add the config values for the Firebase and Email.JS.
+
+Alternatively following env variables are used. They should be added in your local .env file and in the CI/CD pipeline as well. 
+
+```
+# Firebase App Configs
+REACT_APP_FIREBASE_API_KEY=
+REACT_APP_FIREBASE_AUTH_DOMAIN=
+REACT_APP_FIREBASE_PROJECT_ID=
+REACT_APP_FIREBASE_STORAGE_BUCKET=
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=
+REACT_APP_FIREBASE_ID=
+REACT_APP_FIREBASE_MEASUREMENT=
+
+# React Scripts Config (True or False)
+FAST_REFRESH=
+
+# Email.JS Service Configs
+REACT_APP_EMAILJS_USER_ID=
+REACT_APP_EMAIL_JS_TOKEN=
+REACT_APP_EMAILJS_SERVICE_ID=
+REACT_APP_EMAILJS_TEMPLATE_ID=
+
+# Link of Live Project
+REACT_APP_STORE_LINK=
+```
+
+### Step-5: Start your application
 
 To start your application you need to run this command.
 
@@ -54,7 +83,7 @@ To start your application you need to run this command.
 yarn start
 ```
 
-### Step-5: Run tests
+### Step-6: Run tests
 
 To run tests you need to run this command.
 
@@ -62,7 +91,7 @@ To run tests you need to run this command.
 yarn test
 ```
 
-### Step-6: Build your application
+### Step-7: Build your application
 
 To build your application for production deployment you need to run this command.
 
@@ -70,11 +99,11 @@ To build your application for production deployment you need to run this command
 yarn build
 ```
 
-### Step-7: Deploy your application to firebase hosting
+### Step-8: Deploy your application to firebase hosting
 
 We are using firebase hosting to host/deploy our application. To do so you need to run the following commands:
 
-#### Step 7.1: Login to firebase
+#### Step 8.1: Login to firebase
 
 To login to firebase you need to run this command. This is only necessary if you haven't already logged in.
 
@@ -82,7 +111,7 @@ To login to firebase you need to run this command. This is only necessary if you
 firebase login
 ```
 
-#### Step 7.2: Deploy your application to firebase hosting
+#### Step 8.2: Deploy your application to firebase hosting
 
 To deploy your application to firebase hosting you need to run this command.
 
@@ -94,7 +123,7 @@ firebase deploy --only hosting
 ## CI/CD
 
 This application has a CI/CD pipeline setup to automatically build and deploy your application to firebase hosting. The pipeline is triggered whenever a merge request is merged to `main` branch. The pipeline automatically builds and deploy the application to firebase hosting.
-If you need to manually deploy your application to firebase hosting after making some changes, please follow the Step-7 in the above setup process.
+If you need to manually deploy your application to firebase hosting after making some changes, please follow the Step-8 in the above setup process.
 
 All env variables are added to the variables section of CI/CD on GitLab project settings. Following type of variables are added there:
 
@@ -157,3 +186,15 @@ Module 3 is about "My PopStore". The owner sees a list of all stores and the res
 - Yousef
 - Hamid
 - Kim
+
+<a name="section-5"></a>
+# Known Package Vulnerabilities
+
+Following packages being used by the project have known vulnerabilities:
+
+**Package Name:** `nth-check`<br>
+**Vulnerability Severity:** *Moderate*<br>
+**Vulnerability:** `Inefficient Regular Expression Complexity in nth-check`<br>
+**More Info:** [https://github.com/advisories/GHSA-rp65-9cf3-cjxr](https://github.com/advisories/GHSA-rp65-9cf3-cjxr)
+
+---

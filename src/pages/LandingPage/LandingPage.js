@@ -59,8 +59,8 @@ const LandingPage = () => {
     setPastedData('')
   }
 
-  useEffect(async () => {
-    firebase.auth().onAuthStateChanged((user) => {
+  useEffect( () => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user)
         if (localStorage.getItem('sheetData') !== null) {

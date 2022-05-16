@@ -35,7 +35,7 @@ const NewPopstore = () => {
   const [storeCurrency, setStoreCurrency] = useState('SEK');
   const [sheetData, setSheetData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
+  const [dbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
   const [col, setCol] = useState({});
 
   const MySwal = withReactContent(Swal)
@@ -90,10 +90,10 @@ const NewPopstore = () => {
     'United Kingdom': 'GBP',
     'Vatican City': 'EUR',
   }
-  const [currencies, setCurrencies] = useState(eurocurrencies);
+  const [currencies] = useState(eurocurrencies);
 
-  useEffect(async () => {
-    firebase.auth().onAuthStateChanged((user) => {
+  useEffect( () => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
         setStoreOwner(user.email);
@@ -273,21 +273,12 @@ const NewPopstore = () => {
 
     // Check price column for numeric values
     let productsPrices = [];
-    let productsNames = [];
     for (let i = 0; i < sheetData.length; i++) {
       if((sheetData[i].cells[cols['Price']] === undefined && cols['Price'] !== -1) || (sheetData[i].cells[cols['Name']] === undefined && cols['Name'] !== -1)){
         continue;
       }
       productsPrices.push(parseFloat(sheetData[i].cells[cols['Price']]));
-      productsNames.push(Number(sheetData[i].cells[cols['Name']]));
     }
-
-    let validNames = true;
-    productsNames.forEach( (el, i) => {
-      if(!Object.is(el, null)) {
-        validNames = false;
-      }
-    });
 
     productsPrices[0] = 0;
     if(cols['Price'] !== -1 && productsPrices.includes(NaN)){
@@ -318,10 +309,6 @@ const NewPopstore = () => {
       }
     }
   };
-
-  useEffect(async () => {
-
-  }, []);
 
   return (
       <Container maxWidth="lg">
