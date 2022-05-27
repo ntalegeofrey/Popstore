@@ -4,7 +4,7 @@ import styles from "./Sheets.module.css"
 
 const EditableDataTable = ({ sheet }) => {
     const [columns, setColumns] = useState([]);
-    const [dbColumns, setDbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
+    const [dbColumns] = useState(['Select Column', 'Name', 'Reference ID', 'Price', 'Ignore']);
     useEffect(async () => {
         setColumns(sheet[0].cells);
     }, []);
@@ -20,9 +20,6 @@ const EditableDataTable = ({ sheet }) => {
                                   id={`${column}-${index}`}
                                   label="Select Column"
                                   value='Select Column'
-                                  onChange={(e) => {
-
-                                  }}
                               >
                                   <MenuItem value='Select Column' selected={true}>Select Column</MenuItem>
                                   {dbColumns.map((dbColumn, i) => (

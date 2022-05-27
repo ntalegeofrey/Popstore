@@ -175,7 +175,7 @@ Module 3 is about "My PopStore". The owner sees a list of all stores and the res
 
 ### M4 - new scope
 
-- lock the store function on the edit PopStore page (the store is still visible, but no orders can me made)
+- lock the store function on the edit PopStore page (the store is still visible, but no orders can be made)
 - currency conversion for all EU currencies as a dropdown on "My Popstore".
 - Description validation with max characters. Mobile view shows "…".
 - QR Code
