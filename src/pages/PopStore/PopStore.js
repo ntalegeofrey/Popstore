@@ -69,7 +69,7 @@ const PopStore = () => {
 
     const saveOrder = async () => {
 
-        if(!isEmail(email) || email.trim() == ""){
+        if(!isEmail(email) || email.trim() === ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your email',
@@ -79,7 +79,7 @@ const PopStore = () => {
             return;
         }
 
-        if(!isMobilePhone(phone) || phone.trim() == ""){
+        if(!isMobilePhone(phone) || phone.trim() === ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your phone number',
@@ -89,7 +89,7 @@ const PopStore = () => {
             return;
         }
 
-        if(order.length == 0){
+        if(order.length === 0){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please add some items to your order',

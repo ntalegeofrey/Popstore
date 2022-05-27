@@ -64,7 +64,7 @@ const EditPopstore = () => {
   const updateStore = async (e) => {
     e.preventDefault();
 
-    if ( store.storeName.trim() == '') {
+    if ( store.storeName.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please select a name for PopStore',
@@ -74,7 +74,7 @@ const EditPopstore = () => {
       return;
     }
 
-    if ( !isEmail(store.storeOwner) || store.storeOwner.trim() == '') {
+    if ( !isEmail(store.storeOwner) || store.storeOwner.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add an email for PopStore owner',
@@ -84,7 +84,7 @@ const EditPopstore = () => {
       return;
     }
 
-    if ( store.description.trim() == '') {
+    if ( store.description.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add description for PopStore',
@@ -197,7 +197,7 @@ const EditPopstore = () => {
                   return (
                       <TableRow key={`row-${rowIndex}`}>
                         { row.map((cell, cellIndex) => (
-                            cellIndex != 3 ? (
+                            cellIndex !== 3 ? (
                             <TableCell
                                 key={`cell-${rowIndex}-${cellIndex}`}
                                 className={styles['cell']}>

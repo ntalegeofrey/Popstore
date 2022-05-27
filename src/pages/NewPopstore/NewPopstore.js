@@ -145,7 +145,7 @@ const NewPopstore = () => {
       return;
     }
 
-    if ( storeName.trim() == '') {
+    if ( storeName.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please select a name for PopStore',
@@ -155,7 +155,7 @@ const NewPopstore = () => {
       return;
     }
 
-    if ( storeOwner.trim() == '') {
+    if ( storeOwner.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add an email for PopStore owner',
@@ -165,7 +165,7 @@ const NewPopstore = () => {
       return;
     }
 
-    if ( storeDescription.trim() == '') {
+    if ( storeDescription.trim() === '') {
       await MySwal.fire({
         title: 'Error!',
         text: 'Please add description for PopStore',
@@ -181,7 +181,7 @@ const NewPopstore = () => {
 
     if(referenceIdColumn === -1){
       for (let i = 0; i < sheetData.length; i++) {
-        if(sheetData[i].cells[nameColumn] == undefined || sheetData[i].cells[priceColumn] == undefined){
+        if(sheetData[i].cells[nameColumn] === undefined || sheetData[i].cells[priceColumn] === undefined){
           continue;
         }
         products.push([
@@ -194,7 +194,7 @@ const NewPopstore = () => {
       }
     } else {
       for (let i = 0; i < sheetData.length; i++) {
-        if(sheetData[i].cells[nameColumn] == undefined || sheetData[i].cells[priceColumn] == undefined || sheetData[i].cells[referenceIdColumn] == undefined){
+        if(sheetData[i].cells[nameColumn] === undefined || sheetData[i].cells[priceColumn] === undefined || sheetData[i].cells[referenceIdColumn] === undefined){
           continue;
         }
         products.push([
@@ -302,7 +302,7 @@ const NewPopstore = () => {
   const updateCurrencyColumn = async (e, country, currency) => {
     e.preventDefault();
     if(document.getElementById(`currency`)) {
-      if(currency == "EUR") {
+      if(currency === "EUR") {
         document.getElementById(`currency`).textContent = currency;
       } else {
         document.getElementById(`currency`).textContent = country + " - " + currency;

@@ -28,7 +28,7 @@ const OrderPage = () => {
                 let temp = [];
                 orderData.order.forEach((p) => {
                     if(p !== null){
-                        if(p.quantity != 0) {
+                        if(p.quantity !== 0) {
                             temp.push(p);
                         }
                     }
