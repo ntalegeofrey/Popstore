@@ -232,7 +232,7 @@ const NewPopstore = () => {
       storeID: storeRef.id,
       createAt: serverTimestamp(),
       columnsList: JSON.stringify(products),
-      link: `https://popstore.bothofus.se/store/${user.uid}/${storeRef.id}`,
+      link: `https://popsto.re/store/${user.uid}/${storeRef.id}`,
       columns: columns,
       locked: false,
     }
