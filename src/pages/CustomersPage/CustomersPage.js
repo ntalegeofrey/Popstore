@@ -54,7 +54,7 @@ const CustomersPage = () => {
   const getCustomerOrders = async (c) => {
     setCustomer(c);
     const ordersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`);
-    const q = query(ordersRef, where("email", "===", c.email));
+    const q = query(ordersRef, where("email", "==", c.email));
     const querySnapshot = await getDocs(q);
     let temp = [];
     querySnapshot.forEach((doc) => {
