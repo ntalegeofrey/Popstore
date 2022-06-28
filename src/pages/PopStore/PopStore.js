@@ -24,6 +24,7 @@ const PopStore = () => {
     const MySwal = withReactContent(Swal)
     const [usercurrency] = React.useState();
     const [storecurrency,setStoreCurrency] = React.useState();
+    const [submitting, setSubmitting] = React.useState(false);
     let total = 0;
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
@@ -69,6 +70,8 @@ const PopStore = () => {
 
     const saveOrder = async () => {
 
+        setSubmitting(true);
+
         if(!isEmail(email) || email.trim() === ""){
             await MySwal.fire({
                 title: 'Error',
@@ -76,6 +79,7 @@ const PopStore = () => {
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
@@ -86,6 +90,7 @@ const PopStore = () => {
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
@@ -96,6 +101,7 @@ const PopStore = () => {
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
@@ -162,6 +168,7 @@ const PopStore = () => {
         setOrder([]);
         setEmail("");
         setPhone("");
+        setSubmitting(false);
     }
 
   if (loading) return <Loading />;
@@ -291,6 +298,7 @@ const PopStore = () => {
                             style={{marginLeft: '1rem'}}
                             color="primary"
                             variant="contained"
+                            disabled={submitting}
                             onClick={saveOrder}
                             >
                             Order
