@@ -94,4 +94,6 @@ manual_deploy:
   environment:
     name: production
     url: https://popsto.re/
+  except:
+    - main
   when: manual
