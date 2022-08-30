@@ -69,9 +69,6 @@ build:
     paths:
       - build/
     when: always
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-  when: manual
 
 deploy:
   stage: deploy
@@ -83,6 +80,18 @@ deploy:
   environment:
     name: production
     url: https://popsto.re/
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-    - when: manual
+  only:
+    - main
+
+
+deploy:
+  stage: deploy
+  image: node:14.19.0
+  script:
+    - npm i firebase-tools -g
+    - firebase deploy --only hosting --token $FIREBASE_DEPLOY --project popsto-re --non-interactive
+    - echo "Deployed to production server (Firebase Hosting)"
+  environment:
+    name: production
+    url: https://popsto.re/
+  when: manual
