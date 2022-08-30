@@ -18,7 +18,6 @@ stages:
   - test
   - build
   - deploy
-  - manual_deploy
 
 init:
   stage: init
