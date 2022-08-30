@@ -5,6 +5,10 @@
 #  - apt-get install -y ruby-dev
 #  - gem install dpl
 
+workflow:
+    rules:
+    - when: always
+
 cache:
   paths:
     - node_modules/
@@ -65,8 +69,9 @@ build:
     paths:
       - build/
     when: always
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - when: manual
 
 deploy:
   stage: deploy
@@ -78,5 +83,6 @@ deploy:
   environment:
     name: production
     url: https://popsto.re/
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - when: manual
