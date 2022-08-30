@@ -18,6 +18,7 @@ stages:
   - test
   - build
   - deploy
+  - manual_deploy
 
 init:
   stage: init
@@ -85,7 +86,7 @@ deploy:
 
 
 deploy:
-  stage: deploy
+  stage: manual_deploy
   image: node:14.19.0
   script:
     - npm i firebase-tools -g
