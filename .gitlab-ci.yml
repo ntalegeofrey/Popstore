@@ -23,7 +23,7 @@ init:
 
 test:
   stage: test
-  image: node:14.19.0
+  image: node:16.15.0
   script:
     - export REACT_APP_API_KEY=$REACT_APP_API_KEY
     - export REACT_APP_AUTH_DOMAIN=$REACT_APP_AUTH_DOMAIN
@@ -44,7 +44,7 @@ test:
 
 build:
   stage: build
-  image: node:14.19.0
+  image: node:16.15.0
   script:
     - export REACT_APP_API_KEY=$REACT_APP_API_KEY
     - export REACT_APP_AUTH_DOMAIN=$REACT_APP_AUTH_DOMAIN
@@ -70,7 +70,7 @@ build:
 
 deploy:
   stage: deploy
-  image: node:14.19.0
+  image: node:16.15.0
   script:
     - npm i firebase-tools -g
     - firebase deploy --only hosting --token $FIREBASE_DEPLOY --project popsto-re --non-interactive
