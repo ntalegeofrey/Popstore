@@ -24,6 +24,7 @@ const PopStore = () => {
     const MySwal = withReactContent(Swal)
     const [usercurrency] = React.useState();
     const [storecurrency,setStoreCurrency] = React.useState();
+    const [submitting, setSubmitting] = React.useState(false);
     let total = 0;
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
@@ -69,33 +70,38 @@ const PopStore = () => {
 
     const saveOrder = async () => {
 
-        if(!isEmail(email) || email.trim() == ""){
+        setSubmitting(true);
+
+        if(!isEmail(email) || email.trim() === ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your email',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
-        if(!isMobilePhone(phone) || phone.trim() == ""){
+        if(!isMobilePhone(phone) || phone.trim() === ""){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please enter your phone number',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
-        if(order.length == 0){
+        if(order.length === 0){
             await MySwal.fire({
                 title: 'Error',
                 text: 'Please add some items to your order',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             })
+            setSubmitting(false);
             return;
         }
 
@@ -162,6 +168,32 @@ const PopStore = () => {
         setOrder([]);
         setEmail("");
         setPhone("");
+        setSubmitting(false);
+
+        let newOrderEmail = `
+            <!doctype html>
+            <html lang="en">
+            <head>
+            <style>
+               body{
+                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
+               }
+            </style>
+            <title>New PopStore Order</title>
+            </head>
+            <body>
+            <h1>Order</h1>
+            <p>A new order has been placed on <b>${store.storeName}</b>. You can view your order by visiting the following link:</p>
+            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
+            <p>&nbsp;</p>
+            <p>Regards</p>
+            <p>PopStore Team</p>
+            </body>
+            </html>
+            `;
+        if (isEmail(store.storeOwner)) {
+            sendMail(store.storeOwner, "New PopStore Order", newOrderEmail);
+        }
     }
 
   if (loading) return <Loading />;
@@ -291,6 +323,7 @@ const PopStore = () => {
                             style={{marginLeft: '1rem'}}
                             color="primary"
                             variant="contained"
+                            disabled={submitting}
                             onClick={saveOrder}
                             >
                             Order

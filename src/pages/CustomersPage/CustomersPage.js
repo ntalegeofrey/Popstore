@@ -67,8 +67,8 @@ const CustomersPage = () => {
       o.order.forEach((p) => {
         if(p !== null){
           // check if order already exists
-          let index = orders.findIndex((e) => e.id == p.id);
-          if(index == -1){
+          let index = orders.findIndex((e) => e.id === p.id);
+          if(index === -1){
             orders.push(p);
           } else {
             orders[index].quantity += p.quantity;
