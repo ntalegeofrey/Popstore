@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button, Grid, TextField
-} from '@mui/material';
+import { Button, Grid, TextField, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import firebase from "../../service/firebase";
 import DataTable from "../../components/DataTable/DataTable";
 import textToCellsParser from "../../functions/textToCellsParser";
@@ -12,61 +10,67 @@ import "./styles.css";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import LogoutButton from "../../components/LogoutButton/LogoutButton";
+import {
+  DataIndicator,
+  PostoreIndicator,
+} from "../../components/Styles/styledIndicators";
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const [sheetData, setSheetData] = useState([])
-  const [pastedData, setPastedData] = useState('')
+  const [sheetData, setSheetData] = useState([]);
+  const [pastedData, setPastedData] = useState("");
   const [user, setUser] = useState();
 
-  const MySwal = withReactContent(Swal)
+  const MySwal = withReactContent(Swal);
 
   const handlePaste = (e) => {
-    const data = e.clipboardData.getData('text/plain')
-    setPastedData(data)
-    const cells = textToCellsParser(data)
-    setSheetData(cells)
-  }
+    const data = e.clipboardData.getData("text/plain");
+    setPastedData(data);
+    const cells = textToCellsParser(data);
+    setSheetData(cells);
+  };
 
   const saveSheet = async (e) => {
-    const validation = sheetData.every(item => Array.isArray(item.cells) && item.cells.length);
-    if(!validation) {
+    const validation = sheetData.every(
+      (item) => Array.isArray(item.cells) && item.cells.length
+    );
+    if (!validation) {
       await MySwal.fire({
-        title: 'Error!',
-        text: 'Please paste correct sheet data to proceed',
-        icon: 'error',
-        confirmButtonText: 'Ok'
-      })
-      return
+        title: "Error!",
+        text: "Please paste correct sheet data to proceed",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+      return;
     }
-    localStorage.setItem('sheetData', JSON.stringify(sheetData))
-    e.preventDefault()
-    await CheckLogin()
-  }
+    localStorage.setItem("sheetData", JSON.stringify(sheetData));
+    e.preventDefault();
+    await CheckLogin();
+  };
 
   const CheckLogin = async () => {
     const user = firebase.auth().currentUser;
     if (user) {
-      navigate('/popstore/create')
+      navigate("/popstore/create");
     } else {
-      await signInWithGoogle()
+      await signInWithGoogle();
     }
-  }
+  };
 
   const clearSheet = () => {
-    setSheetData([])
-    setPastedData('')
-  }
+    setSheetData([]);
+    setPastedData("");
+  };
 
-  useEffect( () => {
+  useEffect(() => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        setUser(user)
-        if (localStorage.getItem('sheetData') !== null) {
-          navigate('/popstore/create')
+        setUser(user);
+        if (localStorage.getItem("sheetData") !== null) {
+          navigate("/popstore/create");
         } else {
-          navigate("/")
+          navigate("/");
         }
       }
     });
@@ -76,47 +80,48 @@ const LandingPage = () => {
     <Container maxWidth="lg">
       <Grid container spacing={2}>
         <Grid item xs>
-          <h1>Create Popstore from a spreadsheet</h1>
+          <Typography
+            variant="h2"
+            color="text.main"
+            sx={{ pb: 4, pt: 4, fontWeight: "light" }}
+          >
+            Create Popstore from a spreadsheet
+          </Typography>
         </Grid>
       </Grid>
       <form onSubmit={saveSheet}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={8}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={6}>
             <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Create Popstore from a spreadsheet"
-                helperText=""
-                variant="outlined"
-                onPaste={handlePaste}
-                value={pastedData}
+              fullWidth
+              id="outlined-basic"
+              label="Create Popstore from a spreadsheet"
+              helperText=""
+              variant="outlined"
+              onPaste={handlePaste}
+              value={pastedData}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
-            {user && <LogoutButton user={user?.photoURL} />}
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <small>No need to upload title/description along with your data (as column titles), this is added in the next step</small>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12}><p>&nbsp;</p></Grid>
-          <Grid item xs={6} md={4}>
+          <Grid item xs={6} md={3}>
             <Button
-                color="primary"
-                variant="contained"
-                disabled={!sheetData.length}
-                onClick={saveSheet}>
-              Go
+              color="primary"
+              variant="contained"
+              disabled={!sheetData.length}
+              onClick={saveSheet}
+              sx={{ width: "100%" }}
+            >
+              Create PopStore
             </Button>
           </Grid>
-          <Grid item xs={6} md={4}>
+          <Grid item xs={6} md={3}>
             <Button
-                color="secondary"
-                variant="contained"
-                disabled={typeof sheetData === 'undefined' || !sheetData.length}
-                onClick={clearSheet}>
-              Clear
+              color="secondary"
+              variant="outlined"
+              disabled={typeof sheetData === "undefined" || !sheetData.length}
+              onClick={clearSheet}
+              sx={{ width: "100%" }}
+            >
+              Clear Data
             </Button>
           </Grid>
         </Grid>
@@ -124,6 +129,14 @@ const LandingPage = () => {
       <div className="create-table-wrapper">
         <DataTable sheet={sheetData} />
       </div>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={2}>
+          <PostoreIndicator />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <DataIndicator />
+        </Grid>
+      </Grid>
     </Container>
   );
 };
