@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 import LandingPage from "./pages/LandingPage/LandingPage";
@@ -12,30 +11,44 @@ import CustomersPage from "./pages/CustomersPage/CustomersPage";
 import PackagingPage from "./pages/PackingPage/PackingPage";
 import PopStore from "./pages/PopStore/PopStore";
 import NotFound from "./pages/NotFound/NotFound";
-
-import theme from "./config/theme";
 import EditPopstore from "./pages/EditPopstore/EditPopstore";
+import ThemeCustomization from "./config/theme";
+import Navigation from "./components/Navigation/Navigation";
+import MainContainer from "./components/Styles/styledMainContainer";
+import { Box } from "@mui/material";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeCustomization>
       <Toaster />
-      <BrowserRouter>
+      <Navigation />
+      <MainContainer component={"main"}>
+        {/* puts content below appbar */}
+        <Box sx={{ height: "45px" }}></Box>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route exact path="/popstore/all" element={<MyPopstore />} />
           <Route path="/popstore/create" element={<NewPopstore />} />
           <Route path="/store/:ownerId/:storeId" element={<PopStore />} />
-          <Route path="/order/:ownerId/:storeId/:orderId" element={<OrderPage />} />
+          <Route
+            path="/order/:ownerId/:storeId/:orderId"
+            element={<OrderPage />}
+          />
           <Route path="/QR/:qrCode" element={<QRPage />} />
           <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
-          <Route path="/popstore/customers/:storeId" element={<CustomersPage />} />
+          <Route
+            path="/popstore/customers/:storeId"
+            element={<CustomersPage />}
+          />
           <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
-          <Route path="/popstore/packaging/:storeId" element={<PackagingPage />} />
+          <Route
+            path="/popstore/packaging/:storeId"
+            element={<PackagingPage />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+      </MainContainer>
+    </ThemeCustomization>
   );
 }
 export default App;
