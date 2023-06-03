@@ -48,6 +48,11 @@ const StyledLangButton = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        sx={{
+          "& .MuiPaper-root": {
+            backgroundColor: "lightblue",
+          },
+        }}
       >
         <MenuItem onClick={() => handleLanguageSelect("EN")}>EN</MenuItem>
         <MenuItem onClick={() => handleLanguageSelect("SE")}>SE</MenuItem>

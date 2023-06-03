@@ -30,7 +30,13 @@ const ThemeCustomization = ({ children }) => {
 
   return (
     <ThemeProvider theme={responsiveFontSizes(lightTheme)}>
-      <Box sx={{ display: "flex", minHeight: "100vh", justifyContent: "row" }}>
+      <Box
+        sx={{
+          display: "flex",
+          minHeight: "100vh",
+          justifyContent: "row",
+        }}
+      >
         <CssBaseline />
         {children}
       </Box>

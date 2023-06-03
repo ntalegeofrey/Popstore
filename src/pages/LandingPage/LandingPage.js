@@ -14,6 +14,7 @@ import {
   DataIndicator,
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
+import PopUpModal from "../../components/Styles/styledLoginPopUp";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -76,6 +77,16 @@ const LandingPage = () => {
     });
   }, [navigate]);
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Container maxWidth="lg">
       <Grid container spacing={2}>
@@ -107,11 +118,16 @@ const LandingPage = () => {
               color="primary"
               variant="contained"
               disabled={!sheetData.length}
-              onClick={saveSheet}
+              onClick={handleOpenModal}
               sx={{ width: "100%" }}
             >
               Create PopStore
             </Button>
+            <PopUpModal
+              open={openModal}
+              onClose={handleCloseModal}
+              saveSheet={saveSheet}
+            />
           </Grid>
           <Grid item xs={6} md={3}>
             <Button
