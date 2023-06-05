@@ -15,10 +15,10 @@ export const StyledDataGrid = styled(DataGrid)(({ theme, padded }) => ({
         backgroundColor: '#4C8991',
         color: theme.palette.white.main,
         fontSize: '14px',
-        borderBottom: 'none'
+        borderBottom: padded ? '8px solid #fff' : 'none',
     },
     "& .MuiDataGrid-row": {
-        backgroundColor: '#F6F9F9',
+        backgroundColor: 'rgba(76, 137, 145, 0.1)',
         cursor: 'pointer',
         fontSize: '14px',
     },
@@ -26,7 +26,7 @@ export const StyledDataGrid = styled(DataGrid)(({ theme, padded }) => ({
         overflow: padded ? 'auto' : 'hidden'
     },
     "& .MuiDataGrid-cell": {
-        borderBottom: padded ? `8px solid ${theme.palette.white.main}` : '1px solid #4C8991',
+        borderBottom: padded ? `5px solid ${theme.palette.white.main}` : '1px solid #4C8991',
     },
 }));
 
