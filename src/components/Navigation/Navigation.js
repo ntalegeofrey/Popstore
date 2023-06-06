@@ -6,7 +6,7 @@ import { StyledLogo } from "../Styles/styledLogo";
 import { StyledNavButton } from "../Styles/styledNavButton";
 import StyledLangButton from "../Styles/styledLangDropdown";
 import MenuIcon from "@mui/icons-material/Menu";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, CssBaseline, IconButton, Menu, MenuItem } from "@mui/material";
 import Sidebar from "../Sidebar/Sidebar";
 
 const Navigation = () => {
