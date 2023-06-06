@@ -53,6 +53,14 @@ const StyledLangButton = () => {
             backgroundColor: "lightblue",
           },
         }}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         <MenuItem onClick={() => handleLanguageSelect("EN")}>EN</MenuItem>
         <MenuItem onClick={() => handleLanguageSelect("SE")}>SE</MenuItem>

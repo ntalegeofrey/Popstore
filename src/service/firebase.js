@@ -16,13 +16,13 @@ import {
 } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT
+  apiKey:  "AIzaSyDsSMQPtGwRmZW4DGf06AG5-pboWgNmBfM",
+  authDomain: "popsto-re.firebaseapp.com",
+  projectId: "popsto-re",
+  storageBucket: "popsto-re.appspot.com",
+  messagingSenderId: "333204054236",
+  appId: "1:333204054236:web:dd0a4c9117944690231419",
+  measurementId: "G-4Y7EF4KJ2K",
 };
 
 // Initialize Firebase
