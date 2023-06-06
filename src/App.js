@@ -16,6 +16,8 @@ import ThemeCustomization from "./config/theme";
 import Navigation from "./components/Navigation/Navigation";
 import MainContainer from "./components/Styles/styledMainContainer";
 import { Box } from "@mui/material";
+import PopStoreOrders from "./pages/OrdersPage";
+import PopStorePackings from "./pages/PackingPage";
 
 function App() {
   return (
@@ -45,6 +47,8 @@ function App() {
             path="/popstore/packaging/:storeId"
             element={<PackagingPage />}
           />
+          <Route path="/popstore/orders" element={<PopStoreOrders />} />
+          <Route path="/popstore/packing" element={<PopStorePackings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainContainer>

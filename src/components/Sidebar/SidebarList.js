@@ -9,10 +9,13 @@ import {
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { sidebarRoutes } from './SidebarRoutes';
+import { useNavigate } from 'react-router-dom';
 
 const SidebarList = () => {
+    const navigate = useNavigate();
     return (
         <Box component='div'>
+            <Toolbar />
             <Toolbar />
             <List>
                 <ListItemButton>
@@ -23,7 +26,7 @@ const SidebarList = () => {
                 </ListItemButton>
                 {sidebarRoutes.map((item) => (
                     <ListItem key={item.text} disablePadding>
-                        <ListItemButton>
+                        <ListItemButton onClick={() => navigate(item.path)}>
                             <ListItemIcon />
                             <ListItemText primary={item.text} />
                         </ListItemButton>
