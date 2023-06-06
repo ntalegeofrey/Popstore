@@ -24,6 +24,7 @@ const Sidebar = (props) => {
                 container={container}
                 variant="temporary"
                 open={mobileOpen}
+                drawerWidth={drawerWidth}
                 onClose={handleDrawerToggle}
                 ModalProps={{ keepMounted: true }}
             >

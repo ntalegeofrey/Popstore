@@ -7,6 +7,7 @@ import { StyledNavButton } from "../Styles/styledNavButton";
 import StyledLangButton from "../Styles/styledLangDropdown";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton, Menu, MenuItem } from "@mui/material";
+import Sidebar from "../Sidebar/Sidebar";
 
 const Navigation = () => {
   const theme = useTheme();
@@ -102,11 +103,15 @@ const Navigation = () => {
   };
 
   return (
-    <StyledAppBar position="fixed" elevation={0}>
-      <StyledToolBar>
-        {isMobile ? renderMobileNav() : renderDesktopNav()}
-      </StyledToolBar>
-    </StyledAppBar>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <StyledAppBar position="fixed" elevation={0}>
+        <StyledToolBar>
+          {isMobile ? renderMobileNav() : renderDesktopNav()}
+        </StyledToolBar>
+      </StyledAppBar>
+      <Sidebar />
+    </Box>
   );
 };
 

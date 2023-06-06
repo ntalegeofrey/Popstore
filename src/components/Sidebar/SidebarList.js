@@ -2,31 +2,35 @@ import {
     Toolbar,
     List,
     ListItem,
-    ListItemIcon,
     ListItemText,
     ListItemButton,
-    Box
+    Box,
+    ListItemIcon
 } from '@mui/material';
-import MailIcon from '@mui/icons-material/Mail';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { sidebarRoutes } from './SidebarRoutes';
 
 const SidebarList = () => {
     return (
         <Box component='div'>
             <Toolbar />
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <ChevronLeftIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Fresh Vegetables" />
+                </ListItemButton>
+                {sidebarRoutes.map((item) => (
+                    <ListItem key={item.text} disablePadding>
                         <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <ChevronLeftIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemIcon />
+                            <ListItemText primary={item.text} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
-        </Box>
+        </Box >
     )
 }
 
