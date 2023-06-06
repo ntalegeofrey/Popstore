@@ -41,14 +41,20 @@ const PopStorePackings = () => {
                         </Grid>
                     </Grid>
                     <Collapse in={params.row.id === clickedIndex}>
-                        <Box
-                            px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
-                            sx={{ bgcolor: '#F1F2F4', minHeight: '200px', borderTop: '2px solid #fff' }}>
-                            {params.row?.details?.user?.email} <br/>
-                            {params.row?.details?.user?.name} <br/>
-                            {params.row?.details?.user?.phone}
-
-                        </Box>
+                        {[1, 2, 3].map((item, index) => (
+                            <Box
+                                px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
+                                py={1}
+                                sx={{
+                                    bgcolor: '#F1F2F4',
+                                    height: '120px',
+                                    borderTop: index === 0 ? '2px solid #fff' : 'none',
+                                    borderBottom: '1px solid #353535'
+                                }}>
+                                {params.row?.details?.user?.email} <br />
+                                {params.row?.details?.user?.name} <br />
+                                {params.row?.details?.user?.phone}
+                            </Box>))}
                     </Collapse>
                 </Box>
             )
@@ -75,10 +81,16 @@ const PopStorePackings = () => {
                         </Grid>
                     </Grid>
                     <Collapse in={params.row.id === clickedIndex}>
-                        <Box
-                            px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
-                            sx={{ bgcolor: '#F1F2F4', minHeight: '200px', borderTop: '2px solid #fff' }}>
-                        </Box>
+                        {[1, 2, 3].map((item, index) => (
+                            <Box
+                                px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
+                                sx={{
+                                    bgcolor: '#F1F2F4',
+                                    height: '120px',
+                                    borderTop: index === 0 ? '2px solid #fff' : 'none',
+                                    borderBottom: '1px solid #353535'
+                                }}>
+                            </Box>))}
                     </Collapse>
                 </Box>
             )
@@ -111,12 +123,25 @@ const PopStorePackings = () => {
                         </Grid>
                     </Grid>
                     <Collapse in={params.row.id === clickedIndex}>
-                        <Box
-                            px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
-                            sx={{ bgcolor: '#F1F2F4', minHeight: '200px', width: '100%', borderTop: '2px solid #fff' }}>
-                            <Typography>Note/ Comment: </Typography> <br/>
-                            {params.row?.details?.comment}
-                        </Box>
+                        {[1, 2, 3].map((item, index) => (
+                            <Box
+                                px={clickedIndex > 0 && params.row.id === clickedIndex ? '10px' : 0}
+                                sx={{
+                                    bgcolor: '#F1F2F4', height: '120px', width: '100%',
+                                    borderTop: index === 0 ? '2px solid #fff' : 'none',
+                                    borderBottom: '1px solid #353535'
+                                }}>
+                                <Grid py={1} container xs={12}>
+                                    <Grid item xs={2}>
+                                        <Typography> 1</Typography> <br />
+                                    </Grid>
+                                    <Grid item xs={10}>
+                                        <Typography sx={{ fontSize: '12px' }}>Note/ Comment: </Typography>
+                                        <Typography sx={{ fontSize: '14px', fontWeight: '400' }}>{params.row?.details?.comment} </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        ))}
                     </Collapse>
                 </Box>
             )
