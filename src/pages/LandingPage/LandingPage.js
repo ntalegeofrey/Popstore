@@ -15,6 +15,7 @@ import {
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
+import DashboardTooltip from "../../components/DashboardTooltip"
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -130,15 +131,17 @@ const LandingPage = () => {
             />
           </Grid>
           <Grid item xs={6} md={3}>
+            <DashboardTooltip>
             <Button
               color="secondary"
               variant="outlined"
-              disabled={typeof sheetData === "undefined" || !sheetData.length}
+              // disabled={typeof sheetData === "undefined" || !sheetData.length}
               onClick={clearSheet}
               sx={{ width: "100%" }}
             >
               Clear Data
             </Button>
+            </DashboardTooltip>
           </Grid>
         </Grid>
       </form>
