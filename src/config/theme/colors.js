@@ -7,6 +7,7 @@ const colors = {
   border: "#efeff7",
   background: "#ffffff",
   background2: "#edf3f4",
+  canvasColor: "#FFF",
 
   button: {
     active: "#4c8991",

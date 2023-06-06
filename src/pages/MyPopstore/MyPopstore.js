@@ -7,7 +7,13 @@ import Grid from "@mui/material/Grid";
 import ProductTable from "../../components/ProductTable/ProductTable";
 import Button from "@mui/material/Button";
 import firebase from "../../service/firebase";
-import { db, collection, getDocs, query, orderBy } from "../../service/firebase";
+import {
+  db,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "../../service/firebase";
 import { useNavigate, Link } from "react-router-dom";
 
 const MyPopstore = () => {
@@ -19,10 +25,10 @@ const MyPopstore = () => {
       if (user) {
         setUser(user);
         let temp = [];
-        const allStores = query(collection(
-            db,
-            `/StoreOwners/${user.uid}/allStores`
-        ), orderBy('createAt', 'desc'));
+        const allStores = query(
+          collection(db, `/StoreOwners/${user.uid}/allStores`),
+          orderBy("createAt", "desc")
+        );
         const querySnapshot = await getDocs(allStores);
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots

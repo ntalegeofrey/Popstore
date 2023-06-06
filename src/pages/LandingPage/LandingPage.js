@@ -9,12 +9,12 @@ import { signInWithGoogle } from "../../service/firebase";
 import "./styles.css";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import {
   DataIndicator,
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
+import StoreCardComponent from "../../components/StoreCard/storeCard";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const LandingPage = () => {
   const [sheetData, setSheetData] = useState([]);
   const [pastedData, setPastedData] = useState("");
   const [user, setUser] = useState();
+  const [showDataTable, setShowDataTable] = useState(false);
 
   const MySwal = withReactContent(Swal);
 
@@ -30,6 +31,7 @@ const LandingPage = () => {
     setPastedData(data);
     const cells = textToCellsParser(data);
     setSheetData(cells);
+    setShowDataTable(true);
   };
 
   const saveSheet = async (e) => {
@@ -62,6 +64,7 @@ const LandingPage = () => {
   const clearSheet = () => {
     setSheetData([]);
     setPastedData("");
+    setShowDataTable(false);
   };
 
   useEffect(() => {
@@ -79,10 +82,13 @@ const LandingPage = () => {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const handleOpenModal = async (e) => {
+    if (!user) {
+      setOpenModal(true);
+    } else {
+      await saveSheet(e);
+    }
   };
-
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -142,15 +148,22 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </form>
-      <div className="create-table-wrapper">
-        <DataTable sheet={sheetData} />
-      </div>
-      <Grid container spacing={2}>
+      {showDataTable && (
+        <div className="create-table-wrapper">
+          <DataTable sheet={sheetData} />
+        </div>
+      )}
+      <Grid container spacing={2} marginBottom="30px">
         <Grid item xs={12} md={2}>
           <PostoreIndicator />
         </Grid>
         <Grid item xs={12} md={2}>
           <DataIndicator />
+        </Grid>
+      </Grid>
+      <Grid container>
+        <Grid xs={12}>
+          <StoreCardComponent name="gfgsc" />
         </Grid>
       </Grid>
     </Container>

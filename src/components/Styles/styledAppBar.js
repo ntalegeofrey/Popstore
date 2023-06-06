@@ -17,7 +17,14 @@ export const StyledToolBar = styled(Toolbar)(({ theme }) => ({
   alignItems: "center",
   padding: "20px 32px",
   boxSizing: "inherit",
-  marginLeft: "100px",
-  marginRight: "100px",
   backgroundColor: theme.palette.white.main,
+
+  [theme.breakpoints.down("sm")]: {
+    marginLeft: 0,
+    marginRight: 0,
+  },
+  [theme.breakpoints.up("md")]: {
+    marginLeft: "100px",
+    marginRight: "100px",
+  },
 }));
