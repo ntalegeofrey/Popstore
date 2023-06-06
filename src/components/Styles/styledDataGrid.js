@@ -1,7 +1,7 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { Typography, styled } from "@mui/material";
 
-export const StyledDataGrid = styled(DataGrid)(({ theme, padded }) => ({
+export const StyledDataGrid = styled(DataGrid)(({ theme, padded, clickedIndex }) => ({
     '.MuiDataGrid-columnSeparator': {
         display: 'none',
     },
@@ -21,12 +21,20 @@ export const StyledDataGrid = styled(DataGrid)(({ theme, padded }) => ({
         backgroundColor: 'rgba(76, 137, 145, 0.1)',
         cursor: 'pointer',
         fontSize: '14px',
+        maxHeight: padded ? 'none !important' : 'unset',
     },
     "& .MuiDataGrid-virtualScroller": {
         overflow: padded ? 'auto' : 'hidden'
     },
     "& .MuiDataGrid-cell": {
         borderBottom: padded ? `5px solid ${theme.palette.white.main}` : '1px solid #4C8991',
+        lineHeight: padded ? 'unset !important' : 'unset',
+        maxHeight: padded ? 'none !important' : 'unset',
+        whiteSpace: padded ? 'normal' : 'unset',
+        padding: parseInt(clickedIndex, 10) > 0 ? '0px' : '',
+    },
+    '& .MuiDataGrid-renderingZone': {
+        maxHeight: padded ? 'none !important' : 'unset',
     },
 }));
 
