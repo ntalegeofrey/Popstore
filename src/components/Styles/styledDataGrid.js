@@ -32,6 +32,7 @@ export const StyledDataGrid = styled(DataGrid)(({ theme, padded, clickedIndex })
         maxHeight: padded ? 'none !important' : 'unset',
         whiteSpace: padded ? 'normal' : 'unset',
         padding: parseInt(clickedIndex, 10) > 0 ? '0px' : '',
+        
     },
     '& .MuiDataGrid-renderingZone': {
         maxHeight: padded ? 'none !important' : 'unset',
