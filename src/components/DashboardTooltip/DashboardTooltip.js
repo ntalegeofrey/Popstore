@@ -1,44 +1,59 @@
 import AppTooltip from "../AppTooltip";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useDashboardTooltips } from "../../context/useDashboardTooltips";
 
-const DashboardTooltipComponent = ({ handleClose }) => {
+const DashboardTooltipComponent = ({ handleClose, activeIndex }) => {
   const titles = [
     "Paste the data you copied from a spreedsheet here",
     "Click “Create PopStore” to convert your data into a PopStore",
     "View analytics about your PopStores",
     "Copy the link of your PopStore to share it your customers",
-    "Click on your PopStore to view & edit your store, order, customers and packing"
+    "Click on your PopStore to view & edit your store, order, customers and packing",
   ];
+
+  const event = new MouseEvent("mouseover", {
+    view: window,
+    bubbles: true,
+    // cancelable: true
+  });
+
+  const { refs } = useDashboardTooltips();
+
   const [activeTitle, setActiveTitle] = useState({
-    index: 0,
-    title: titles[0],
+    index: activeIndex,
+    title: titles[activeIndex],
   });
 
   const handleNext = () => {
     setActiveTitle((prevTitle) => {
-      const nextIdex = prevTitle.index + 1;
-      return nextIdex >= titles.length
-        ? { ...prevTitle }
-        : {
-            index: nextIdex,
-            title: titles[nextIdex],
-          };
+      const nextIndex = prevTitle.index + 1;
+      const newIndex = nextIndex >= titles.length ? prevTitle.index : nextIndex;
+      // refs.current[prevTitle.index].blur();
+      refs.current[newIndex]?.focus();
+      refs.current[newIndex]?.dispatchEvent(event);
+      return {
+        index: newIndex,
+        title: titles[newIndex],
+      };
     });
   };
 
   const handleBack = () => {
     setActiveTitle((prevTitle) => {
       const prevIndex = prevTitle.index - 1;
-      return prevIndex <= 0
-        ? { ...prevTitle }
-        : {
-            index: prevIndex,
-            title: titles[prevIndex],
-          };
+      const newIndex = prevIndex <= 0 ? prevTitle.index : prevIndex;
+      // console.log("previoudIndex", newIndex, prevIndex)
+      // refs.current[prevTitle.index].blur();
+      refs.current[newIndex - 1]?.focus();
+      refs.current[newIndex -1]?.dispatchEvent(event);
+      return {
+        index: newIndex,
+        title: titles[newIndex],
+      };
     });
   };
 
@@ -53,7 +68,10 @@ const DashboardTooltipComponent = ({ handleClose }) => {
           onClick={handleBack}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <ArrowBackIosNewIcon fontSize="small" sx={{ fontSize: "8px", marginRight: "2px" }} />
+            <ArrowBackIosNewIcon
+              fontSize="small"
+              sx={{ fontSize: "8px", marginRight: "2px" }}
+            />
             <div>Back</div>
           </Box>
         </Link>
@@ -96,17 +114,37 @@ const DashboardTooltipComponent = ({ handleClose }) => {
 };
 
 const DashboardTooltip = ({ title, children }) => {
+  const { refs } = useDashboardTooltips();
   const [open, setOpen] = useState(false);
+  const [currentIdex, setCurrentIdex] = useState(0);
+  const handleOpen = (event) => {
+    const _currentIdex = refs.current.findIndex((ref) => ref === event.target);
+    setCurrentIdex((_) => {
+      setOpen(true);
+      return _currentIdex;
+    });
+
+    // console.log("currentID", currentIdex, event.target);
+  };
+
+  useEffect(()=>{
+    // console.log("currentIdex", currentIdex)
+  },[currentIdex])
+
+  const handleClose = (e) => setOpen(false);
   return (
     <AppTooltip
       open={open}
       title={
         <React.Fragment>
-          <DashboardTooltipComponent handleClose={() => setOpen(false)} />
+          <DashboardTooltipComponent
+            handleClose={() => handleClose()}
+            activeIndex={currentIdex}
+          />
         </React.Fragment>
       }
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
+      onOpen={(e) => handleOpen(e)}
+      onClose={(e) => handleClose(e)}
     >
       {children}
     </AppTooltip>

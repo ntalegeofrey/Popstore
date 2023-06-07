@@ -14,7 +14,7 @@ import {
   updateDoc,
   serverTimestamp
 } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -35,5 +35,7 @@ const provider = new GoogleAuthProvider();
 provider.addScope("email");
 provider.addScope("profile");
 export const signInWithGoogle = async () => await signInWithPopup(auth, provider);
+
+export const logout = async () => await signOut(auth);
 
 export default firebase;

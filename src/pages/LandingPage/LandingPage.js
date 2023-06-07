@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import {
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
 import DashboardTooltip from "../../components/DashboardTooltip";
 import StoreCardComponent from "../../components/StoreCard/storeCard";
+import { DashboardTooltipsContext } from "../../context/useDashboardTooltips";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const LandingPage = () => {
   const [pastedData, setPastedData] = useState("");
   const [user, setUser] = useState();
   const [showDataTable, setShowDataTable] = useState(false);
+
+  const tooltipEls = useRef([]);
 
   const MySwal = withReactContent(Swal);
 
@@ -95,51 +98,55 @@ const LandingPage = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={2}>
-        <Grid item xs>
-          <Typography
-            variant="h2"
-            color="text.main"
-            sx={{ pb: 4, pt: 4, fontWeight: "light" }}
-          >
-            Create Popstore from a spreadsheet
-          </Typography>
-        </Grid>
-      </Grid>
-      <form onSubmit={saveSheet}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <DashboardTooltip>
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Create Popstore from a spreadsheet"
-                helperText=""
-                variant="outlined"
-                onPaste={handlePaste}
-                value={pastedData}
-              />
-            </DashboardTooltip>
-          </Grid>
-          <Grid item xs={6} md={3}>
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={!sheetData.length}
-              onClick={handleOpenModal}
-              sx={{ width: "100%" }}
+    <DashboardTooltipsContext.Provider value={{ refs: tooltipEls }}>
+      <Container maxWidth="lg">
+        <Grid container spacing={2}>
+          <Grid item xs>
+            <Typography
+              variant="h2"
+              color="text.main"
+              sx={{ pb: 4, pt: 4, fontWeight: "light" }}
             >
-              Create PopStore
-            </Button>
-            <PopUpModal
-              open={openModal}
-              onClose={handleCloseModal}
-              saveSheet={saveSheet}
-            />
+              Create Popstore from a spreadsheet
+            </Typography>
           </Grid>
-          <Grid item xs={6} md={3}>
-            <DashboardTooltip>
+        </Grid>
+        <form onSubmit={saveSheet}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <DashboardTooltip>
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Create Popstore from a spreadsheet"
+                  helperText=""
+                  variant="outlined"
+                  onPaste={handlePaste}
+                  value={pastedData}
+                  inputRef={(el) => (tooltipEls.current[0] = el)}
+                />
+              </DashboardTooltip>
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <DashboardTooltip>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={!sheetData.length}
+                  onClick={handleOpenModal}
+                  sx={{ width: "100%" }}
+                  ref={(el) => (tooltipEls.current[1] = el)}
+                >
+                  Create PopStore
+                </Button>
+              </DashboardTooltip>
+              <PopUpModal
+                open={openModal}
+                onClose={handleCloseModal}
+                saveSheet={saveSheet}
+              />
+            </Grid>
+            <Grid item xs={6} md={3}>
               <Button
                 color="secondary"
                 variant="outlined"
@@ -149,29 +156,29 @@ const LandingPage = () => {
               >
                 Clear Data
               </Button>
-            </DashboardTooltip>
+            </Grid>
+          </Grid>
+        </form>
+        {showDataTable && (
+          <div className="create-table-wrapper">
+            <DataTable sheet={sheetData} />
+          </div>
+        )}
+        <Grid container spacing={2} marginBottom="30px">
+          <Grid item xs={12} md={2}>
+            <PostoreIndicator />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <DataIndicator />
           </Grid>
         </Grid>
-      </form>
-      {showDataTable && (
-        <div className="create-table-wrapper">
-          <DataTable sheet={sheetData} />
-        </div>
-      )}
-      <Grid container spacing={2} marginBottom="30px">
-        <Grid item xs={12} md={2}>
-          <PostoreIndicator />
+        <Grid container>
+          <Grid item xs={12}>
+            <StoreCardComponent name="gfgsc" />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={2}>
-          <DataIndicator />
-        </Grid>
-      </Grid>
-      <Grid container>
-        <Grid xs={12}>
-          <StoreCardComponent name="gfgsc" />
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </DashboardTooltipsContext.Provider>
   );
 };
 

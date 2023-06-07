@@ -7,11 +7,13 @@ import { StyledNavButton } from "../Styles/styledNavButton";
 import StyledLangButton from "../Styles/styledLangDropdown";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton, Menu, MenuItem } from "@mui/material";
+import firebase, { signInWithGoogle, logout } from "../../service/firebase";
 
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = useState(null);
+  const [_, setRerenderPage] = useState(null);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -19,6 +21,39 @@ const Navigation = () => {
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setRerenderPage({});
+  };
+
+  const handleLoginLogout = async () => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      handleLogout();
+      return;
+    }
+    await signInWithGoogle();
+    setRerenderPage({});
+  };
+
+  const isUserLoggedIn = () => {
+    const user = firebase.auth().currentUser;
+    return user !== null;
+  };
+
+  const LoginLogoutBtn = () => {
+    return (
+      <StyledNavButton
+        variant="text"
+        size="medium"
+        active={false}
+        onClick={() => handleLoginLogout()}
+      >
+        {isUserLoggedIn() ? "Logout" : "Login"}
+      </StyledNavButton>
+    );
   };
 
   const renderMobileNav = () => {
@@ -68,9 +103,7 @@ const Navigation = () => {
             </StyledNavButton>
           </MenuItem>
           <MenuItem>
-            <StyledNavButton variant="text" size="medium" active={false}>
-              Login
-            </StyledNavButton>
+            <LoginLogoutBtn />
           </MenuItem>
           <MenuItem>
             <StyledLangButton />
@@ -93,9 +126,7 @@ const Navigation = () => {
         <StyledNavButton variant="text" size="medium" active={false}>
           Contact
         </StyledNavButton>
-        <StyledNavButton variant="text" size="medium" active={false}>
-          Login
-        </StyledNavButton>
+        <LoginLogoutBtn />
         <StyledLangButton />
       </>
     );
