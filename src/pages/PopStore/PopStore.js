@@ -1,34 +1,48 @@
-import React, { useEffect, useState } from "react";
-import Loading from "../../components/Loading";
-import { Grid, TextField } from "@mui/material";
+import CopyAllIcon from "@mui/icons-material/CopyAll";
+import { Grid, TextField, Typography } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
+import { alpha, useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import isEmail from "validator/lib/isEmail";
+import isMobilePhone from "validator/lib/isMobilePhone";
+import Loading from "../../components/Loading";
+import { StyledTextField } from "../../components/Styles/styledTextField";
+import sendMail from "../../service/email";
 import {
   collection,
   db,
-  getDoc,
   doc,
+  getDoc,
   serverTimestamp,
   setDoc,
 } from "../../service/firebase";
-import { useParams } from "react-router-dom";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import isEmail from "validator/lib/isEmail";
-import isMobilePhone from "validator/lib/isMobilePhone";
-import sendMail from "../../service/email";
 
 const PopStore = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [store, setStore] = useState();
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
+  const [comment, setComment] = useState("");
   const { ownerId, storeId } = useParams();
   const [order, setOrder] = useState([]);
   const MySwal = withReactContent(Swal);
   const [usercurrency] = React.useState();
   const [storecurrency, setStoreCurrency] = React.useState();
   const [submitting, setSubmitting] = React.useState(false);
+  const [storeLink, setStoreLink] = useState("");
+  const [orderRef, setOrderRef] = useState(null);
+  const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
+
   let total = 0;
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
@@ -45,6 +59,9 @@ const PopStore = () => {
     //   });
     // }
   };
+  React.useEffect(() => {
+    setStoreLink(process.env.REACT_APP_STORE_LINK); // Set the store link using environment variable
+  }, []);
   React.useEffect(() => {
     //passing getData method to the lifecycle method
     getData();
@@ -123,6 +140,7 @@ const PopStore = () => {
         email: email.toLowerCase(),
         phone: phone,
         name: "",
+        comment: "",
         createdAt: serverTimestamp(),
       };
       let newCustomerRef = await doc(customersRef, email);
@@ -134,6 +152,7 @@ const PopStore = () => {
       email: email.toLowerCase(),
       phone: phone,
       name: "",
+      comment: "",
       order: JSON.stringify(order),
       storeId: storeId,
       createdAt: serverTimestamp(),
@@ -145,14 +164,13 @@ const PopStore = () => {
     );
     const orderRef = await doc(ordersRef);
     await setDoc(orderRef, Order);
+    setOrderRef(orderRef);
     await MySwal.fire({
       title: "Success",
       text: "Your order has been placed",
       icon: "success",
       confirmButtonText: "Ok",
     });
-
-    let storeLink = process.env.REACT_APP_STORE_LINK;
 
     let orderConfirmationEmail = `
             <!doctype html>
@@ -179,6 +197,8 @@ const PopStore = () => {
     setOrder([]);
     setEmail("");
     setPhone("");
+    setName("");
+    setComment("");
     setSubmitting(false);
 
     let newOrderEmail = `
@@ -207,30 +227,213 @@ const PopStore = () => {
     }
   };
 
+  const handleCopy = (e) => {
+    const link = `${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}`;
+    // Copy the link to clipboard
+    navigator.clipboard.writeText(link);
+
+    // Show snack bar
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   if (loading) return <Loading />;
   return (
     <div>
       <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
-            <h1>PopStore</h1>
-            <h2>{store.storeName}</h2>
-            <p>{store.description}</p>
+        <Grid container paddingBottom="25px" alignItems="center" spacing={2}>
+          <Grid item xs={12} md={3}>
+            <Typography variant="h2">{store.storeName}</Typography>
+          </Grid>
+          <Grid item xs={6} md={5}>
+            <Button
+              variant="contained"
+              startIcon={<CopyAllIcon />}
+              onClick={() => handleCopy()}
+            >
+              Copy Link
+            </Button>
+            <Snackbar
+              open={isSnackbarOpen}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbar}
+              anchorOrigin={{
+                vertical: "bottom", // Position the Snackbar at the bottom
+                horizontal: "center", // Center the Snackbar horizontally
+              }}
+            >
+              <MuiAlert
+                onClose={handleCloseSnackbar}
+                severity="success"
+                sx={{
+                  backgroundColor: "#656f71",
+                  color: "#FFF",
+                  "& .MuiAlert-icon": {
+                    color: "#FFF",
+                  },
+                }}
+              >
+                Link Copied!
+              </MuiAlert>
+            </Snackbar>
+          </Grid>
+          <Grid container item xs={6} md={4} justifyContent="flex-end">
+            <Grid item>
+              <Button
+                style={{ marginLeft: "1rem" }}
+                color="primary"
+                variant="contained"
+                disabled={submitting}
+                onClick={saveOrder}
+              >
+                {isMobile ? "Order" : "Complete Order"}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-        <div style={{ backgroundColor: "#fff", padding: "1rem" }}>
-          <Grid container spacing={2}>
-            <Grid item xs={3} md={6}>
-              <h4>Items</h4>
+        <Grid container paddingBottom="25px">
+          <Grid item xs={12} md={3}>
+            <Typography variant="h5" fontWeight="bold">
+              <span>Contact: &nbsp;</span>
+              {store.storeOwner}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container paddingBottom="25px">
+          <Grid item xs={12} md={3}>
+            <Typography variant="body">{store.description}</Typography>
+          </Grid>
+        </Grid>
+        <Grid container paddingBottom="25px" spacing={2}>
+          <Grid item xs={12} md={3}>
+            <div>
+              <Typography variant="body" color="text.main">
+                Name
+              </Typography>
+            </div>
+            <StyledTextField
+              fullWidth
+              id="outlined-basic"
+              label=""
+              helperText=""
+              variant="outlined"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <div>
+              <Typography variant="body" color="text.main">
+                Email Address
+              </Typography>
+            </div>
+            <StyledTextField
+              fullWidth
+              id="outlined-basic"
+              label=""
+              helperText=""
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <div>
+              <Typography variant="body" color="text.main">
+                Phone Number
+              </Typography>
+            </div>
+            <StyledTextField
+              fullWidth
+              id="outlined-basic"
+              label=""
+              helperText=""
+              variant="outlined"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <div>
+              <Typography variant="body" color="text.main">
+                Would you like to add any note/ comment in your order?
+              </Typography>
+            </div>
+            <StyledTextField
+              multiline
+              fullWidth
+              id="outlined-basic"
+              label=""
+              helperText=""
+              variant="outlined"
+              inputProps={{
+                style: {
+                  whiteSpace: "pre-wrap",
+                  wordWrap: "break-word",
+                },
+              }}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <div>
+          <Grid
+            container
+            sx={{
+              backgroundColor: "primary.main",
+              paddingLeft: isMobile ? "2px" : "50px",
+            }}
+            pt="9px"
+            pb="9px"
+          >
+            <Grid item xs={2} md={3}>
+              <Typography
+                variant={isMobile ? "body2" : "h5"}
+                color="white.main"
+                sx={{ fontWeight: "bold" }}
+              >
+                {isMobile ? "Ref ID" : "Reference ID"}
+              </Typography>
+            </Grid>
+            <Grid item xs={3} md={3}>
+              <Typography
+                variant={isMobile ? "body2" : "h5"}
+                color="white.main"
+                sx={{ fontWeight: "bold" }}
+              >
+                Products
+              </Typography>
+            </Grid>
+            <Grid item xs={2} md={2}>
+              <Typography
+                variant={isMobile ? "body2" : "h5"}
+                color="white.main"
+                sx={{ fontWeight: "bold" }}
+              >
+                Price
+              </Typography>
             </Grid>
             <Grid item xs={3} md={2}>
-              <h4>Price</h4>
+              <Typography
+                variant={isMobile ? "body2" : "h5"}
+                color="white.main"
+                sx={{ fontWeight: "bold" }}
+              >
+                Quantity
+              </Typography>
             </Grid>
-            <Grid item xs={3} md={2}>
-              <h4>Quantity</h4>
-            </Grid>
-            <Grid item xs={3} md={2}>
-              <h4>Total</h4>
+            <Grid item xs={1} md={2}>
+              <Typography
+                variant={isMobile ? "body2" : "h5"}
+                color="white.main"
+                sx={{ fontWeight: "bold" }}
+              >
+                Amount
+              </Typography>
             </Grid>
           </Grid>
           <div>
@@ -238,14 +441,33 @@ const PopStore = () => {
               return (
                 <Grid
                   container
-                  spacing={2}
                   key={index}
-                  style={{ marginBottom: "1rem" }}
+                  sx={{
+                    paddingLeft: isMobile ? "2px" : "50px",
+                    backgroundColor: "background2",
+                    borderBottom: "1px solid",
+                    borderTop: "1px solid",
+                    borderTopColor: (theme) =>
+                      alpha(theme.palette.primary.main, 0.3),
+                    borderBottomColor: (theme) =>
+                      alpha(theme.palette.primary.main, 0.3),
+                    paddingTop: "9px",
+                    paddingBottom: "9px",
+                    "&:first-child": {
+                      borderTop: "none",
+                    },
+                    "&:nth-last-child(2)": {
+                      borderBottom: "none",
+                    },
+                  }}
                 >
-                  <Grid item xs={3} md={6}>
+                  <Grid item xs={2} md={3}>
+                    <p>{column[0]}</p>
+                  </Grid>
+                  <Grid item xs={3} md={3}>
                     <p>{column[1]}</p>
                   </Grid>
-                  <Grid item xs={3} md={2}>
+                  <Grid item xs={2} md={2}>
                     <p>
                       {column[2]} {store.currency}
                     </p>
@@ -253,7 +475,7 @@ const PopStore = () => {
                   <Grid item xs={3} md={2}>
                     <TextField
                       id="outlined-basic"
-                      label="Quantity"
+                      label=""
                       helperText=""
                       type="number"
                       variant="outlined"
@@ -261,6 +483,22 @@ const PopStore = () => {
                       defaultValue={0}
                       disabled={store.locked}
                       InputLabelProps={{ shrink: true }}
+                      sx={{
+                        width: "50%",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "1px solid",
+                          borderColor: "#353535",
+                          borderRadius: "6px",
+                        },
+                        "& .MuiOutlinedInput-root": {
+                          "&:hover": {
+                            borderColor: (theme) => theme.palette.primary.main,
+                          },
+                          "&:focused": {
+                            borderColor: (theme) => theme.palette.primary.main,
+                          },
+                        },
+                      }}
                       onChange={(e) => {
                         if (!e.target.value || Number(e.target.value) < 0) {
                           e.target.value = (0).toString();
@@ -285,7 +523,7 @@ const PopStore = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={3} md={2}>
+                  <Grid item xs={2} md={2}>
                     <p>
                       {Number(
                         Number(column[2].replace(/,/, "")) *
@@ -301,15 +539,27 @@ const PopStore = () => {
                 </Grid>
               );
             })}
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ marginTop: "10px" }}>
               <Grid item xs={6} md={8} textAlign="right">
                 <p>&nbsp;</p>
               </Grid>
-              <Grid item xs={3} md={2}>
-                <h4>Grand Total</h4>
+              <Grid
+                item
+                xs={3}
+                md={2}
+                sx={{ backgroundColor: "greyBackground" }}
+              >
+                <Typography variant="h5" sx={{ fontWeight: "regular" }}>
+                  Total
+                </Typography>
               </Grid>
-              <Grid item xs={3} md={2}>
-                <h4>
+              <Grid
+                item
+                xs={3}
+                md={2}
+                sx={{ backgroundColor: "greyBackground" }}
+              >
+                <Typography variant="h5" sx={{ fontWeight: "regular" }}>
                   {order?.forEach((item, index) => {
                     if (item) {
                       total +=
@@ -320,51 +570,22 @@ const PopStore = () => {
                     }
                   })}{" "}
                   {Number(total).toFixed(2)} {store.currency}
-                </h4>
+                </Typography>
               </Grid>
             </Grid>
           </div>
         </div>
         {!store.locked && (
-          <div style={{ padding: "1rem" }}>
-            <Grid container spacing={2}>
-              <Grid item xs={4} md={1} alignSelf="center">
-                <label>Email:</label>
-              </Grid>
-              <Grid item xs={8} md={3} alignSelf="center">
-                <TextField
-                  id="outlined-basic"
-                  label="Your Email"
-                  helperText=""
-                  type="email"
-                  variant="outlined"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={4} md={1} alignSelf="center">
-                <label>Phone:</label>
-              </Grid>
-              <Grid item xs={8} md={3} alignSelf="center">
-                <TextField
-                  id="outlined-basic"
-                  label="Your Phone"
-                  helperText=""
-                  type="phone"
-                  variant="outlined"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} md={4} alignSelf="center" textAlign="right">
+          <div style={{ paddingTop: "10px" }}>
+            <Grid container xs={12} md={12} justifyContent="flex-end">
+              <Grid item>
                 <Button
-                  style={{ marginLeft: "1rem" }}
                   color="primary"
                   variant="contained"
                   disabled={submitting}
                   onClick={saveOrder}
                 >
-                  Order
+                  {isMobile ? "Order" : "Complete Order"}
                 </Button>
               </Grid>
             </Grid>
