@@ -8,6 +8,7 @@ const colors = {
   background: "#ffffff",
   background2: "#edf3f4",
   canvasColor: "#FFF",
+  greyBackground: "#f1f2f4",
 
   button: {
     active: "#4c8991",

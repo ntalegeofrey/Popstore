@@ -1,8 +1,9 @@
 import React from "react";
-import { Card, Typography, Button, Grid } from "@mui/material";
+import { Card, Typography, Button, Grid, Snackbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import firebase from "../../service/firebase";
+import MuiAlert from "@mui/material/Alert";
 import {
   db,
   collection,
@@ -35,6 +36,7 @@ const CardComponent = () => {
   const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
 
   const handleOrderClick = (storeID) => {
     navigate(`/popstore/orders/${storeID}`);
@@ -75,14 +77,23 @@ const CardComponent = () => {
     });
     setProductList(rows);
   }, [tableData]);
+
+  const handleCopy = (link) => {
+    const url = `${window.location.origin}${link}`;
+    // Copy the URL to the clipboard
+    navigator.clipboard.writeText(url);
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
     <>
       {productList.map((row, i) => (
         <div key={i}>
-          <CardContainer
-            component={Link}
-            to={`/popstore/orders/${tableData[i].storeID}`}
-          >
+          <CardContainer>
             <Grid container alignItems="center">
               <Grid item xs={12} md={6}>
                 <Typography
@@ -114,7 +125,7 @@ const CardComponent = () => {
                     color="primary"
                     sx={{ width: "100%" }}
                     component={Link}
-                    to={`/popstore/orders/${tableData[i].storeID}`}
+                    to={`/popstore/edit/${tableData[i].storeID}`}
                   >
                     Duplicate Store
                   </Button>
@@ -124,8 +135,11 @@ const CardComponent = () => {
                     variant="contained"
                     startIcon={<CopyAllIcon />}
                     sx={{ width: "100%" }}
-                    component={Link}
-                    to={`/popstore/orders/${tableData[i].storeID}`}
+                    onClick={() =>
+                      handleCopy(
+                        `/store/${tableData[i].ownerID}/${tableData[i].storeID}`
+                      )
+                    }
                   >
                     Copy Link
                   </Button>
@@ -135,6 +149,29 @@ const CardComponent = () => {
           </CardContainer>
         </div>
       ))}{" "}
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{
+          vertical: "bottom", // Position the Snackbar at the bottom
+          horizontal: "center", // Center the Snackbar horizontally
+        }}
+      >
+        <MuiAlert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{
+            backgroundColor: "#656f71",
+            color: "#FFF",
+            "& .MuiAlert-icon": {
+              color: "#FFF",
+            },
+          }}
+        >
+          Link Copied!
+        </MuiAlert>
+      </Snackbar>
     </>
   );
 };
