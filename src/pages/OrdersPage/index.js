@@ -1,6 +1,8 @@
-import { Box, Toolbar } from '@mui/material';
+import { Box, Grid, Toolbar } from '@mui/material';
 import { GridFooterContainer } from '@mui/x-data-grid';
 import { StyledDataGrid, StyledDataGridFooterTypography } from '../../components/Styles/styledDataGrid';
+import React from 'react';
+import SidebarList from '../../components/Sidebar/SidebarList';
 
 const columns = [
     {
@@ -67,17 +69,31 @@ const PopStoreOrders = () => {
     ];
 
     return (
-        <Box>
-            <Toolbar />
-            <StyledDataGrid
-                autoHeight
-                rows={rows}
-                padded={false}
-                columns={columns}
-                hideFooterPagination
-                disableColumnMenu
-                components={{ Footer: CustomFooterComponent }}
-            />
+        <Box
+            sx={{
+                marginLeft: '100px',
+                marginRight: '100px',
+            }}
+        >
+            <Grid container xs={12}>
+                <Grid px={0} item xs={2} >
+                    <SidebarList />
+                </Grid>
+                <Grid item xs={10}>
+                    <React.Fragment>
+                        <Toolbar />
+                        <StyledDataGrid
+                            autoHeight
+                            rows={rows}
+                            padded={false}
+                            columns={columns}
+                            hideFooterPagination
+                            disableColumnMenu
+                            components={{ Footer: CustomFooterComponent }}
+                        />
+                    </React.Fragment>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

@@ -110,7 +110,7 @@ const Navigation = () => {
           {isMobile ? renderMobileNav() : renderDesktopNav()}
         </StyledToolBar>
       </StyledAppBar>
-      <Sidebar />
+      {/* <Sidebar /> */}
     </Box>
   );
 };

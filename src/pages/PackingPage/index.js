@@ -7,9 +7,10 @@ import {
     Typography
 } from '@mui/material';
 import { StyledDataGrid } from '../../components/Styles/styledDataGrid';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import SidebarList from '../../components/Sidebar/SidebarList';
 
 const PopStorePackings = () => {
     const [clickedIndex, setClickedIndex] = useState(-1);
@@ -176,18 +177,32 @@ const PopStorePackings = () => {
     ];
 
     return (
-        <Box>
-            <Toolbar />
-            <StyledDataGrid
-                clickedIndex={clickedIndex}
-                autoHeight
-                padded={true}
-                rows={rows}
-                columns={columns}
-                hideFooterPagination
-                disableColumnMenu
-                disableSelectionOnClick
-            />
+        <Box
+            sx={{
+                marginLeft: '100px',
+                marginRight: '100px',
+            }}
+        >
+            <Grid container xs={12}>
+                <Grid px={0} item xs={2} >
+                    <SidebarList />
+                </Grid>
+                <Grid item xs={10}>
+                    <React.Fragment>
+                        <Toolbar />
+                        <StyledDataGrid
+                            clickedIndex={clickedIndex}
+                            autoHeight
+                            padded={true}
+                            rows={rows}
+                            columns={columns}
+                            hideFooterPagination
+                            disableColumnMenu
+                            disableSelectionOnClick
+                        />
+                    </React.Fragment>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

@@ -16,9 +16,8 @@ const SidebarList = () => {
     return (
         <Box component='div'>
             <Toolbar />
-            <Toolbar />
             <List>
-                <ListItemButton>
+                <ListItemButton sx={{ px: '0px !important' }}>
                     <ListItemIcon>
                         <ChevronLeftIcon />
                     </ListItemIcon>
@@ -26,7 +25,7 @@ const SidebarList = () => {
                 </ListItemButton>
                 {sidebarRoutes.map((item) => (
                     <ListItem key={item.text} disablePadding>
-                        <ListItemButton onClick={() => navigate(item.path)}>
+                        <ListItemButton sx={{ px: '0px !important' }} onClick={() => navigate(item.path)}>
                             <ListItemIcon />
                             <ListItemText primary={item.text} />
                         </ListItemButton>

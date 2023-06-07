@@ -4,7 +4,7 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MyPopstore from "./pages/MyPopstore/MyPopstore";
 import NewPopstore from "./pages/NewPopstore/NewPopstore";
-import OrdersPage from "./pages/OrdersPage/OrdersPage";
+// import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import QRPage from "./pages/QRPage/QRPage";
 import CustomersPage from "./pages/CustomersPage/CustomersPage";
@@ -42,13 +42,13 @@ function App() {
             path="/popstore/customers/:storeId"
             element={<CustomersPage />}
           />
-          <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
+          <Route path="/popstore/orders/:storeId" element={<PopStoreOrders />} />
           <Route
             path="/popstore/packaging/:storeId"
-            element={<PackagingPage />}
+            element={<PopStorePackings />}
           />
-          <Route path="/popstore/orders" element={<PopStoreOrders />} />
-          <Route path="/popstore/packing" element={<PopStorePackings />} />
+          {/* <Route path="/popstore/orders" element={<PopStoreOrders />} /> */}
+          {/* <Route path="/popstore/packing" element={<PopStorePackings />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainContainer>
