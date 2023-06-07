@@ -161,10 +161,7 @@ const CardComponent = () => {
         open={isSnackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{
-          vertical: "bottom", // Position the Snackbar at the bottom
-          horizontal: "center", // Center the Snackbar horizontally
-        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <MuiAlert
           onClose={handleCloseSnackbar}
