@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Popstore/static/css/main.d6d3ff06.css",
+    "main.js": "/Popstore/static/js/main.445b9c14.js",
+    "static/js/787.90742145.chunk.js": "/Popstore/static/js/787.90742145.chunk.js",
+    "static/media/google-icon.svg": "/Popstore/static/media/google-icon.721c4c02bdeb881c8f2b3f1233d58e96.svg",
+    "index.html": "/Popstore/index.html",
+    "main.d6d3ff06.css.map": "/Popstore/static/css/main.d6d3ff06.css.map",
+    "main.445b9c14.js.map": "/Popstore/static/js/main.445b9c14.js.map",
+    "787.90742145.chunk.js.map": "/Popstore/static/js/787.90742145.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d6d3ff06.css",
+    "static/js/main.445b9c14.js"
+  ]
+}
