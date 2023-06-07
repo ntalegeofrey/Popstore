@@ -15,6 +15,13 @@ import {
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
 import StoreCardComponent from "../../components/StoreCard/storeCard";
+import {
+  db,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+} from "../../service/firebase";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -23,8 +30,43 @@ const LandingPage = () => {
   const [pastedData, setPastedData] = useState("");
   const [user, setUser] = useState();
   const [showDataTable, setShowDataTable] = useState(false);
+  const [dataUsage, setDataUsage] = useState(0);
+  const [storeCount, setStoreCount] = useState(0);
 
   const MySwal = withReactContent(Swal);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        let temp = [];
+        const allStores = query(
+          collection(db, `/StoreOwners/${user.uid}/allStores`),
+          orderBy("createAt", "desc")
+        );
+        const querySnapshot = await getDocs(allStores);
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          temp.push(doc.data());
+        });
+        const mbUsage = (array) => {
+          const jsonString = JSON.stringify(array);
+
+          // Calculate the size of the JSON string in bytes
+          const bytes = new TextEncoder().encode(jsonString).length;
+
+          // Calculate the size in megabytes (MB)
+          const kilobytes = bytes / 1024;
+          const megabytes = kilobytes / 1024;
+
+          return megabytes.toFixed(3);
+        };
+
+        setStoreCount(temp.length);
+        setDataUsage(mbUsage(temp));
+      }
+    });
+  }, []);
 
   const handlePaste = (e) => {
     const data = e.clipboardData.getData("text/plain");
@@ -92,11 +134,10 @@ const LandingPage = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
   return (
     <Container maxWidth="lg">
       <Grid container spacing={2}>
-        <Grid item xs>
+        <Grid item>
           <Typography
             variant="h2"
             color="text.main"
@@ -155,14 +196,14 @@ const LandingPage = () => {
       )}
       <Grid container spacing={2} marginBottom="30px">
         <Grid item xs={12} md={2}>
-          <PostoreIndicator />
+          <PostoreIndicator popstores={storeCount} />
         </Grid>
         <Grid item xs={12} md={2}>
-          <DataIndicator />
+          <DataIndicator dataUsage={dataUsage} />
         </Grid>
       </Grid>
       <Grid container>
-        <Grid xs={12}>
+        <Grid item xs={12}>
           <StoreCardComponent name="gfgsc" />
         </Grid>
       </Grid>
