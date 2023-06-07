@@ -352,7 +352,7 @@ const NewPopstore = () => {
         )}
         <Grid container item xs={12} md={11} alignItems="center">
           <Grid item xs={12} md={8}>
-            <Typography variant="h2" sx={{ pb: 4, pt: 4, fontWeight: "light" }}>
+            <Typography variant="h2" sx={{ pb: 4, fontWeight: "light" }}>
               Create My Popstore
             </Typography>
           </Grid>
