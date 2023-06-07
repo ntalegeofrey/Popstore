@@ -20,7 +20,7 @@ const StyledIndicatorWrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
-export const PostoreIndicator = () => {
+export const PostoreIndicator = ({ popstores }) => {
   return (
     <>
       <StyledBoxContainer>
@@ -29,7 +29,7 @@ export const PostoreIndicator = () => {
         </Typography>
         <StyledIndicatorWrapper>
           <Typography variant="h3" color="primary.main" mr="16px">
-            0
+            {popstores}
           </Typography>
           <HomeIcon sx={{ color: (theme) => theme.palette.primary.main }} />
         </StyledIndicatorWrapper>
@@ -38,7 +38,7 @@ export const PostoreIndicator = () => {
   );
 };
 
-export const DataIndicator = () => {
+export const DataIndicator = ({ dataUsage }) => {
   return (
     <>
       <StyledBoxContainer>
@@ -47,7 +47,7 @@ export const DataIndicator = () => {
         </Typography>
         <StyledIndicatorWrapper>
           <Typography variant="h3" color="primary.main" mr="16px">
-            0
+            {parseFloat(dataUsage).toFixed(3)}
           </Typography>
           <DataUsageIcon
             sx={{ color: (theme) => theme.palette.primary.main }}
