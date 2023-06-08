@@ -10,7 +10,7 @@ export const StyledAppBar = styled(MuiAppBar)(({ theme }) => ({
 
 // Tool Bar
 export const StyledToolBar = styled(Toolbar)(({ theme }) => ({
-  minHeight: "55px",
+  minHeight: "45px",
   display: "flex",
   justifyContent: "space-between",
   flexDirection: "row",
