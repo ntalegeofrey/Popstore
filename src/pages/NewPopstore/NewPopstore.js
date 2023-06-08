@@ -635,32 +635,37 @@ const NewPopstore = () => {
         marginTop={isMobile ? "10px" : "50px"}
         marginBottom={isMobile && "10px"}
       >
-        <Grid item xs={12} md={8}>
-          <p>&nbsp;</p>
+        <Grid item sx={12} md={1}>
+          &nbsp;
         </Grid>
-        <Grid
-          item
-          container
-          spacing={2}
-          xs={12}
-          md={4}
-          justifyContent="flex-end"
-          alignItems="center"
-        >
-          <Grid item xs={8} md={10}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={saveStore}
-              sx={{ width: "80%" }}
-            >
-              Create PopStore
-            </Button>
+        <Grid container item sx={12} md={11}>
+          <Grid item xs={12} md={8}>
+            <p>&nbsp;</p>
           </Grid>
-          <Grid item xs={4} md={2}>
-            <Link href="#" onClick={cancelStore} sx={{ width: "100%" }}>
-              Cancel
-            </Link>
+          <Grid
+            item
+            container
+            spacing={2}
+            xs={12}
+            md={4}
+            justifyContent="flex-end"
+            alignItems="center"
+          >
+            <Grid item xs={8} md={10}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={saveStore}
+                sx={{ width: "80%" }}
+              >
+                Create PopStore
+              </Button>
+            </Grid>
+            <Grid item xs={4} md={2}>
+              <Link href="#" onClick={cancelStore} sx={{ width: "100%" }}>
+                Cancel
+              </Link>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
