@@ -342,7 +342,7 @@ const NewPopstore = () => {
 
   return (
     <Container maxWidth="lg">
-      <Grid container spacing={2} alignItems="center">
+      <Grid container spacing={2} sx={{ marginBottom: 4 }}>
         {!isMobile && (
           <Grid item xs={12} md={1}>
             <IconButton size="large" color="primary" onClick={cancelStore}>
@@ -352,7 +352,7 @@ const NewPopstore = () => {
         )}
         <Grid container item xs={12} md={11} alignItems="center">
           <Grid item xs={12} md={8}>
-            <Typography variant="h2" sx={{ pb: 4, fontWeight: "light" }}>
+            <Typography variant="h2" sx={{ fontWeight: "light" }}>
               Create My Popstore
             </Typography>
           </Grid>
@@ -366,7 +366,7 @@ const NewPopstore = () => {
             alignItems="center"
             marginBottom={isMobile && "20px"}
           >
-            <Grid item xs={8} md={10}>
+            <Grid item xs={8} md={10} justifyContent="space-between">
               <Button
                 color="primary"
                 variant="contained"
