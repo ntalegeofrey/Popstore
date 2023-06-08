@@ -32,6 +32,7 @@ export const db = getFirestore(app);
 export { doc, collection, getDoc, addDoc, getDocs, setDoc, query, where, orderBy, updateDoc, serverTimestamp };
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
 provider.addScope("email");
 provider.addScope("profile");
 export const signInWithGoogle = async () => await signInWithPopup(auth, provider);

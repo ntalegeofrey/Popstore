@@ -42,6 +42,10 @@ const DashboardTooltipComponent = ({ handleClose, activeIndex }) => {
     });
   };
 
+  useEffect(()=>{
+    console.log({refs})
+  },[])
+
   const handleBack = () => {
     setActiveTitle((prevTitle) => {
       const prevIndex = prevTitle.index - 1;

@@ -3,6 +3,8 @@ import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
 import { Box, Typography } from "@mui/material";
+import DashboardTooltip from "../DashboardTooltip";
+import { useDashboardTooltips } from "../../context/useDashboardTooltips";
 
 const StyledBoxContainer = styled(Box)(({ theme }) => ({
   marginTop: "30px",
@@ -20,20 +22,24 @@ const StyledIndicatorWrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
+
 export const PostoreIndicator = () => {
+  const { addTooltipRef } = useDashboardTooltips();
   return (
     <>
-      <StyledBoxContainer>
-        <Typography variant="h4" color="text.main">
-          My PopStores:
-        </Typography>
-        <StyledIndicatorWrapper>
-          <Typography variant="h3" color="primary.main" mr="16px">
-            0
+      <DashboardTooltip>
+        <StyledBoxContainer ref={(el) => addTooltipRef(el, 2)}>
+          <Typography variant="h4" color="text.main">
+            My PopStores:
           </Typography>
-          <HomeIcon sx={{ color: (theme) => theme.palette.primary.main }} />
-        </StyledIndicatorWrapper>
-      </StyledBoxContainer>
+          <StyledIndicatorWrapper>
+            <Typography variant="h3" color="primary.main" mr="16px">
+              0
+            </Typography>
+            <HomeIcon sx={{ color: (theme) => theme.palette.primary.main }} />
+          </StyledIndicatorWrapper>
+        </StyledBoxContainer>
+      </DashboardTooltip>
     </>
   );
 };

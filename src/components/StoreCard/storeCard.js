@@ -12,6 +12,8 @@ import {
 } from "../../service/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useDashboardTooltips } from "./../../context/useDashboardTooltips";
+import DashboardTooltip from "../DashboardTooltip";
 
 const CardContainer = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background2,
@@ -29,12 +31,12 @@ const ButtonContainer = styled(Grid)(({ theme }) => ({
   width: "100%",
   [theme.breakpoints.down("sm")]: { marginTop: theme.spacing(2) },
 }));
-
 const CardComponent = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
   const [productList, setProductList] = useState([]);
+  const { addTooltipRef } = useDashboardTooltips();
 
   const handleOrderClick = (storeID) => {
     navigate(`/popstore/orders/${storeID}`);
@@ -85,16 +87,20 @@ const CardComponent = () => {
           >
             <Grid container alignItems="center">
               <Grid item xs={12} md={6}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    flexGrow: 1,
-                    fontWeight: "regular",
-                    textDecoration: "none !important",
-                  }}
-                >
-                  {row.name}
-                </Typography>
+                <DashboardTooltip>
+                  <Button variant="text" ref={(el) => addTooltipRef(el, 4)}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        flexGrow: 1,
+                        fontWeight: "regular",
+                        textDecoration: "none !important",
+                      }}
+                    >
+                      {row.name}
+                    </Typography>
+                  </Button>
+                </DashboardTooltip>
               </Grid>
               <ButtonContainer container item spacing={2} xs={12} md={6}>
                 <Grid item xs={12} sm={4} alignItems="center">
@@ -120,15 +126,18 @@ const CardComponent = () => {
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <Button
-                    variant="contained"
-                    startIcon={<CopyAllIcon />}
-                    sx={{ width: "100%" }}
-                    component={Link}
-                    to={`/popstore/orders/${tableData[i].storeID}`}
-                  >
-                    Copy Link
-                  </Button>
+                  <DashboardTooltip>
+                    <Button
+                      variant="contained"
+                      startIcon={<CopyAllIcon />}
+                      sx={{ width: "100%" }}
+                      component={Link}
+                      to={`/popstore/orders/${tableData[i].storeID}`}
+                      ref={(el) => addTooltipRef(el, 3)}
+                    >
+                      Copy Link
+                    </Button>
+                  </DashboardTooltip>
                 </Grid>
               </ButtonContainer>
             </Grid>

@@ -8,6 +8,8 @@ export const titles = [
   "Click on your PopStore to view & edit your store, order, customers and packing",
 ];
 
-export const DashboardTooltipsContext = createContext({ refs: [], titles });
+const addTooltipRef = (el, index) => ({})
+
+export const DashboardTooltipsContext = createContext({ refs: [], addTooltipRef,titles });
 
 export const useDashboardTooltips = () => useContext(DashboardTooltipsContext);

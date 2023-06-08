@@ -8,12 +8,14 @@ import StyledLangButton from "../Styles/styledLangDropdown";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import firebase, { signInWithGoogle, logout } from "../../service/firebase";
+import LoginPopup from "./../Styles/styledLoginPopUp";
 
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = useState(null);
   const [_, setRerenderPage] = useState(null);
+  const [isOpen, setOpenPopup] = useState(false);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -27,6 +29,7 @@ const Navigation = () => {
     await logout();
     setRerenderPage({});
   };
+  const handleClosePopup = () => setOpenPopup(false);
 
   const handleLoginLogout = async () => {
     const user = firebase.auth().currentUser;
@@ -34,7 +37,13 @@ const Navigation = () => {
       handleLogout();
       return;
     }
+    setOpenPopup(true);
+    setRerenderPage({});
+  };
+
+  const handleLogin = async () => {
     await signInWithGoogle();
+    handleClosePopup();
     setRerenderPage({});
   };
 
@@ -137,6 +146,11 @@ const Navigation = () => {
       <StyledToolBar>
         {isMobile ? renderMobileNav() : renderDesktopNav()}
       </StyledToolBar>
+      <LoginPopup
+        open={isOpen}
+        onClose={handleClosePopup}
+        saveSheet={handleLogin}
+      />
     </StyledAppBar>
   );
 };

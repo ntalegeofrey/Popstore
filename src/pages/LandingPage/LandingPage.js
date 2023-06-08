@@ -28,6 +28,11 @@ const LandingPage = () => {
 
   const tooltipEls = useRef([]);
 
+  const addTooltipRef = (el, index)=>{
+    return (tooltipEls.current[index] = el)
+  }
+
+ 
   const MySwal = withReactContent(Swal);
 
   const handlePaste = (e) => {
@@ -98,7 +103,7 @@ const LandingPage = () => {
   };
 
   return (
-    <DashboardTooltipsContext.Provider value={{ refs: tooltipEls }}>
+    <DashboardTooltipsContext.Provider value={{ refs: tooltipEls, addTooltipRef }}>
       <Container maxWidth="lg">
         <Grid container spacing={2}>
           <Grid item xs>
@@ -123,7 +128,7 @@ const LandingPage = () => {
                   variant="outlined"
                   onPaste={handlePaste}
                   value={pastedData}
-                  inputRef={(el) => (tooltipEls.current[0] = el)}
+                  inputRef={(el) => addTooltipRef(el, 0)}
                 />
               </DashboardTooltip>
             </Grid>
@@ -135,7 +140,7 @@ const LandingPage = () => {
                   disabled={!sheetData.length}
                   onClick={handleOpenModal}
                   sx={{ width: "100%" }}
-                  ref={(el) => (tooltipEls.current[1] = el)}
+                  ref={(el) => addTooltipRef(el, 1)}
                 >
                   Create PopStore
                 </Button>
