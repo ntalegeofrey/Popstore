@@ -2,13 +2,17 @@ import { styled, TextField } from "@mui/material";
 
 // Styled TextField component
 export const StyledTextField = styled(TextField)(({ theme }) => ({
-  borderColor: "#353535",
-  border: "1px solid",
-  borderRadius: "6px",
-  "&:hover": {
-    borderColor: theme.palette.primary.main,
-  },
-  "&.Mui-focused": {
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid",
     borderColor: "#353535",
+    borderRadius: "6px",
+  },
+  "& .MuiOutlinedInput-root": {
+    "&:hover": {
+      borderColor: theme.palette.primary.main,
+    },
+    "&.Mui-focused": {
+      borderColor: theme.palette.primary.main,
+    },
   },
 }));
