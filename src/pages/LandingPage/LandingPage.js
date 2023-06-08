@@ -141,7 +141,7 @@ const LandingPage = () => {
           <Typography
             variant="h2"
             color="text.main"
-            sx={{ pb: 4, pt: 4, fontWeight: "light" }}
+            sx={{ pb: 4, fontWeight: "light" }}
           >
             Create Popstore from a spreadsheet
           </Typography>
