@@ -24,7 +24,7 @@ export const StyledToolBar = styled(Toolbar)(({ theme }) => ({
     marginRight: 0,
   },
   [theme.breakpoints.up("md")]: {
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3),
+    marginLeft: "25px",
+    marginRight: "25px",
   },
 }));
