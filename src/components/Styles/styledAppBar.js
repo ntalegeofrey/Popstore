@@ -15,7 +15,7 @@ export const StyledToolBar = styled(Toolbar)(({ theme }) => ({
   justifyContent: "space-between",
   flexDirection: "row",
   alignItems: "center",
-  padding: "10px 32px",
+  padding: "10px 0px",
   boxSizing: "inherit",
   backgroundColor: theme.palette.white.main,
 
