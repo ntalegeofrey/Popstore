@@ -24,7 +24,7 @@ function App() {
       <Navigation />
       <MainContainer component={"main"}>
         {/* puts content below appbar */}
-        <Box sx={{ height: "30px" }}></Box>
+        <Box sx={{ height: "30px", mt: 2 }}></Box>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route exact path="/popstore/all" element={<MyPopstore />} />
