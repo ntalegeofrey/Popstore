@@ -23,8 +23,8 @@ export const StyledToolBar = styled(Toolbar)(({ theme }) => ({
     marginLeft: 0,
     marginRight: 0,
   },
-  [theme.breakpoints.up("md")]: {
-    marginLeft: "50px",
-    marginRight: "50px",
-  },
+  // [theme.breakpoints.up("md")]: {
+  //   marginLeft: "50px",
+  //   marginRight: "50px",
+  // },
 }));
