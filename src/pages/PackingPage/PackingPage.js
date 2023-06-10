@@ -1,215 +1,268 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import Grid from "@mui/material/Grid";
-import firebase, {doc, getDoc} from "../../service/firebase";
-import {db, collection, getDocs} from "../../service/firebase";
-import {useNavigate, Link, useParams} from "react-router-dom";
-import {MenuItem, Select} from "@mui/material";
+import firebase, { doc, getDoc } from "../../service/firebase";
+import { db, collection, getDocs } from "../../service/firebase";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { Collapse, IconButton } from "@mui/material";
+import { BodyText, HeaderText } from "../OrdersPage/OrdersPage";
+import {
+  CollapsibleContent,
+  ItemContainer,
+} from "../CustomersPage/CustomersPage";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import Loading from "../../components/Loading";
 
 const PackingPage = () => {
-    const navigate = useNavigate();
-    const [user, setUser] = useState();
-    const {storeId} = useParams();
-    const [store, setStore] = useState({});
-    const [product, setProduct] = useState({});
-    const [customers, setCustomers] = useState([]);
-    const [orders, setOrders] = useState([]);
-    const [customerProducts, setCustomerProducts] = useState([]);
-    useEffect(() => {
-        firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
-                setUser(user);
-                const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
-                const store = await getDoc(doc(storesRef, storeId));
-                if (store.exists()) {
-                    let data = store.data();
-                    data.columnsList = JSON.parse(data.columnsList);
-                    setStore(data);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const navigate = useNavigate();
+  const [user, setUser] = useState();
+  const { storeId } = useParams();
+  const [store, setStore] = useState({});
+  const [product, setProduct] = useState({});
+  const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [customerProducts, setCustomerProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        const storesRef = await collection(
+          db,
+          `/StoreOwners/${user.uid}/allStores`
+        );
+        const store = await getDoc(doc(storesRef, storeId));
+        if (store.exists()) {
+          let data = store.data();
+          data.columnsList = JSON.parse(data.columnsList);
+          setStore(data);
+        }
+        const customersRef = collection(
+          db,
+          `/StoreOwners/${user.uid}/allStores/${storeId}/customers`
+        );
+        const Customers = await getDocs(customersRef);
+        let tempCustomers = [];
+        Customers.forEach((doc) => {
+          tempCustomers.push(doc.data());
+        });
+        const ordersRef = collection(
+          db,
+          `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`
+        );
+        const querySnapshot = await getDocs(ordersRef);
+        let tempOrders = [];
+        querySnapshot.forEach((doc, i) => {
+          let d = doc.data();
+          tempOrders.push(d);
+        });
+        let orders = [];
+        tempOrders.forEach((o) => {
+          JSON.parse(o.order).forEach((p) => {
+            if (p !== null) {
+              let index = orders.findIndex((e) => e.id === p.id);
+              if (index === -1) {
+                orders.push(p);
+              } else {
+                orders[index].quantity += p.quantity;
+              }
+            }
+          });
+        });
+        setOrders(orders);
+
+        let tempCustomerProducts = [];
+        tempCustomers.forEach((c) => {
+          let customer = {
+            email: c.email,
+            name: c.name,
+            phone: c.phone,
+            products: [],
+          };
+          tempOrders.forEach((o) => {
+            if (o.email === c.email) {
+              JSON.parse(o.order).forEach((p) => {
+                if (p !== null) {
+                  let index = customer.products.findIndex((e) => e.id === p.id);
+                  if (index === -1) {
+                    customer.products.push({ id: p.id, quantity: p.quantity });
+                  } else {
+                    customer.products[index].quantity += p.quantity;
+                  }
                 }
-                const customersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/customers`);
-                const Customers = await getDocs(customersRef);
-                let tempCustomers = [];
-                Customers.forEach((doc) => {
-                    // doc.data() is never undefined for query doc snapshots
-                    tempCustomers.push(doc.data());
-                });
-                const ordersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`);
-                const querySnapshot = await getDocs(ordersRef);
-                let tempOrders = [];
-                querySnapshot.forEach((doc, i) => {
-                    let d = doc.data();
-                    // d.order = JSON.parse(d.order);
-                    tempOrders.push(d);
-                });
-                let orders = [];
-                tempOrders.forEach((o) => {
-                    JSON.parse(o.order).forEach((p) => {
-                        if (p !== null) {
-                            // check if order already exists
-                            let index = orders.findIndex((e) => e.id === p.id);
-                            if (index === -1) {
-                                orders.push(p);
-                            } else {
-                                orders[index].quantity += p.quantity;
-                            }
-                        }
-                    });
-                });
-                setOrders(orders);
-                // Loop through customers and make an array of customers along with their product ids
-                let tempCustomerProducts = [];
-                tempCustomers.forEach((c) => {
-                    let customer = {
-                        email: c.email,
-                        name: c.name,
-                        products: [],
-                    };
-                    tempOrders.forEach((o) => {
-                        if (o.email === c.email) {
-                            JSON.parse(o.order).forEach((p) => {
-                                if (p !== null) {
-                                    // check if product already exists and update quantity
-                                    let index = customer.products.findIndex((e) => e.id === p.id);
-                                    if (index === -1) {
-                                        customer.products.push({id: p.id, quantity: p.quantity});
-                                    } else {
-                                        customer.products[index].quantity += p.quantity;
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    tempCustomerProducts.push(customer);
-                });
-                setCustomerProducts(tempCustomerProducts);
-            } else {
-                navigate("/");
+              });
             }
+          });
+          tempCustomerProducts.push(customer);
         });
-    }, [navigate, storeId]);
 
-    const getProductOrders = (p) => {
-        // get all customers information from customerProducts based on the id of product
-        let temp = [];
-        customerProducts.forEach((c) => {
-            let index = c.products.findIndex((e) => e.id === p.id);
-            if (index !== -1) {
-                temp.push({
-                    user: c.email,
-                    name: c.name,
-                    quantity: c.products[index].quantity,
-                });
-            }
+        let groupedCustomers = [];
+        tempCustomerProducts.forEach((customer) => {
+          let existingCustomer = groupedCustomers.find(
+            (c) =>
+              c.email === customer.email &&
+              c.name === customer.name &&
+              c.phone === customer.phone
+          );
+          if (existingCustomer) {
+            existingCustomer.products = existingCustomer.products.concat(
+              customer.products
+            );
+          } else {
+            groupedCustomers.push(customer);
+          }
         });
-        setCustomers(temp);
-        setProduct(p);
-        document.getElementById("product").textContent = store.columnsList[p.id][1] + " Ordered " + p.quantity;
-    };
 
-    return (
-        <Container maxWidth="lg">
-            <div className="popstore-wrapper">
-                <Grid className="pop-header-wrapper" container spacing={2}>
-                    <Grid item xs={4} md={4}>
-                        <Typography style={{marginBottom: "20px"}} variant="h4">
-                            Packing List
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4} md={4} alignSelf="center">
-                        <Link to='/popstore/all'>
-                            Close
-                        </Link>
-                    </Grid>
-                    <Grid item xs={4} md={4}>
-                        <div className="logout-button">
-                            <LogoutButton user={user?.photoURL}/>
+        setCustomerProducts(groupedCustomers);
+        setCustomerProducts(tempCustomerProducts);
+        setLoading(false);
+      } else {
+        navigate("/");
+      }
+    });
+  }, [navigate, storeId]);
+
+  const handleToggleCollapse = (rowIndex) => {
+    if (expandedRow === rowIndex) {
+      setExpandedRow(null);
+    } else {
+      setExpandedRow(rowIndex);
+    }
+  };
+  if (loading) return <Loading />;
+  return (
+    <Container maxWidth="lg">
+      {/* Top Header */}
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          backgroundColor: (theme) => theme.palette.primary.main,
+          color: (theme) => theme.palette.white.main,
+          marginBottom: 3,
+          minHeight: "10vh",
+          alignItems: "center",
+        }}
+      >
+        <Grid item xs={3} md={3} alignItems="center">
+          <HeaderText variant="body1">Reference ID</HeaderText>
+        </Grid>
+        <Grid item xs={3} md={3} alignItems="center">
+          <HeaderText variant="body1">Product</HeaderText>
+        </Grid>
+        <Grid item xs={3} md={3} alignItems="center">
+          <HeaderText variant="body1">Quantity</HeaderText>
+        </Grid>
+        <Grid item xs={3} md={3} alignItems="center">
+          &nbsp;
+        </Grid>
+      </Grid>
+      {/* Table Content */}
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          backgroundColor: (theme) => theme.palette.white.main,
+          spacing: 2,
+        }}
+      >
+        {orders.map((order, rowIndex) => (
+          <Grid
+            item
+            xs={12}
+            key={rowIndex}
+            spacing={2}
+            sx={{
+              marginTop: "5px",
+              backgroundColor: (theme) => theme.palette.background2,
+            }}
+          >
+            <ItemContainer>
+              <Grid container>
+                <Grid item xs={3} md={3}>
+                  {order.id}
+                </Grid>
+                <Grid item xs={3} md={3}>
+                  <p style={{ fontWeight: "1 rem" }}>
+                    {store.columnsList[order.id][1]}
+                  </p>
+                </Grid>
+                <Grid item xs={3} md={3}>
+                  {order.quantity}
+                </Grid>
+                <Grid container item xs={3} md={3} justifyContent="flex-end">
+                  <IconButton
+                    onClick={() => handleToggleCollapse(rowIndex)}
+                    sx={{ color: (theme) => theme.palette.primary.main }}
+                  >
+                    {expandedRow === rowIndex ? (
+                      <KeyboardArrowUp />
+                    ) : (
+                      <KeyboardArrowDown />
+                    )}
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </ItemContainer>
+            <div style={{ marginTop: "5px" }}>
+              <Collapse
+                in={expandedRow === rowIndex}
+                timeout="auto"
+                unmountOnExit
+              >
+                <CollapsibleContent>
+                  {customerProducts.map((customer, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#f1f2f4",
+                        borderBottom: "1px solid lightgray",
+                        borderTop: "1px solid lightgray",
+                      }}
+                    >
+                      {customer.products.map((product) => (
+                        <div key={product.id}>
+                          <Grid container>
+                            <Grid item xs={3} md={3}>
+                              <p>{customer.email}</p>
+                              <p>{customer.name}</p>
+                              <p>{customer.phone}</p>
+                            </Grid>
+                            <Grid item xs={3} md={3}>
+                              &nbsp;
+                            </Grid>
+                            <Grid item xs={3} md={3}>
+                              {product.quantity}
+                            </Grid>
+                            <Grid item xs={3} md={3}>
+                              <BodyText
+                                variant="footnote"
+                                sx={{ marginBottom: 1, fontWeight: "light" }}
+                              >
+                                Notes / Comments
+                              </BodyText>
+                              <BodyText variant="body1">
+                                {product.comments}
+                              </BodyText>
+                            </Grid>
+                          </Grid>
                         </div>
-                    </Grid>
-                </Grid>
-                <Grid className="pop-header-wrapper" container spacing={2}>
-                    <Grid item xs={12} md={12}>
-                        <Typography style={{marginBottom: "1rem"}} variant="h6">
-                            {store?.storeName}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </div>
-            <div style={{backgroundColor: "#fff", padding: '1rem'}}>
-                <Grid container spacing={2}>
-                    <Grid item xs={8} md={5}>
-                        <h5>Product</h5>
-                    </Grid>
-                    <Grid item xs={4} md={3}>
-                        <h5>Quantity</h5>
-                    </Grid>
-                </Grid>
-                {orders?.map((order, index) => {
-                    return (
-                        <Grid container spacing={2} key={index}>
-                            <Grid item xs={8} md={5}>
-                                <p>{store.columnsList[order.id][1]}</p>
-                            </Grid>
-                            <Grid item xs={4} md={3}>
-                                <p>{order.quantity}</p>
-                            </Grid>
-                        </Grid>
-                    )
-                })}
-            </div>
-            <Grid container spacing={2}>
-                <Grid item xs={5} md={5}>
-                    <div style={{padding: '1rem 0'}}>
-                        <Select
-                            fullWidth={true}
-                            id="product"
-                            label="Select Column"
-                        >
-                            {orders?.map((order, i) => (
-                                <MenuItem
-                                    onClick={(e => getProductOrders(order))}
-                                    key={`${i}`}
-                                >
-                                    {store.columnsList[order.id][1]} - {order.quantity} Ordered
-                                </MenuItem>
-                            ))}
-                        </Select>
+                      ))}
                     </div>
-                </Grid>
-            </Grid>
-            <div style={{backgroundColor: "#fff", padding: '1rem'}}>
-                {product.id !== undefined &&
-                <div>
-                    <Grid container spacing={2}>
-                        <Grid item xs={8} md={5}>
-                            <h5>Orders: {store.columnsList[product.id][1]}</h5>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={2}>
-                        <Grid item xs={8} md={3}>
-                            <h5>Customer</h5>
-                        </Grid>
-                        <Grid item xs={4} md={3}>
-                            <h5>Quantity</h5>
-                        </Grid>
-                    </Grid>
-                    {customers?.map((customer, i) => (
-                        <Grid container spacing={2} key={i}>
-                            <Grid item xs={8} md={3}>
-                                <p>{customer.user}</p>
-                            </Grid>
-                            <Grid item xs={4} md={3}>
-                                <p>{customer.quantity}</p>
-                            </Grid>
-                        </Grid>
-                    ))}
-                </div>
-                }
+                  ))}
+                </CollapsibleContent>
+              </Collapse>
             </div>
-            <p>&nbsp;</p>
-        </Container>
-    );
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
 };
 
 export default PackingPage;

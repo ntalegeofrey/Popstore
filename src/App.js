@@ -8,7 +8,6 @@ import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import OrderPage from "./pages/OrderPage/OrderPage";
 import QRPage from "./pages/QRPage/QRPage";
 import CustomersPage from "./pages/CustomersPage/CustomersPage";
-import PackagingPage from "./pages/PackingPage/PackingPage";
 import PopStore from "./pages/PopStore/PopStore";
 import NotFound from "./pages/NotFound/NotFound";
 import EditPopstore from "./pages/EditPopstore/EditPopstore";
@@ -16,6 +15,8 @@ import ThemeCustomization from "./config/theme";
 import Navigation from "./components/Navigation/Navigation";
 import MainContainer from "./components/Styles/styledMainContainer";
 import { Box } from "@mui/material";
+import AnalyticsPage from "./pages/Analytics/Analytics";
+import PackingPage from "./pages/PackingPage/PackingPage";
 
 function App() {
   return (
@@ -43,7 +44,11 @@ function App() {
           <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
           <Route
             path="/popstore/packaging/:storeId"
-            element={<PackagingPage />}
+            element={<PackingPage />}
+          />
+          <Route
+            path="/popstore/analytics/:storeId"
+            element={<AnalyticsPage />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>

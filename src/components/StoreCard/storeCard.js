@@ -13,6 +13,7 @@ import {
 } from "../../service/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Loading from "../Loading";
 
 const CardContainer = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background2,
@@ -37,6 +38,7 @@ const CardComponent = () => {
   const [tableData, setTableData] = useState([]);
   const [productList, setProductList] = useState([]);
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleOrderClick = (storeID) => {
     navigate(`/popstore/orders/${storeID}`);
@@ -57,6 +59,7 @@ const CardComponent = () => {
           temp.push(doc.data());
         });
         setTableData(temp);
+        setLoading(false);
       } else {
         navigate("/");
       }
@@ -88,16 +91,26 @@ const CardComponent = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-
+  if (loading) return <Loading />;
   return (
     <>
       {productList.map((row, i) => (
         <div key={i}>
           <CardContainer>
             <Grid container alignItems="center">
-              <Grid item xs={12} md={6}>
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{ cursor: "pointer" }}
+                onClick={(e) =>
+                  navigate(`/popstore/analytics/${tableData[i].storeID}`)
+                }
+              >
                 <Typography
                   variant="h6"
+                  component={Link}
+                  to={`/popstore/analytics/${tableData[i].storeID}`}
                   sx={{
                     flexGrow: 1,
                     fontWeight: "regular",
