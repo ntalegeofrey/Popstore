@@ -24,6 +24,7 @@ import {
   query,
   orderBy,
 } from "../../service/firebase";
+import Loading from "../../components/Loading";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -142,6 +143,7 @@ const LandingPage = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
   return (
     <DashboardTooltipsContext.Provider
       value={{ refs: tooltipEls, addTooltipRef }}

@@ -35,6 +35,70 @@ import {
   SuccessAlert,
 } from "../../components/Styles/styledNotificationAlerts";
 
+export const eurocurrencies = {
+  Albania: "ALL",
+  Andorra: "EUR",
+  Armenia: "AMD",
+  Austria: "EUR",
+  Azerbaijan: "AZN",
+  Belarus: "BYN",
+  Belgium: "EUR",
+  "Bosnia and Herzegovina": "BAM",
+  Bulgaria: "BGN",
+  Croatia: "HRK",
+  Cyprus: "EUR",
+  Czechia: "CZK",
+  Denmark: "DKK",
+  Estonia: "EUR",
+  Finland: "EUR",
+  France: "EUR",
+  Georgia: "GEL",
+  Germany: "EUR",
+  Greece: "EUR",
+  Hungary: "HUF",
+  Iceland: "ISK",
+  Ireland: "EUR",
+  Italy: "EUR",
+  Latvia: "EUR",
+  Liechtenstein: "CHF",
+  Lithuania: "EUR",
+  Luxembourg: "EUR",
+  Malta: "EUR",
+  Moldova: "MDL",
+  Monaco: "EUR",
+  Montenegro: "EUR",
+  Netherlands: "EUR",
+  "North Macedonia": "MKD",
+  Norway: "NOK",
+  Poland: "PLN",
+  Portugal: "EUR",
+  Romania: "RON",
+  Russia: "RUB",
+  "San Marino": "EUR",
+  Serbia: "RSD",
+  Slovakia: "EUR",
+  Slovenia: "EUR",
+  Spain: "EUR",
+  Sweden: "SEK",
+  Switzerland: "CHF",
+  Turkey: "TRY",
+  Ukraine: "UAH",
+  "United Kingdom": "GBP",
+  "Vatican City": "EUR",
+};
+
+export const updateCurrencyColumn = async (e, country, currency) => {
+  e.preventDefault();
+  if (document.getElementById(`currency`)) {
+    if (currency === "EUR") {
+      document.getElementById(`currency`).textContent = currency;
+    } else {
+      document.getElementById(`currency`).textContent =
+        country + " - " + currency;
+    }
+  }
+};
+
 const NewPopstore = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -69,57 +133,6 @@ const NewPopstore = () => {
     setOpenModal(true);
   };
 
-  const eurocurrencies = {
-    Albania: "ALL",
-    Andorra: "EUR",
-    Armenia: "AMD",
-    Austria: "EUR",
-    Azerbaijan: "AZN",
-    Belarus: "BYN",
-    Belgium: "EUR",
-    "Bosnia and Herzegovina": "BAM",
-    Bulgaria: "BGN",
-    Croatia: "HRK",
-    Cyprus: "EUR",
-    Czechia: "CZK",
-    Denmark: "DKK",
-    Estonia: "EUR",
-    Finland: "EUR",
-    France: "EUR",
-    Georgia: "GEL",
-    Germany: "EUR",
-    Greece: "EUR",
-    Hungary: "HUF",
-    Iceland: "ISK",
-    Ireland: "EUR",
-    Italy: "EUR",
-    Latvia: "EUR",
-    Liechtenstein: "CHF",
-    Lithuania: "EUR",
-    Luxembourg: "EUR",
-    Malta: "EUR",
-    Moldova: "MDL",
-    Monaco: "EUR",
-    Montenegro: "EUR",
-    Netherlands: "EUR",
-    "North Macedonia": "MKD",
-    Norway: "NOK",
-    Poland: "PLN",
-    Portugal: "EUR",
-    Romania: "RON",
-    Russia: "RUB",
-    "San Marino": "EUR",
-    Serbia: "RSD",
-    Slovakia: "EUR",
-    Slovenia: "EUR",
-    Spain: "EUR",
-    Sweden: "SEK",
-    Switzerland: "CHF",
-    Turkey: "TRY",
-    Ukraine: "UAH",
-    "United Kingdom": "GBP",
-    "Vatican City": "EUR",
-  };
   const [currencies] = useState(eurocurrencies);
 
   useEffect(() => {
@@ -328,18 +341,6 @@ const NewPopstore = () => {
     localStorage.setItem("columns", JSON.stringify(cols));
   };
 
-  const updateCurrencyColumn = async (e, country, currency) => {
-    e.preventDefault();
-    if (document.getElementById(`currency`)) {
-      if (currency === "EUR") {
-        document.getElementById(`currency`).textContent = currency;
-      } else {
-        document.getElementById(`currency`).textContent =
-          country + " - " + currency;
-      }
-    }
-  };
-
   return (
     <Container maxWidth="lg">
       <Grid container spacing={2} sx={{ marginBottom: 4 }}>
@@ -477,6 +478,7 @@ const NewPopstore = () => {
                     PaperProps: {
                       sx: {
                         bgcolor: "#fff",
+                        maxHeight: "200px",
                         "& .MuiMenuItem-root": {
                           padding: 2,
                         },

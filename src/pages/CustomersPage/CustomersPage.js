@@ -1,43 +1,65 @@
-import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import LogoutButton from "../../components/LogoutButton/LogoutButton";
-import Grid from "@mui/material/Grid";
-import firebase, {doc, getDoc} from "../../service/firebase";
+import React, { useState } from "react";
+import { styled } from "@mui/material/styles";
+import { Box, Grid, IconButton, Collapse, Typography } from "@mui/material";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import firebase, { doc, getDoc } from "../../service/firebase";
 import { db, collection, getDocs, where, query } from "../../service/firebase";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import {MenuItem, Select} from "@mui/material";
+import { useEffect } from "react";
+import { alpha } from "@mui/material/styles";
+import { BodyText } from "../OrdersPage/OrdersPage";
+import Loading from "../../components/Loading";
 
-const CustomersPage = () => {
+export const ItemContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: theme.spacing(1),
+}));
+
+export const CollapsibleContent = styled(Box)(({ theme }) => ({
+  backgroundColor: "#fff",
+  marginTop: "5px",
+  transition: "height 0.3s ease-in-out",
+  overflow: "hidden",
+  width: "100%",
+}));
+
+const CustomerOrders = () => {
+  const [expandedRow, setExpandedRow] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const { storeId } = useParams();
   const [store, setStore] = useState({});
-  const [customer, setCustomer] = useState({});
   const [customers, setCustomers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
         let temp = [];
-        const allStores = collection(
-            db,
-            `/StoreOwners/${user.uid}/allStores`
-        );
+        const allStores = collection(db, `/StoreOwners/${user.uid}/allStores`);
         const querySnapshot = await getDocs(allStores);
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           temp.push(doc.data());
         });
-        const storesRef = await collection(db, `/StoreOwners/${user.uid}/allStores`);
+        const storesRef = await collection(
+          db,
+          `/StoreOwners/${user.uid}/allStores`
+        );
         const store = await getDoc(doc(storesRef, storeId));
-        if(store.exists()){
+        if (store.exists()) {
           let data = store.data();
           data.columnsList = JSON.parse(data.columnsList);
           setStore(data);
         }
-        const customersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/customers`);
+        const customersRef = collection(
+          db,
+          `/StoreOwners/${user.uid}/allStores/${storeId}/customers`
+        );
         const Customers = await getDocs(customersRef);
         temp = [];
         Customers.forEach((doc) => {
@@ -45,15 +67,18 @@ const CustomersPage = () => {
           temp.push(doc.data());
         });
         setCustomers(temp);
+        setLoading(false);
       } else {
         navigate("/");
       }
     });
   }, [navigate, storeId]);
 
-  const getCustomerOrders = async (c) => {
-    setCustomer(c);
-    const ordersRef = collection(db, `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`);
+  const getCustomoerOrders = async (c) => {
+    const ordersRef = collection(
+      db,
+      `/StoreOwners/${user.uid}/allStores/${storeId}/Orders`
+    );
     const q = query(ordersRef, where("email", "==", c.email));
     const querySnapshot = await getDocs(q);
     let temp = [];
@@ -65,10 +90,10 @@ const CustomersPage = () => {
     let orders = [];
     temp.forEach((o) => {
       o.order.forEach((p) => {
-        if(p !== null){
+        if (p !== null) {
           // check if order already exists
           let index = orders.findIndex((e) => e.id === p.id);
-          if(index === -1){
+          if (index === -1) {
             orders.push(p);
           } else {
             orders[index].quantity += p.quantity;
@@ -79,126 +104,245 @@ const CustomersPage = () => {
     return orders;
   };
 
+  const handleToggleCollapse = (rowIndex, customer) => {
+    if (expandedRow === rowIndex) {
+      setExpandedRow(null);
+    } else {
+      setExpandedRow(rowIndex);
+      getCustomoerOrders(customer).then((o) => {
+        setOrders(o);
+        document.getElementById("customer").textContent = customer.email;
+      });
+    }
+  };
+  if (loading) return <Loading />;
   return (
-      <Container maxWidth="lg">
-        <div className="popstore-wrapper">
-          <Grid className="pop-header-wrapper" container spacing={2}>
-            <Grid item xs={6} md={4}>
-              <Typography style={{ marginBottom: "20px" }} variant="h4">
-                Customers List
+    <Grid container spacing={2}>
+      {customers.map((customer, index) => (
+        <Grid item xs={12} key={index}>
+          <ItemContainer
+            sx={{
+              backgroundColor: (theme) => theme.palette.background2,
+            }}
+          >
+            <div style={{ width: "100%" }}>
+              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
+                {customer.name || "N/A"}
               </Typography>
-            </Grid>
-            <Grid item xs={2} md={4} alignSelf="center">
-              <Link to='/popstore/all'>
-                Close
-              </Link>
-            </Grid>
-            <Grid item xs={4} md={4}>
-              <div className="logout-button">
-                <LogoutButton user={user?.photoURL} />
-              </div>
-            </Grid>
-          </Grid>
-          <Grid className="pop-header-wrapper" container spacing={2}>
-            <Grid item xs={12} md={12}>
-              <Typography style={{ marginBottom: "1rem" }} variant="h6">
-                {store?.storeName}
+            </div>
+            <div style={{ width: "100%" }}>
+              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
+                {customer.email}
               </Typography>
-            </Grid>
-            <Grid item xs={6} md={3}>
-              <div style={{paddingBottom: '1rem'}}>
-                <Select
-                    fullWidth={true}
-                    id="customer"
-                    label="Select Column"
-                >
-                  {customers?.map((customer, i) => (
-                      <MenuItem
-                          onClick={(e => {
-                            getCustomerOrders(customer).then((o) => { setOrders(o);document.getElementById("customer").textContent = customer.email;});
-                          })}
-                          key={`${i}`}
-                      >
-                        {customer.email}
-                      </MenuItem>
-                  ))}
-                </Select>
-              </div>
-            </Grid>
-          </Grid>
-        </div>
-        <div style={{backgroundColor: "#fff", padding: '1rem'}}>
-            {Object.keys(customer).length === 0 ?
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={12}>
-                    <h4>Select a customer from dropdown to view his orders</h4>
-                  </Grid>
-                </Grid>
-             :
-                <>
-                  <Grid container spacing={2}>
-                    <Grid item xs={2} md={4}>
-                      <h4>{customer?.name || "N/A"}</h4>
-                    </Grid>
-                    <Grid item xs={5} md={4}>
-                      <h4>{customer?.email}</h4>
-                    </Grid>
-                    <Grid item xs={5} md={4}>
-                      <h4>{customer?.phone}</h4>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={2}>
+            </div>
+            <div style={{ width: "100%" }}>
+              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
+                {customer.phone}
+              </Typography>
+            </div>
+            <IconButton
+              onClick={() => handleToggleCollapse(index, customer)}
+              sx={{ color: (theme) => theme.palette.primary.main }}
+            >
+              {expandedRow === index ? (
+                <KeyboardArrowUp />
+              ) : (
+                <KeyboardArrowDown />
+              )}
+            </IconButton>
+          </ItemContainer>
+          {expandedRow === index && (
+            <Collapse
+              in={expandedRow === index}
+              timeout={300}
+              sx={{
+                padding: (theme) => theme.spacing(1),
+              }}
+            >
+              <CollapsibleContent>
+                <div>
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    fontSize={"14px"}
+                    mb={1}
+                  >
+                    Note /Comments
+                  </Typography>
+                  <Typography variant="body1" align="left" fontWeight={400}>
+                    N/A
+                  </Typography>
+                </div>
+                {/* Display Order for each Customer */}
+                <div>
+                  <Grid
+                    container
+                    spacing={2}
+                    key="titles"
+                    alignItems="center"
+                    sx={{
+                      minHeight: "12vh",
+                      marginTop: 2,
+                      backgroundColor: (theme) => theme.palette.primary.main,
+                      padding: 1,
+                    }}
+                  >
                     <Grid item xs={3} md={5}>
-                      <h5>Product</h5>
+                      <Typography
+                        variant="subtitle1"
+                        align="left"
+                        sx={{
+                          color: (theme) => theme.palette.white.main,
+                          fontWeight: 400,
+                          fontSize: "14px",
+                        }}
+                      >
+                        Reference ID
+                      </Typography>
                     </Grid>
                     <Grid item xs={3} md={2}>
-                      <h5>Price</h5>
+                      <Typography
+                        variant="subtitle1"
+                        align="left"
+                        sx={{
+                          color: (theme) => theme.palette.white.main,
+                          fontWeight: 400,
+                          fontSize: "14px",
+                        }}
+                      >
+                        Product
+                      </Typography>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                      <h5>Quantity</h5>
+                      <div>
+                        <Typography
+                          variant="subtitle1"
+                          align="left"
+                          sx={{
+                            color: (theme) => theme.palette.white.main,
+                            fontWeight: 400,
+                            fontSize: "14px",
+                          }}
+                        >
+                          Quantity
+                        </Typography>
+                      </div>
                     </Grid>
                     <Grid item xs={3} md={2}>
-                      <h5>Total</h5>
+                      <div>
+                        <Typography
+                          variant="subtitle1"
+                          align="left"
+                          sx={{
+                            color: (theme) => theme.palette.white.main,
+                            fontWeight: 400,
+                            fontSize: "14px",
+                          }}
+                        >
+                          Amount
+                        </Typography>
+                      </div>
                     </Grid>
                   </Grid>
                   {orders?.map((order, index) => {
                     return (
-                    <Grid container spacing={2} key={index}>
-                      <Grid item xs={3} md={5}>
-                        <p>{store.columnsList[order.id][1]}</p>
+                      <Grid
+                        container
+                        spacing={2}
+                        key={index}
+                        pb={1}
+                        pl={1}
+                        sx={{
+                          backgroundColor: (theme) => theme.palette.background2,
+                          borderTop: "2px solid",
+                          borderColor: (theme) =>
+                            alpha(theme.palette.primary.main, 0.3),
+                          "&:first-child": {
+                            borderTop: "none",
+                          },
+                          "&:last-child": {
+                            borderBottom: "none",
+                          },
+                          minHeight: "12vh",
+                        }}
+                      >
+                        <Grid item xs={3} md={5}>
+                          <BodyText variant="body1">
+                            {store.columnsList[order.id][1]}
+                          </BodyText>
+                        </Grid>
+                        <Grid item xs={3} md={2}>
+                          <BodyText variant="body1">
+                            {store.columnsList[order.id][2]} {store?.currency}
+                          </BodyText>
+                        </Grid>
+                        <Grid item xs={3} md={3}>
+                          <BodyText variant="body1">{order.quantity}</BodyText>
+                        </Grid>
+                        <Grid item xs={3} md={2}>
+                          <BodyText variant="body1">
+                            {(
+                              parseFloat(store.columnsList[order.id][2]) *
+                              parseFloat(order.quantity)
+                            ).toFixed(2)}{" "}
+                            {store?.currency}
+                          </BodyText>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={3} md={2}>
-                        <p>{store.columnsList[order.id][2]} {store?.currency}</p>
-                      </Grid>
-                      <Grid item xs={3} md={3}>
-                        <p>{order.quantity}</p>
-                      </Grid>
-                      <Grid item xs={3} md={2}>
-                        <p>{(parseFloat(store.columnsList[order.id][2]) * parseFloat(order.quantity)).toFixed(2)} {store?.currency}</p>
-                      </Grid>
-                    </Grid>
-                    )
+                    );
                   })}
-                  <Grid container spacing={2}>
-                    <Grid item xs={6} md={7}>
-                      <p>&nbsp;</p>
+                  <div>
+                    <Grid
+                      container
+                      spacing={2}
+                      justifyContent="flex-end"
+                      sx={{
+                        backgroundColor: (theme) =>
+                          theme.palette.greyBackground,
+                        marginTop: 1,
+                        marginLeft: "auto",
+                        width: "50%",
+                      }}
+                    >
+                      <Grid
+                        container
+                        item
+                        xs={3}
+                        md={6}
+                        justifyContent="center"
+                      >
+                        <h4>Grand Total</h4>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={3}
+                        md={6}
+                        container
+                        justifyContent="center"
+                      >
+                        <h4 styles={{ marginLeft: "10px" }}>
+                          {orders
+                            .reduce((prev, next) => {
+                              return (
+                                prev +
+                                parseFloat(store.columnsList[next.id][2]) *
+                                  parseFloat(next.quantity)
+                              );
+                            }, 0)
+                            .toFixed(2)}{" "}
+                          {store?.currency}
+                        </h4>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={3} md={3}>
-                      <h4>Grand Total</h4>
-                    </Grid>
-                    <Grid item xs={3} md={2}>
-                      <h4>
-                        {(orders.reduce((prev, next) => {
-                          return prev + parseFloat(store.columnsList[next.id][2]) * parseFloat(next.quantity)
-                        }, 0)).toFixed(2)} {store?.currency}
-                      </h4>
-                    </Grid>
-                  </Grid>
-                </>
-            }
-        </div>
-      </Container>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapse>
+          )}
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 
-export default CustomersPage;
+export default CustomerOrders;

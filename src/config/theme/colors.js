@@ -26,6 +26,7 @@ const colors = {
     footnote: "#6B778C",
     focus: "#79859C",
     navlistText: "#172b4d",
+    dark: "#686868",
   },
   textField: {
     main: "#f0f2f5",
