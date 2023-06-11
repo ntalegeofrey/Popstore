@@ -89,7 +89,6 @@ const EditPopstore = () => {
         })
       );
     });
-    console.log("store: ", store);
   }, [navigate, storeId]);
 
   const updateStore = async (e) => {

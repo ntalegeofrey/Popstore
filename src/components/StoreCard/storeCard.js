@@ -4,6 +4,7 @@ import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import LockIcon from "@mui/icons-material/Lock";
 import firebase, {
   collection,
   db,
@@ -77,6 +78,7 @@ const StoreCardComponent = () => {
       });
     });
     setProductList(rows);
+    console.log("tabledata: ", tableData);
   }, [tableData]);
 
   const handleCopy = (link) => {
@@ -98,8 +100,8 @@ const StoreCardComponent = () => {
             <Grid id="step5" container alignItems="center">
               <Grid
                 item
-                xs={12}
-                md={6}
+                xs={6}
+                md={tableData[i].locked ? 3 : 6}
                 sx={{ cursor: "pointer" }}
                 onClick={(e) =>
                   navigate(`/popstore/analytics/${tableData[i].storeID}`)
@@ -118,6 +120,11 @@ const StoreCardComponent = () => {
                   {row.name}
                 </Typography>
               </Grid>
+              {tableData[i].locked && (
+                <Grid item xs={6} md={3}>
+                  <LockIcon style={{ color: "#4c8991" }} />
+                </Grid>
+              )}
               <ButtonContainer container item spacing={2} xs={12} md={6}>
                 <Grid item xs={12} sm={4} alignItems="center">
                   <Button
