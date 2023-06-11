@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - popstoreV1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.19.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: |
+          export REACT_APP_API_KEY=$REACT_APP_API_KEY
+          export REACT_APP_AUTH_DOMAIN=$REACT_APP_AUTH_DOMAIN
+          export REACT_APP_PROJECT_ID=$REACT_APP_PROJECT_ID
+          export REACT_APP_STORAGE_BUCKET=$REACT_APP_STORAGE_BUCKET
+          export REACT_APP_MESSAGING_SENDER_ID=$REACT_APP_MESSAGING_SENDER_ID
+          export REACT_APP_ID=$REACT_APP_ID
+          export REACT_APP_MEASUREMENT=$REACT_APP_MEASUREMENT
+          export FAST_REFRESH=$FAST_REFRESH
+          export REACT_APP_CURRENCY_API_KEY=$REACT_APP_CURRENCY_API_KEY
+          export REACT_APP_EMAILJS_USER_ID=$REACT_APP_EMAILJS_USER_ID
+          export REACT_APP_EMAIL_JS_TOKEN=$REACT_APP_EMAIL_JS_TOKEN
+          export REACT_APP_EMAILJS_SERVICE_ID=$REACT_APP_EMAILJS_SERVICE_ID
+          export REACT_APP_EMAILJS_TEMPLATE_ID=$REACT_APP_EMAILJS_TEMPLATE_ID
+          export REACT_APP_STORE_LINK=$REACT_APP_STORE_LINK
+          echo "REACT_APP_STORE_LINK=$REACT_APP_STORE_LINK"
+          npm run test
+
+      - name: Build
+        run: |
+          export REACT_APP_API_KEY=$REACT_APP_API_KEY
+          export REACT_APP_AUTH_DOMAIN=$REACT_APP_AUTH_DOMAIN
+          export REACT_APP_PROJECT_ID=$REACT_APP_PROJECT_ID
+          export REACT_APP_STORAGE_BUCKET=$REACT_APP_STORAGE_BUCKET
+          export REACT_APP_MESSAGING_SENDER_ID=$REACT_APP_MESSAGING_SENDER_ID
+          export REACT_APP_ID=$REACT_APP_ID
+          export REACT_APP_MEASUREMENT=$REACT_APP_MEASUREMENT
+          export FAST_REFRESH=$FAST_REFRESH
+          export REACT_APP_CURRENCY_API_KEY=$REACT_APP_CURRENCY_API_KEY
+          export REACT_APP_EMAILJS_USER_ID=$REACT_APP_EMAILJS_USER_ID
+          export REACT_APP_EMAIL_JS_TOKEN=$REACT_APP_EMAIL_JS_TOKEN
+          export REACT_APP_EMAILJS_SERVICE_ID=$REACT_APP_EMAILJS_SERVICE_ID
+          export REACT_APP_EMAILJS_TEMPLATE_ID=$REACT_APP_EMAILJS_TEMPLATE_ID
+          export REACT_APP_STORE_LINK=$REACT_APP_STORE_LINK
+          npm run build
+
+      - name: Deploy to Firebase Hosting
+        uses: w9jds/firebase-action@v1.2.0
+        with:
+          args: deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }} --project popsto-re --non-interactive
