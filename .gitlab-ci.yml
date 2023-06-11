@@ -67,6 +67,7 @@ build:
     when: always
   only:
     - main
+    - popstoreV1
 
 deploy:
   stage: deploy
@@ -77,6 +78,9 @@ deploy:
     - echo "Deployed to production server (Firebase Hosting)"
   environment:
     name: production
-    url: https://popsto.re/
+    url:
+      main: https://popsto.re/
+      popstoreV1: https://popsto.re/v1/
   only:
     - main
+    - popstoreV1
