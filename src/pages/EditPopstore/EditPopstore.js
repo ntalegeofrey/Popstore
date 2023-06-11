@@ -1,3 +1,5 @@
+import jsPDF from "jspdf";
+import { saveAs } from "file-saver";
 import { deleteDoc } from "@firebase/firestore";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -31,6 +33,7 @@ import isEmail from "validator/lib/isEmail";
 import styles from "../../components/DataTable/Sheets.module.css";
 import Loading from "../../components/Loading";
 import { StyledTextField } from "../../components/Styles/styledTextField";
+
 import firebase, {
   collection,
   db,
@@ -185,6 +188,44 @@ const EditPopstore = () => {
     }
   };
 
+  // Generateing pdf
+  const generatePDF = (e) => {
+    const doc = new jsPDF();
+
+    // Add store name and owner
+    doc.setFontSize(18);
+    doc.text(store.storeName, 10, 20);
+    doc.setFontSize(12);
+    doc.text(`Owner: ${store.storeOwner}`, 10, 30);
+
+    // Add table headers
+    doc.setFontSize(12);
+    doc.setTextColor("#000");
+    doc.setFont(undefined, "bold");
+    doc.text("Reference ID", 10, 40);
+    doc.text("Name", 50, 40);
+    doc.text("Price", 100, 40);
+
+    // Add table rows
+    let y = 50;
+    store.columnsList.forEach((row) => {
+      doc.setFontSize(12);
+      doc.setTextColor("#000");
+      doc.setFont(undefined, "normal");
+      doc.text(row[0], 10, y);
+      doc.text(row[1], 50, y);
+      doc.text(row[2], 100, y);
+
+      y += 10;
+    });
+
+    // Save the PDF file
+    doc.save("popstore.pdf");
+    const blob = doc.output("blob");
+    saveAs(blob, "postore.pdf");
+    navigate("/popstore/downloaded");
+  };
+
   if (loading) return <Loading />;
   return (
     <Container maxWidth="lg">
@@ -208,6 +249,7 @@ const EditPopstore = () => {
             variant="outlined"
             startIcon={<FileDownloadIcon />}
             sx={{ border: "1px solid", width: "100%" }}
+            onClick={generatePDF}
           >
             Download
           </Button>
@@ -381,7 +423,7 @@ const EditPopstore = () => {
         <TableContainer
           sx={{ backgroundColor: (theme) => theme.palette.background2 }}
         >
-          <Table style={{ tableLayout: "fixed" }}>
+          <Table id="table" style={{ tableLayout: "fixed" }}>
             <TableHead
               sx={{ background: (theme) => theme.palette.primary.main }}
             >

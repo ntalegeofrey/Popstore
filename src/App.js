@@ -17,6 +17,7 @@ import MainContainer from "./components/Styles/styledMainContainer";
 import { Box } from "@mui/material";
 import AnalyticsPage from "./pages/Analytics/Analytics";
 import PackingPage from "./pages/PackingPage/PackingPage";
+import DownloadedPage from "./pages/DownloadedPage";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             path="/popstore/analytics/:storeId"
             element={<AnalyticsPage />}
           />
+          <Route path="/popstore/downloaded" element={<DownloadedPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </MainContainer>
