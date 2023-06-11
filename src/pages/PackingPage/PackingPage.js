@@ -81,6 +81,7 @@ const PackingPage = () => {
             email: c.email,
             name: c.name,
             phone: c.phone,
+            comment: c.comment,
             products: [],
           };
           tempOrders.forEach((o) => {
@@ -247,7 +248,7 @@ const PackingPage = () => {
                                 Notes / Comments
                               </BodyText>
                               <BodyText variant="body1">
-                                {product.comments}
+                                {customer.comment}
                               </BodyText>
                             </Grid>
                           </Grid>

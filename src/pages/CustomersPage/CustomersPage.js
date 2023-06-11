@@ -127,7 +127,7 @@ const CustomerOrders = () => {
           >
             <div style={{ width: "100%" }}>
               <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
-                {customer.name || "N/A"}
+                {customer.name}
               </Typography>
             </div>
             <div style={{ width: "100%" }}>
@@ -170,7 +170,7 @@ const CustomerOrders = () => {
                     Note /Comments
                   </Typography>
                   <Typography variant="body1" align="left" fontWeight={400}>
-                    N/A
+                    {customer.comment}
                   </Typography>
                 </div>
                 {/* Display Order for each Customer */}

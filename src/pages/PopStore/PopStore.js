@@ -89,7 +89,6 @@ const PopStore = () => {
         setStoreCurrency(data.currency);
         setLockedState(lock);
         setLoading(false);
-        console.log("data :", lockedState);
       }
     })();
   }, [ownerId, storeId]);
@@ -142,8 +141,8 @@ const PopStore = () => {
         uid: null,
         email: email.toLowerCase(),
         phone: phone,
-        name: "",
-        comment: "",
+        name: name,
+        comment: comment,
         createdAt: serverTimestamp(),
       };
       let newCustomerRef = await doc(customersRef, email);
@@ -154,8 +153,8 @@ const PopStore = () => {
       uid: null,
       email: email.toLowerCase(),
       phone: phone,
-      name: "",
-      comment: "",
+      name: name,
+      comment: comment,
       order: JSON.stringify(order),
       storeId: storeId,
       createdAt: serverTimestamp(),
@@ -168,6 +167,7 @@ const PopStore = () => {
     const orderRef = await doc(ordersRef);
     await setDoc(orderRef, Order);
     setOrderRef(orderRef);
+    console.log("order: ", orderRef);
     await MySwal.fire({
       title: "Success",
       text: "Your order has been placed",
