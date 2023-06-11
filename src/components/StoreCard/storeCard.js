@@ -1,18 +1,16 @@
-import React from "react";
-import { Card, Typography, Button, Grid, Snackbar } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
-import firebase from "../../service/firebase";
+import { Button, Card, Grid, Snackbar, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import {
-  db,
+import { styled } from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import firebase, {
   collection,
+  db,
   getDocs,
-  query,
   orderBy,
+  query,
 } from "../../service/firebase";
-import { useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Loading from "../Loading";
 
 const CardContainer = styled(Card)(({ theme }) => ({
@@ -97,7 +95,7 @@ const CardComponent = () => {
       {productList.map((row, i) => (
         <div key={i}>
           <CardContainer>
-            <Grid container alignItems="center">
+            <Grid id="step5" container alignItems="center">
               <Grid
                 item
                 xs={12}
@@ -145,6 +143,7 @@ const CardComponent = () => {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <Button
+                    id="step4"
                     variant="contained"
                     startIcon={<CopyAllIcon />}
                     sx={{ width: "100%" }}

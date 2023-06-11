@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import Container from "@mui/material/Container";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import firebase from "../../service/firebase";
-import DataTable from "../../components/DataTable/DataTable";
-import textToCellsParser from "../../functions/textToCellsParser";
-import { signInWithGoogle } from "../../service/firebase";
-import "./styles.css";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import DataTable from "../../components/DataTable/DataTable";
+import OnboardingTooltip from "../../components/ReactJoyride";
+import StoreCardComponent from "../../components/StoreCard/storeCard";
 import {
   DataIndicator,
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
-import StoreCardComponent from "../../components/StoreCard/storeCard";
-import {
-  db,
+import textToCellsParser from "../../functions/textToCellsParser";
+import firebase, {
   collection,
+  db,
   getDocs,
-  query,
   orderBy,
+  query,
+  signInWithGoogle,
 } from "../../service/firebase";
-import Loading from "../../components/Loading";
+import "./styles.css";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -35,6 +34,32 @@ const LandingPage = () => {
   const [storeCount, setStoreCount] = useState(0);
 
   const MySwal = withReactContent(Swal);
+
+  const steps = [
+    {
+      target: "#outlined-basic",
+      content: "Paste the data you copied from a spreedsheet here (1/5)",
+    },
+    {
+      target: "#step2",
+      content:
+        "Click “Create PopStore” to convert your data into a PopStore (2/5)",
+    },
+    {
+      target: "#step3",
+      content: "View analytics about your PopStores (3/5)",
+    },
+    {
+      target: "#step4",
+      content:
+        "Copy the link of your PopStore to share it your customers (4/5)",
+    },
+    {
+      target: "#step5",
+      content:
+        "Click on your PopStore to view & edit your store, order, customers and packing (5/5)",
+    },
+  ];
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(async (user) => {
@@ -138,6 +163,7 @@ const LandingPage = () => {
 
   return (
     <Container maxWidth="lg">
+      <OnboardingTooltip steps={steps} />
       <Grid container spacing={2}>
         <Grid item>
           <Typography
@@ -164,6 +190,7 @@ const LandingPage = () => {
           </Grid>
           <Grid item xs={6} md={3}>
             <Button
+              id="step2"
               color="primary"
               variant="contained"
               disabled={!sheetData.length}

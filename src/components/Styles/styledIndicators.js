@@ -23,12 +23,12 @@ const StyledIndicatorWrapper = styled(Box)(({ theme }) => ({
 export const PostoreIndicator = ({ popstores }) => {
   return (
     <>
-      <StyledBoxContainer>
+      <StyledBoxContainer id="step3">
         <Typography variant="h4" color="text.main">
           My PopStores:
         </Typography>
         <StyledIndicatorWrapper>
-          <Typography variant="h3" color="primary.main" mr="16px">
+          <Typography id="step3" variant="h3" color="primary.main" mr="16px">
             {popstores}
           </Typography>
           <HomeIcon sx={{ color: (theme) => theme.palette.primary.main }} />
