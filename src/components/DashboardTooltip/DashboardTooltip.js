@@ -1,158 +1,76 @@
-import AppTooltip from "../AppTooltip";
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useDashboardTooltips } from "../../context/useDashboardTooltips";
+import PropTypes from "prop-types";
+import { useOnboardingContext } from "../../context/onboardingContext";
+import AppTooltip from "../AppTooltip/AppTooltip";
 
-const DashboardTooltipComponent = ({ handleClose, activeIndex }) => {
-  const titles = [
-    "Paste the data you copied from a spreedsheet here",
-    "Click “Create PopStore” to convert your data into a PopStore",
-    "View analytics about your PopStores",
-    "Copy the link of your PopStore to share it your customers",
-    "Click on your PopStore to view & edit your store, order, customers and packing",
-  ];
+const DashboardTooltip = ({ messageIndex, children }) => {
+  const { titles, setCurrentIndex, isOnboardingCompleted } =
+    useOnboardingContext();
+  const [open, setOpen] = useState(false);
 
-  const event = new MouseEvent("mouseover", {
-    view: window,
-    bubbles: true,
-    // cancelable: true
-  });
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
-  const { refs } = useDashboardTooltips();
-
-  const [activeTitle, setActiveTitle] = useState({
-    index: activeIndex,
-    title: titles[activeIndex],
-  });
+  const handleClose = () => {
+    setOpen(false);
+    setCurrentIndex(0); // Reset the index when closing the tooltip
+  };
 
   const handleNext = () => {
-    setActiveTitle((prevTitle) => {
-      const nextIndex = prevTitle.index + 1;
-      const newIndex = nextIndex >= titles.length ? prevTitle.index : nextIndex;
-      // refs.current[prevTitle.index].blur();
-      refs.current[newIndex]?.focus();
-      refs.current[newIndex]?.dispatchEvent(event);
-      return {
-        index: newIndex,
-        title: titles[newIndex],
-      };
-    });
+    if (messageIndex < titles.length - 1) {
+      setCurrentIndex(messageIndex + 1);
+    } else {
+      handleClose();
+    }
   };
 
-  useEffect(()=>{
-    console.log({refs})
-  },[])
+  const handleSkip = () => {
+    handleClose();
+    isOnboardingCompleted(); // Mark onboarding as completed
+  };
 
   const handleBack = () => {
-    setActiveTitle((prevTitle) => {
-      const prevIndex = prevTitle.index - 1;
-      const newIndex = prevIndex <= 0 ? prevTitle.index : prevIndex;
-      // console.log("previoudIndex", newIndex, prevIndex)
-      // refs.current[prevTitle.index].blur();
-      refs.current[newIndex - 1]?.focus();
-      refs.current[newIndex -1]?.dispatchEvent(event);
-      return {
-        index: newIndex,
-        title: titles[newIndex],
-      };
-    });
+    if (messageIndex > 0) {
+      setCurrentIndex(messageIndex - 1);
+    }
   };
 
-  return (
-    <div style={{ padding: ".2em" }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Link
-          component="button"
-          variant="body2"
-          sx={{ color: "#fff;", px: "0px !important;" }}
-          underline="none"
-          onClick={handleBack}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <ArrowBackIosNewIcon
-              fontSize="small"
-              sx={{ fontSize: "8px", marginRight: "2px" }}
-            />
-            <div>Back</div>
-          </Box>
-        </Link>
-        <Link
-          component="button"
-          variant="body2"
-          sx={{ color: "#fff;", px: "0px !important;" }}
-          underline="none"
-          onClick={handleClose}
-        >
-          Skip
-        </Link>
-      </Box>
-      <Box sx={{ py: ".5rem" }}>
-        {activeTitle.title}
-        <span style={{ paddingLeft: "4px" }}>{`(${activeTitle.index + 1}/${
-          titles.length
-        })`}</span>
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Link
-          component="button"
-          variant="body2"
-          sx={{ color: "#fff;", px: "0px !important;" }}
-          underline="none"
-          onClick={handleNext}
-        >
-          {activeTitle.index + 1 === titles.length ? (
-            "End"
-          ) : (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <div>Next</div>
-              <NavigateNextIcon fontSize="small" sx={{ fontSize: "14px" }} />
-            </Box>
-          )}
-        </Link>
-      </Box>
-    </div>
-  );
-};
-
-const DashboardTooltip = ({ title, children }) => {
-  const { refs } = useDashboardTooltips();
-  const [open, setOpen] = useState(false);
-  const [currentIdex, setCurrentIdex] = useState(0);
-  const handleOpen = (event) => {
-    const _currentIdex = refs.current.findIndex((ref) => ref === event.target);
-    setCurrentIdex((_) => {
+  useEffect(() => {
+    if (!isOnboardingCompleted() && messageIndex === 0) {
       setOpen(true);
-      return _currentIdex;
-    });
+    }
+  }, [messageIndex]);
 
-    // console.log("currentID", currentIdex, event.target);
-  };
-
-  useEffect(()=>{
-    // console.log("currentIdex", currentIdex)
-  },[currentIdex])
-
-  const handleClose = (e) => setOpen(false);
   return (
     <AppTooltip
       open={open}
       title={
-        <React.Fragment>
-          <DashboardTooltipComponent
-            handleClose={() => handleClose()}
-            activeIndex={currentIdex}
-          />
-        </React.Fragment>
+        <div>
+          <div>{titles[messageIndex]}</div>
+          <div>{`${messageIndex + 1} / ${titles.length}`}</div>
+          <button onClick={handleBack} disabled={messageIndex === 0}>
+            Back
+          </button>
+          <button onClick={handleSkip}>Skip</button>
+          <button onClick={handleNext}>
+            {messageIndex === titles.length - 1 ? "Finish" : "Next"}
+          </button>
+        </div>
       }
-      onOpen={(e) => handleOpen(e)}
-      onClose={(e) => handleClose(e)}
+      onOpen={handleOpen}
+      onClose={handleClose}
     >
-      {children}
+      <div onClick={handleNext} onKeyDown={handleNext} tabIndex={0}>
+        {children}
+      </div>
     </AppTooltip>
   );
+};
+
+DashboardTooltip.propTypes = {
+  messageIndex: PropTypes.number.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default DashboardTooltip;

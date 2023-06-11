@@ -16,6 +16,20 @@ const AppTooltip = styled(({ className, ...props }) => (
       backgroundColor: "#4C8991",
     },
   },
+  "& button": {
+    backgroundColor: "#4C8991",
+    color: "#FFF",
+    padding: ".5rem 1rem",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    marginRight: "1rem",
+    fontSize: theme.typography.pxToRem(12),
+    transition: "background-color 0.3s",
+    "&:hover": {
+      backgroundColor: "#38847D",
+    },
+  },
 }));
 
 export default AppTooltip;

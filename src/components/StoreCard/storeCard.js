@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Typography, Button, Grid, Snackbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
@@ -12,10 +12,8 @@ import {
   orderBy,
 } from "../../service/firebase";
 import { useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDashboardTooltips } from "./../../context/useDashboardTooltips";
-import DashboardTooltip from "../DashboardTooltip";
 import Loading from "../Loading";
+import DashboardTooltip from "../DashboardTooltip/DashboardTooltip";
 
 const CardContainer = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background2,
@@ -33,12 +31,12 @@ const ButtonContainer = styled(Grid)(({ theme }) => ({
   width: "100%",
   [theme.breakpoints.down("sm")]: { marginTop: theme.spacing(2) },
 }));
+
 const CardComponent = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
   const [productList, setProductList] = useState([]);
-  const { addTooltipRef } = useDashboardTooltips();
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -93,7 +91,9 @@ const CardComponent = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
   if (loading) return <Loading />;
+
   return (
     <>
       {productList.map((row, i) => (
@@ -109,7 +109,22 @@ const CardComponent = () => {
                   navigate(`/popstore/analytics/${tableData[i].storeID}`)
                 }
               >
-                <DashboardTooltip>
+                {i === 0 ? (
+                  <DashboardTooltip messageIndex={4}>
+                    <Typography
+                      variant="h6"
+                      component={Link}
+                      to={`/popstore/analytics/${tableData[i].storeID}`}
+                      sx={{
+                        flexGrow: 1,
+                        fontWeight: "regular",
+                        textDecoration: "none !important",
+                      }}
+                    >
+                      {row.name}
+                    </Typography>
+                  </DashboardTooltip>
+                ) : (
                   <Typography
                     variant="h6"
                     component={Link}
@@ -119,11 +134,10 @@ const CardComponent = () => {
                       fontWeight: "regular",
                       textDecoration: "none !important",
                     }}
-                    ref={(el) => addTooltipRef(el, 4)}
                   >
                     {row.name}
                   </Typography>
-                </DashboardTooltip>
+                )}
               </Grid>
               <ButtonContainer container item spacing={2} xs={12} md={6}>
                 <Grid item xs={12} sm={4} alignItems="center">
@@ -149,7 +163,22 @@ const CardComponent = () => {
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <DashboardTooltip>
+                  {i === 0 ? (
+                    <DashboardTooltip messageIndex={1}>
+                      <Button
+                        variant="contained"
+                        startIcon={<CopyAllIcon />}
+                        sx={{ width: "100%" }}
+                        onClick={() =>
+                          handleCopy(
+                            `/store/${tableData[i].ownerID}/${tableData[i].storeID}`
+                          )
+                        }
+                      >
+                        Copy Link
+                      </Button>
+                    </DashboardTooltip>
+                  ) : (
                     <Button
                       variant="contained"
                       startIcon={<CopyAllIcon />}
@@ -162,13 +191,13 @@ const CardComponent = () => {
                     >
                       Copy Link
                     </Button>
-                  </DashboardTooltip>
+                  )}
                 </Grid>
               </ButtonContainer>
             </Grid>
           </CardContainer>
         </div>
-      ))}{" "}
+      ))}
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={3000}

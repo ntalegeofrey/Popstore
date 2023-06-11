@@ -17,42 +17,44 @@ import MainContainer from "./components/Styles/styledMainContainer";
 import { Box } from "@mui/material";
 import AnalyticsPage from "./pages/Analytics/Analytics";
 import PackingPage from "./pages/PackingPage/PackingPage";
-
+import { OnboardingProvider } from "./context/onboardingContext";
 function App() {
   return (
     <ThemeCustomization>
-      <Toaster />
-      <Navigation />
-      <MainContainer component={"main"}>
-        {/* puts content below appbar */}
-        <Box sx={{ height: "45px", mt: 4 }}></Box>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route exact path="/popstore/all" element={<MyPopstore />} />
-          <Route path="/popstore/create" element={<NewPopstore />} />
-          <Route path="/store/:ownerId/:storeId" element={<PopStore />} />
-          <Route
-            path="/order/:ownerId/:storeId/:orderId"
-            element={<OrderPage />}
-          />
-          <Route path="/QR/:qrCode" element={<QRPage />} />
-          <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
-          <Route
-            path="/popstore/customers/:storeId"
-            element={<CustomersPage />}
-          />
-          <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
-          <Route
-            path="/popstore/packaging/:storeId"
-            element={<PackingPage />}
-          />
-          <Route
-            path="/popstore/analytics/:storeId"
-            element={<AnalyticsPage />}
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </MainContainer>
+      <OnboardingProvider>
+        <Toaster />
+        <Navigation />
+        <MainContainer component={"main"}>
+          {/* puts content below appbar */}
+          <Box sx={{ height: "45px", mt: 4 }}></Box>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route exact path="/popstore/all" element={<MyPopstore />} />
+            <Route path="/popstore/create" element={<NewPopstore />} />
+            <Route path="/store/:ownerId/:storeId" element={<PopStore />} />
+            <Route
+              path="/order/:ownerId/:storeId/:orderId"
+              element={<OrderPage />}
+            />
+            <Route path="/QR/:qrCode" element={<QRPage />} />
+            <Route path="/popstore/edit/:storeId" element={<EditPopstore />} />
+            <Route
+              path="/popstore/customers/:storeId"
+              element={<CustomersPage />}
+            />
+            <Route path="/popstore/orders/:storeId" element={<OrdersPage />} />
+            <Route
+              path="/popstore/packaging/:storeId"
+              element={<PackingPage />}
+            />
+            <Route
+              path="/popstore/analytics/:storeId"
+              element={<AnalyticsPage />}
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </MainContainer>
+      </OnboardingProvider>
     </ThemeCustomization>
   );
 }

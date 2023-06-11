@@ -14,9 +14,7 @@ import {
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
-import DashboardTooltip from "../../components/DashboardTooltip";
 import StoreCardComponent from "../../components/StoreCard/storeCard";
-import { DashboardTooltipsContext } from "../../context/useDashboardTooltips";
 import {
   db,
   collection,
@@ -24,7 +22,7 @@ import {
   query,
   orderBy,
 } from "../../service/firebase";
-import Loading from "../../components/Loading";
+import DashboardTooltip from "../../components/DashboardTooltip/DashboardTooltip";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -35,12 +33,6 @@ const LandingPage = () => {
   const [showDataTable, setShowDataTable] = useState(false);
   const [dataUsage, setDataUsage] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
-
-  const tooltipEls = useRef([]);
-
-  const addTooltipRef = (el, index) => {
-    return (tooltipEls.current[index] = el);
-  };
 
   const MySwal = withReactContent(Swal);
 
@@ -145,96 +137,90 @@ const LandingPage = () => {
   };
 
   return (
-    <DashboardTooltipsContext.Provider
-      value={{ refs: tooltipEls, addTooltipRef }}
-    >
-      <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid item>
-            <Typography
-              variant="h2"
-              color="text.main"
-              sx={{ pb: 4, fontWeight: "light" }}
-            >
-              Create Popstore from a spreadsheet
-            </Typography>
-          </Grid>
+    <Container maxWidth="lg">
+      <Grid container spacing={2}>
+        <Grid item>
+          <Typography
+            variant="h2"
+            color="text.main"
+            sx={{ pb: 4, fontWeight: "light" }}
+          >
+            Create Popstore from a spreadsheet
+          </Typography>
         </Grid>
-        <form onSubmit={saveSheet}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <DashboardTooltip>
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Create Popstore from a spreadsheet"
-                  helperText=""
-                  variant="outlined"
-                  onPaste={handlePaste}
-                  value={pastedData}
-                  inputRef={(el) => addTooltipRef(el, 0)}
-                />
-              </DashboardTooltip>
-            </Grid>
-            <Grid item xs={6} md={3}>
-              <DashboardTooltip>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={!sheetData.length}
-                  onClick={handleOpenModal}
-                  sx={{ width: "100%" }}
-                  ref={(el) => addTooltipRef(el, 1)}
-                >
-                  Create PopStore
-                </Button>
-              </DashboardTooltip>
-              <PopUpModal
-                open={openModal}
-                onClose={handleCloseModal}
-                saveSheet={saveSheet}
-              />
-            </Grid>
-            <Grid item xs={6} md={3}>
-              <Button
-                color="secondary"
+      </Grid>
+      <form onSubmit={saveSheet}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <DashboardTooltip messageIndex={0}>
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label="Create Popstore from a spreadsheet"
+                helperText=""
                 variant="outlined"
-                disabled={typeof sheetData === "undefined" || !sheetData.length}
-                onClick={clearSheet}
+                onPaste={handlePaste}
+                value={pastedData}
+              />
+            </DashboardTooltip>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <DashboardTooltip messageIndex={1}>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={!sheetData.length}
+                onClick={handleOpenModal}
                 sx={{ width: "100%" }}
               >
-                Clear Data
+                Create PopStore
               </Button>
-            </Grid>
+            </DashboardTooltip>
+            <PopUpModal
+              open={openModal}
+              onClose={handleCloseModal}
+              saveSheet={saveSheet}
+            />
           </Grid>
-        </form>
-        <form>
-          {showDataTable && (
-            <div className="create-table-wrapper">
-              <DataTable sheet={sheetData} />
-            </div>
-          )}
-        </form>
+          <Grid item xs={6} md={3}>
+            <Button
+              color="secondary"
+              variant="outlined"
+              disabled={typeof sheetData === "undefined" || !sheetData.length}
+              onClick={clearSheet}
+              sx={{ width: "100%" }}
+            >
+              Clear Data
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+      <form>
         {showDataTable && (
           <div className="create-table-wrapper">
             <DataTable sheet={sheetData} />
           </div>
         )}
-        <Grid container spacing={2} marginBottom="30px">
-          <Grid item xs={12} md={2}>
-            <PostoreIndicator popstores={storeCount} />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <DataIndicator dataUsage={dataUsage} />
-          </Grid>
+      </form>
+      {showDataTable && (
+        <div className="create-table-wrapper">
+          <DataTable sheet={sheetData} />
+        </div>
+      )}
+      <Grid container spacing={2} marginBottom="30px">
+        <Grid item xs={12} md={2}>
+          <PostoreIndicator popstores={storeCount} />
         </Grid>
-        <Grid container>
-          <Grid item xs={12}>
-            <StoreCardComponent name="gfgsc" />
-          </Grid>
+        <Grid item xs={12} md={2}>
+          <DataIndicator dataUsage={dataUsage} />
         </Grid>
-      </Container>
-    </DashboardTooltipsContext.Provider>
+      </Grid>
+      <Grid container>
+        <Grid item xs={12}>
+          <StoreCardComponent name="gfgsc" />
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
