@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import DataTable from "../../components/DataTable/DataTable";
-import OnboardingTooltip from "../../components/ReactJoyride";
-import StoreCardComponent from "../../components/StoreCard/storeCard";
+import OnboardingTooltip from "../../components/ReactJoyride/ReactJoyride";
 import {
   DataIndicator,
   PostoreIndicator,
@@ -22,6 +21,7 @@ import firebase, {
   signInWithGoogle,
 } from "../../service/firebase";
 import "./styles.css";
+import StoreCardComponent from "../../components/StoreCard/storeCard";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const LandingPage = () => {
   const steps = [
     {
       target: "#outlined-basic",
-      content: "Paste the data you copied from a spreedsheet here (1/5)",
+      content: "Paste the data you copied from a spreadsheet here (1/5)",
     },
     {
       target: "#step2",
@@ -52,12 +52,12 @@ const LandingPage = () => {
     {
       target: "#step4",
       content:
-        "Copy the link of your PopStore to share it your customers (4/5)",
+        "Copy the link of your PopStore to share it with your customers (4/5)",
     },
     {
       target: "#step5",
       content:
-        "Click on your PopStore to view & edit your store, order, customers and packing (5/5)",
+        "Click on your PopStore to view & edit your store, order, customers, and packing (5/5)",
     },
   ];
 
@@ -233,7 +233,7 @@ const LandingPage = () => {
       </Grid>
       <Grid container>
         <Grid item xs={12}>
-          <StoreCardComponent name="gfgsc" />
+          {user && <StoreCardComponent name="gfgsc" />}
         </Grid>
       </Grid>
     </Container>

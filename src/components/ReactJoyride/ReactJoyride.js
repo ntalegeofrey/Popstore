@@ -17,6 +17,9 @@ const OnboardingTooltip = ({ steps }) => {
             zIndex: "162px",
           },
         }}
+        locale={{
+          last: "Finish",
+        }}
       >
         Test
       </ReactJoyride>

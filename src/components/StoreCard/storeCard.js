@@ -30,7 +30,7 @@ const ButtonContainer = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: { marginTop: theme.spacing(2) },
 }));
 
-const CardComponent = () => {
+const StoreCardComponent = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const [tableData, setTableData] = useState([]);
@@ -185,4 +185,4 @@ const CardComponent = () => {
   );
 };
 
-export default CardComponent;
+export default StoreCardComponent;
