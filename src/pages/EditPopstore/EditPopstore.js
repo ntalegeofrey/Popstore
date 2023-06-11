@@ -1,20 +1,7 @@
-import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
+import { deleteDoc } from "@firebase/firestore";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import Link from "@mui/material/Link";
-import { useNavigate, useParams } from "react-router-dom";
-import { alpha } from "@mui/material/styles";
-import MuiAlert from "@mui/material/Alert";
-import firebase, {
-  db,
-  doc,
-  updateDoc,
-  collection,
-  getDoc,
-} from "../../service/firebase";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import {
   Grid,
   MenuItem,
@@ -27,23 +14,34 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import LogoutButton from "../../components/LogoutButton/LogoutButton";
-import styles from "../../components/DataTable/Sheets.module.css";
+import MuiAlert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import { alpha } from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import Loading from "../../components/Loading";
 import isEmail from "validator/lib/isEmail";
+import styles from "../../components/DataTable/Sheets.module.css";
+import Loading from "../../components/Loading";
 import { StyledTextField } from "../../components/Styles/styledTextField";
+import firebase, {
+  collection,
+  db,
+  doc,
+  getDoc,
+  updateDoc,
+} from "../../service/firebase";
 import {
   eurocurrencies,
   updateCurrencyColumn,
 } from "../NewPopstore/NewPopstore";
-import { deleteDoc } from "@firebase/firestore";
 
 const EditPopstore = () => {
   const theme = useTheme();
@@ -54,7 +52,8 @@ const EditPopstore = () => {
   const [store, setStore] = useState();
   const [dbColumns] = useState(["Reference ID", "Name", "Price"]);
   const [loading, setLoading] = useState(true);
-  const [stre, setstrefRef] = useState(true);
+  const [strefRef, setStrefRef] = useState(true);
+
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
 
   const MySwal = withReactContent(Swal);
@@ -73,7 +72,7 @@ const EditPopstore = () => {
           data.columnsList = JSON.parse(data.columnsList);
           setStore(data);
           setLoading(false);
-          setstrefRef(storesRef);
+          setStrefRef(storesRef);
         }
       } else {
         navigate("/");
@@ -169,15 +168,17 @@ const EditPopstore = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteDoc(doc(stre, storeId));
+      const storeRef = doc(strefRef, storeId);
+      await deleteDoc(storeRef);
+
       MySwal.fire({
         title: "Success!",
-        text: "PopStore updated successfully",
+        text: "PopStore deleted successfully",
         icon: "success",
         confirmButtonText: "Ok",
       });
       localStorage.removeItem("columns");
-      navigate("/popstore/all");
+      navigate("/");
     } catch (error) {
       console.log("Error deleting store:", error);
       // Handle the error condition here, if necessary

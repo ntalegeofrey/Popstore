@@ -103,7 +103,12 @@ const Navigation = () => {
             </StyledNavButton>
           </MenuItem>
           <MenuItem>
-            <StyledNavButton variant="text" size="medium" active={true}>
+            <StyledNavButton
+              variant="text"
+              size="medium"
+              active={true}
+              onClick={(e) => navigate("/")}
+            >
               Dashboard
             </StyledNavButton>
           </MenuItem>
