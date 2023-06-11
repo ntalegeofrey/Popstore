@@ -78,7 +78,6 @@ const StoreCardComponent = () => {
       });
     });
     setProductList(rows);
-    console.log("tabledata: ", tableData);
   }, [tableData]);
 
   const handleCopy = (link) => {

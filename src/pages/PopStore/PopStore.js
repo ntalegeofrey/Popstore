@@ -42,7 +42,7 @@ const PopStore = () => {
   const [storeLink, setStoreLink] = useState("");
   const [orderRef, setOrderRef] = useState(null);
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
-
+  const [lockedState, setLockedState] = useState();
   let total = 0;
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
@@ -84,9 +84,12 @@ const PopStore = () => {
       if (store.exists()) {
         let data = store.data();
         data.columnsList = JSON.parse(data.columnsList);
+        let lock = data.locked;
         setStore(data);
         setStoreCurrency(data.currency);
+        setLockedState(lock);
         setLoading(false);
+        console.log("data :", lockedState);
       }
     })();
   }, [ownerId, storeId]);
@@ -243,343 +246,71 @@ const PopStore = () => {
   if (loading) return <Loading />;
   return (
     <div>
-      <Container maxWidth="lg">
-        <Grid container paddingBottom="25px" alignItems="center" spacing={2}>
-          <Grid item xs={12} md={3}>
-            <Typography variant="h2">{store.storeName}</Typography>
-          </Grid>
-          <Grid item xs={6} md={5}>
-            <Button
-              variant="contained"
-              startIcon={<CopyAllIcon />}
-              onClick={() => handleCopy()}
+      {lockedState ? (
+        <Container
+          maxWidth="lg"
+          style={{
+            width: "100%",
+            minHeight: "80vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "middle",
+          }}
+        >
+          <div>
+            <Typography
+              variant="h5"
+              align="center"
+              fontWeight={500}
+              fontSize="32px"
             >
-              Copy Link
-            </Button>
-            <Snackbar
-              open={isSnackbarOpen}
-              autoHideDuration={3000}
-              onClose={handleCloseSnackbar}
-              anchorOrigin={{
-                vertical: "bottom", // Position the Snackbar at the bottom
-                horizontal: "center", // Center the Snackbar horizontally
-              }}
-            >
-              <MuiAlert
+              The Store is Currently closed.
+            </Typography>
+          </div>
+        </Container>
+      ) : (
+        <Container maxWidth="lg">
+          <Grid container paddingBottom="25px" alignItems="center" spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Typography variant="h2">{store.storeName}</Typography>
+            </Grid>
+            <Grid item xs={6} md={5}>
+              <Button
+                variant="contained"
+                startIcon={<CopyAllIcon />}
+                onClick={() => handleCopy()}
+              >
+                Copy Link
+              </Button>
+              <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={3000}
                 onClose={handleCloseSnackbar}
-                severity="success"
-                sx={{
-                  backgroundColor: "#656f71",
-                  color: "#FFF",
-                  "& .MuiAlert-icon": {
-                    color: "#FFF",
-                  },
+                anchorOrigin={{
+                  vertical: "bottom", // Position the Snackbar at the bottom
+                  horizontal: "center", // Center the Snackbar horizontally
                 }}
               >
-                Link Copied!
-              </MuiAlert>
-            </Snackbar>
-          </Grid>
-          <Grid container item xs={6} md={4} justifyContent="flex-end">
-            <Grid item>
-              <Button
-                style={{ marginLeft: "1rem" }}
-                color="primary"
-                variant="contained"
-                disabled={submitting}
-                onClick={saveOrder}
-              >
-                {isMobile ? "Order" : "Complete Order"}
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid container paddingBottom="25px">
-          <Grid item xs={12} md={3}>
-            <Typography variant="h5" fontWeight="bold">
-              <span>Contact: &nbsp;</span>
-              {store.storeOwner}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container paddingBottom="25px">
-          <Grid item xs={12} md={3}>
-            <Typography variant="body">{store.description}</Typography>
-          </Grid>
-        </Grid>
-        <Grid container paddingBottom="25px" spacing={2}>
-          <Grid item xs={12} md={3}>
-            <div>
-              <Typography variant="body" color="text.main">
-                Name
-              </Typography>
-            </div>
-            <StyledTextField
-              fullWidth
-              id="outlined-basic"
-              label=""
-              helperText=""
-              variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <div>
-              <Typography variant="body" color="text.main">
-                Email Address
-              </Typography>
-            </div>
-            <StyledTextField
-              fullWidth
-              id="outlined-basic"
-              label=""
-              helperText=""
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <div>
-              <Typography variant="body" color="text.main">
-                Phone Number
-              </Typography>
-            </div>
-            <StyledTextField
-              fullWidth
-              id="outlined-basic"
-              label=""
-              helperText=""
-              variant="outlined"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <div>
-              <Typography variant="body" color="text.main">
-                Would you like to add any note/ comment in your order?
-              </Typography>
-            </div>
-            <StyledTextField
-              multiline
-              fullWidth
-              id="outlined-basic"
-              label=""
-              helperText=""
-              variant="outlined"
-              inputProps={{
-                style: {
-                  whiteSpace: "pre-wrap",
-                  wordWrap: "break-word",
-                },
-              }}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        <div>
-          <Grid
-            container
-            sx={{
-              backgroundColor: "primary.main",
-              paddingLeft: isMobile ? "2px" : "50px",
-            }}
-            pt="9px"
-            pb="9px"
-          >
-            <Grid item xs={2} md={3}>
-              <Typography
-                variant={isMobile ? "body2" : "h5"}
-                color="white.main"
-                sx={{ fontWeight: "bold" }}
-              >
-                {isMobile ? "Ref ID" : "Reference ID"}
-              </Typography>
-            </Grid>
-            <Grid item xs={3} md={3}>
-              <Typography
-                variant={isMobile ? "body2" : "h5"}
-                color="white.main"
-                sx={{ fontWeight: "bold" }}
-              >
-                Products
-              </Typography>
-            </Grid>
-            <Grid item xs={2} md={2}>
-              <Typography
-                variant={isMobile ? "body2" : "h5"}
-                color="white.main"
-                sx={{ fontWeight: "bold" }}
-              >
-                Price
-              </Typography>
-            </Grid>
-            <Grid item xs={3} md={2}>
-              <Typography
-                variant={isMobile ? "body2" : "h5"}
-                color="white.main"
-                sx={{ fontWeight: "bold" }}
-              >
-                Quantity
-              </Typography>
-            </Grid>
-            <Grid item xs={1} md={2}>
-              <Typography
-                variant={isMobile ? "body2" : "h5"}
-                color="white.main"
-                sx={{ fontWeight: "bold" }}
-              >
-                Amount
-              </Typography>
-            </Grid>
-          </Grid>
-          <div>
-            {store.columnsList?.map((column, index) => {
-              return (
-                <Grid
-                  container
-                  key={index}
+                <MuiAlert
+                  onClose={handleCloseSnackbar}
+                  severity="success"
                   sx={{
-                    paddingLeft: isMobile ? "2px" : "50px",
-                    backgroundColor: "background2",
-                    borderBottom: "1px solid",
-                    borderTop: "1px solid",
-                    borderTopColor: (theme) =>
-                      alpha(theme.palette.primary.main, 0.3),
-                    borderBottomColor: (theme) =>
-                      alpha(theme.palette.primary.main, 0.3),
-                    paddingTop: "9px",
-                    paddingBottom: "9px",
-                    "&:first-child": {
-                      borderTop: "none",
-                    },
-                    "&:nth-last-child(2)": {
-                      borderBottom: "none",
+                    backgroundColor: "#656f71",
+                    color: "#FFF",
+                    "& .MuiAlert-icon": {
+                      color: "#FFF",
                     },
                   }}
                 >
-                  <Grid item xs={2} md={3}>
-                    <p>{column[0]}</p>
-                  </Grid>
-                  <Grid item xs={3} md={3}>
-                    <p>{column[1]}</p>
-                  </Grid>
-                  <Grid item xs={2} md={2}>
-                    <p>
-                      {column[2]} {store.currency}
-                    </p>
-                  </Grid>
-                  <Grid item xs={3} md={2}>
-                    <TextField
-                      id="outlined-basic"
-                      label=""
-                      helperText=""
-                      type="number"
-                      variant="outlined"
-                      value={order[index]?.quantity}
-                      defaultValue={0}
-                      disabled={store.locked}
-                      InputLabelProps={{ shrink: true }}
-                      sx={{
-                        width: "50%",
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "1px solid",
-                          borderColor: "#353535",
-                          borderRadius: "6px",
-                        },
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover": {
-                            borderColor: (theme) => theme.palette.primary.main,
-                          },
-                          "&:focused": {
-                            borderColor: (theme) => theme.palette.primary.main,
-                          },
-                        },
-                      }}
-                      onChange={(e) => {
-                        if (!e.target.value || Number(e.target.value) < 0) {
-                          e.target.value = (0).toString();
-                          // set default value and value of TextField to 0
-                          order[index] = {
-                            ...order[index],
-                            quantity: 0,
-                            id: index,
-                          };
-                        } else {
-                          let newOrder = [...order];
-                          newOrder[index] = {
-                            ...newOrder[index],
-                            quantity:
-                              Number(e.target.value) < 0
-                                ? 0
-                                : parseInt(e.target.value),
-                            id: index,
-                          };
-                          setOrder(newOrder);
-                        }
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={2} md={2}>
-                    <p>
-                      {Number(
-                        Number(column[2].replace(/,/, "")) *
-                          Number(
-                            Number(order[index]?.quantity)
-                              ? order[index]?.quantity
-                              : 0
-                          )
-                      ).toFixed(2)}{" "}
-                      {store.currency}
-                    </p>
-                  </Grid>
-                </Grid>
-              );
-            })}
-            <Grid container spacing={2} sx={{ marginTop: "10px" }}>
-              <Grid item xs={6} md={8} textAlign="right">
-                <p>&nbsp;</p>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                md={2}
-                sx={{ backgroundColor: "greyBackground" }}
-              >
-                <Typography variant="h5" sx={{ fontWeight: "regular" }}>
-                  Total
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                md={2}
-                sx={{ backgroundColor: "greyBackground" }}
-              >
-                <Typography variant="h5" sx={{ fontWeight: "regular" }}>
-                  {order?.forEach((item, index) => {
-                    if (item) {
-                      total +=
-                        Number(item.quantity) *
-                        Number(
-                          (store?.columnsList[item.id][2]).replace(/,/, "")
-                        );
-                    }
-                  })}{" "}
-                  {Number(total).toFixed(2)} {store.currency}
-                </Typography>
-              </Grid>
+                  Link Copied!
+                </MuiAlert>
+              </Snackbar>
             </Grid>
-          </div>
-        </div>
-        {!store.locked && (
-          <div style={{ paddingTop: "10px" }}>
-            <Grid container xs={12} md={12} justifyContent="flex-end">
+            <Grid container item xs={6} md={4} justifyContent="flex-end">
               <Grid item>
                 <Button
+                  style={{ marginLeft: "1rem" }}
                   color="primary"
                   variant="contained"
                   disabled={submitting}
@@ -589,9 +320,308 @@ const PopStore = () => {
                 </Button>
               </Grid>
             </Grid>
+          </Grid>
+          <Grid container paddingBottom="25px">
+            <Grid item xs={12} md={3}>
+              <Typography variant="h5" fontWeight="bold">
+                <span>Contact: &nbsp;</span>
+                {store.storeOwner}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid container paddingBottom="25px">
+            <Grid item xs={12} md={3}>
+              <Typography variant="body">{store.description}</Typography>
+            </Grid>
+          </Grid>
+          <Grid container paddingBottom="25px" spacing={2}>
+            <Grid item xs={12} md={3}>
+              <div>
+                <Typography variant="body" color="text.main">
+                  Name
+                </Typography>
+              </div>
+              <StyledTextField
+                fullWidth
+                id="outlined-basic"
+                label=""
+                helperText=""
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <div>
+                <Typography variant="body" color="text.main">
+                  Email Address
+                </Typography>
+              </div>
+              <StyledTextField
+                fullWidth
+                id="outlined-basic"
+                label=""
+                helperText=""
+                variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <div>
+                <Typography variant="body" color="text.main">
+                  Phone Number
+                </Typography>
+              </div>
+              <StyledTextField
+                fullWidth
+                id="outlined-basic"
+                label=""
+                helperText=""
+                variant="outlined"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <div>
+                <Typography variant="body" color="text.main">
+                  Would you like to add any note/ comment in your order?
+                </Typography>
+              </div>
+              <StyledTextField
+                multiline
+                fullWidth
+                id="outlined-basic"
+                label=""
+                helperText=""
+                variant="outlined"
+                inputProps={{
+                  style: {
+                    whiteSpace: "pre-wrap",
+                    wordWrap: "break-word",
+                  },
+                }}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <div>
+            <Grid
+              container
+              sx={{
+                backgroundColor: "primary.main",
+                paddingLeft: isMobile ? "2px" : "50px",
+              }}
+              pt="9px"
+              pb="9px"
+            >
+              <Grid item xs={2} md={3}>
+                <Typography
+                  variant={isMobile ? "body2" : "h5"}
+                  color="white.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  {isMobile ? "Ref ID" : "Reference ID"}
+                </Typography>
+              </Grid>
+              <Grid item xs={3} md={3}>
+                <Typography
+                  variant={isMobile ? "body2" : "h5"}
+                  color="white.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Products
+                </Typography>
+              </Grid>
+              <Grid item xs={2} md={2}>
+                <Typography
+                  variant={isMobile ? "body2" : "h5"}
+                  color="white.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Price
+                </Typography>
+              </Grid>
+              <Grid item xs={3} md={2}>
+                <Typography
+                  variant={isMobile ? "body2" : "h5"}
+                  color="white.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Quantity
+                </Typography>
+              </Grid>
+              <Grid item xs={1} md={2}>
+                <Typography
+                  variant={isMobile ? "body2" : "h5"}
+                  color="white.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Amount
+                </Typography>
+              </Grid>
+            </Grid>
+            <div>
+              {store.columnsList?.map((column, index) => {
+                return (
+                  <Grid
+                    container
+                    key={index}
+                    sx={{
+                      paddingLeft: isMobile ? "2px" : "50px",
+                      backgroundColor: "background2",
+                      borderBottom: "1px solid",
+                      borderTop: "1px solid",
+                      borderTopColor: (theme) =>
+                        alpha(theme.palette.primary.main, 0.3),
+                      borderBottomColor: (theme) =>
+                        alpha(theme.palette.primary.main, 0.3),
+                      paddingTop: "9px",
+                      paddingBottom: "9px",
+                      "&:first-child": {
+                        borderTop: "none",
+                      },
+                      "&:nth-last-child(2)": {
+                        borderBottom: "none",
+                      },
+                    }}
+                  >
+                    <Grid item xs={2} md={3}>
+                      <p>{column[0]}</p>
+                    </Grid>
+                    <Grid item xs={3} md={3}>
+                      <p>{column[1]}</p>
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                      <p>
+                        {column[2]} {store.currency}
+                      </p>
+                    </Grid>
+                    <Grid item xs={3} md={2}>
+                      <TextField
+                        id="outlined-basic"
+                        label=""
+                        helperText=""
+                        type="number"
+                        variant="outlined"
+                        value={order[index]?.quantity}
+                        defaultValue={0}
+                        disabled={store.locked}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{
+                          width: "50%",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "1px solid",
+                            borderColor: "#353535",
+                            borderRadius: "6px",
+                          },
+                          "& .MuiOutlinedInput-root": {
+                            "&:hover": {
+                              borderColor: (theme) =>
+                                theme.palette.primary.main,
+                            },
+                            "&:focused": {
+                              borderColor: (theme) =>
+                                theme.palette.primary.main,
+                            },
+                          },
+                        }}
+                        onChange={(e) => {
+                          if (!e.target.value || Number(e.target.value) < 0) {
+                            e.target.value = (0).toString();
+                            // set default value and value of TextField to 0
+                            order[index] = {
+                              ...order[index],
+                              quantity: 0,
+                              id: index,
+                            };
+                          } else {
+                            let newOrder = [...order];
+                            newOrder[index] = {
+                              ...newOrder[index],
+                              quantity:
+                                Number(e.target.value) < 0
+                                  ? 0
+                                  : parseInt(e.target.value),
+                              id: index,
+                            };
+                            setOrder(newOrder);
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={2} md={2}>
+                      <p>
+                        {Number(
+                          Number(column[2].replace(/,/, "")) *
+                            Number(
+                              Number(order[index]?.quantity)
+                                ? order[index]?.quantity
+                                : 0
+                            )
+                        ).toFixed(2)}{" "}
+                        {store.currency}
+                      </p>
+                    </Grid>
+                  </Grid>
+                );
+              })}
+              <Grid container spacing={2} sx={{ marginTop: "10px" }}>
+                <Grid item xs={6} md={8} textAlign="right">
+                  <p>&nbsp;</p>
+                </Grid>
+                <Grid
+                  item
+                  xs={3}
+                  md={2}
+                  sx={{ backgroundColor: "greyBackground" }}
+                >
+                  <Typography variant="h5" sx={{ fontWeight: "regular" }}>
+                    Total
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={3}
+                  md={2}
+                  sx={{ backgroundColor: "greyBackground" }}
+                >
+                  <Typography variant="h5" sx={{ fontWeight: "regular" }}>
+                    {order?.forEach((item, index) => {
+                      if (item) {
+                        total +=
+                          Number(item.quantity) *
+                          Number(
+                            (store?.columnsList[item.id][2]).replace(/,/, "")
+                          );
+                      }
+                    })}{" "}
+                    {Number(total).toFixed(2)} {store.currency}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </div>
           </div>
-        )}
-      </Container>
+          {!store.locked && (
+            <div style={{ paddingTop: "10px" }}>
+              <Grid container xs={12} md={12} justifyContent="flex-end">
+                <Grid item>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    disabled={submitting}
+                    onClick={saveOrder}
+                  >
+                    {isMobile ? "Order" : "Complete Order"}
+                  </Button>
+                </Grid>
+              </Grid>
+            </div>
+          )}
+        </Container>
+      )}
     </div>
   );
 };
