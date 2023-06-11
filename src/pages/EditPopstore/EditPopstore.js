@@ -206,7 +206,7 @@ const EditPopstore = () => {
     doc.text("Name", 50, 40);
     doc.text("Price", 100, 40);
 
-    // Add table rows
+    // Add the table rows
     let y = 50;
     store.columnsList.forEach((row) => {
       doc.setFontSize(12);
