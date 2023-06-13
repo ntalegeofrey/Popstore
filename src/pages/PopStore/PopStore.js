@@ -27,6 +27,10 @@ import {
   serverTimestamp,
   setDoc,
 } from "../../service/firebase";
+import {
+  sendNewOrderEmail,
+  sendOrderConfirmationEmail,
+} from "../../utils/emailfunc";
 
 const PopStore = () => {
   const theme = useTheme();
@@ -178,28 +182,11 @@ const PopStore = () => {
     await handleAlert("success", "Your order has been placed");
     handleOpenModal();
 
-    let orderConfirmationEmail = `
-            <!doctype html>
-            <html lang="en">
-            <head>
-            <style>
-               body{
-                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
-               }
-            </style>
-            <title>PopStore Order</title>
-            </head>
-            <body>
-            <h1>Order Confirmation</h1>
-            <p>Thank you for your order. Your order from <b>${store.storeName}</b> has been placed successfully. You can view your order by visiting the following link:</p>
-            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
-            <p>&nbsp;</p>
-            <p>Regards</p>
-            <p>PopStore Team</p>
-            </body>
-            </html>
-            `;
-    sendMail(email, "PopStore Order Confirmation", orderConfirmationEmail);
+    sendMail(
+      email,
+      "PopStore Order Confirmation",
+      sendOrderConfirmationEmail(email, store, storeLink, orderRef)
+    );
     setOrder([]);
     setEmail("");
     setPhone("");
@@ -207,29 +194,12 @@ const PopStore = () => {
     setComment("");
     setSubmitting(false);
 
-    let newOrderEmail = `
-            <!doctype html>
-            <html lang="en">
-            <head>
-            <style>
-               body{
-                    font-family: 'Arial', Helvetica, Arial, Lucida, sans-serif;
-               }
-            </style>
-            <title>New PopStore Order</title>
-            </head>
-            <body>
-            <h1>Order</h1>
-            <p>A new order has been placed on <b>${store.storeName}</b>. You can view your order by visiting the following link:</p>
-            <p><a href="${storeLink}/order/${ownerId}/${storeId}/${orderRef.id}">View Order</a></p>
-            <p>&nbsp;</p>
-            <p>Regards</p>
-            <p>PopStore Team</p>
-            </body>
-            </html>
-            `;
     if (isEmail(store.storeOwner)) {
-      sendMail(store.storeOwner, "New PopStore Order", newOrderEmail);
+      sendMail(
+        store.storeOwner,
+        "New PopStore Order",
+        sendNewOrderEmail(email, store, storeLink, orderRef)
+      );
     }
   };
 

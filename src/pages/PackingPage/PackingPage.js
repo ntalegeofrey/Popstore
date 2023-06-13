@@ -17,6 +17,7 @@ import {
   ItemContainer,
 } from "../CustomersPage/CustomersPage";
 import { BodyText, HeaderText } from "../OrdersPage/OrdersPage";
+import NotAvailableComponent from "../../components/NotAvailableComponent/NotAvailableComponent";
 
 const PackingPage = () => {
   const [expandedRow, setExpandedRow] = useState(null);
@@ -138,134 +139,156 @@ const PackingPage = () => {
     }
   };
   if (loading) return <Loading />;
+  // Check if there are no orders
+  const noOrders = orders.length === 0;
   return (
-    <Container maxWidth="lg">
-      {/* Top Header */}
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          backgroundColor: (theme) => theme.palette.primary.main,
-          color: (theme) => theme.palette.white.main,
-          marginBottom: 3,
-          minHeight: "10vh",
-          alignItems: "center",
-        }}
-      >
-        <Grid item xs={3} md={3} alignItems="center">
-          <HeaderText variant="body1">Reference ID</HeaderText>
-        </Grid>
-        <Grid item xs={3} md={3} alignItems="center">
-          <HeaderText variant="body1">Product</HeaderText>
-        </Grid>
-        <Grid item xs={3} md={3} alignItems="center">
-          <HeaderText variant="body1">Quantity</HeaderText>
-        </Grid>
-        <Grid item xs={3} md={3} alignItems="center">
-          &nbsp;
-        </Grid>
-      </Grid>
-      {/* Table Content */}
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          backgroundColor: (theme) => theme.palette.white.main,
-          spacing: 2,
-        }}
-      >
-        {orders.map((order, rowIndex) => (
+    <>
+      {noOrders ? (
+        <div>
+          <NotAvailableComponent
+            heading="No Orders Yet"
+            subtext="Looks like there are no products ordered yet in this store."
+          />{" "}
+        </div>
+      ) : (
+        <Container maxWidth="lg">
+          {/* Top Header */}
           <Grid
-            item
-            xs={12}
-            key={rowIndex}
+            container
             spacing={2}
             sx={{
-              marginTop: "5px",
-              backgroundColor: (theme) => theme.palette.background2,
+              backgroundColor: (theme) => theme.palette.primary.main,
+              color: (theme) => theme.palette.white.main,
+              marginBottom: 3,
+              minHeight: "10vh",
+              alignItems: "center",
             }}
           >
-            <ItemContainer>
-              <Grid container>
-                <Grid item xs={3} md={3}>
-                  {order.id}
-                </Grid>
-                <Grid item xs={3} md={3}>
-                  <p style={{ fontWeight: "1 rem" }}>
-                    {store.columnsList[order.id][1]}
-                  </p>
-                </Grid>
-                <Grid item xs={3} md={3}>
-                  {order.quantity}
-                </Grid>
-                <Grid container item xs={3} md={3} justifyContent="flex-end">
-                  <IconButton
-                    onClick={() => handleToggleCollapse(rowIndex)}
-                    sx={{ color: (theme) => theme.palette.primary.main }}
-                  >
-                    {expandedRow === rowIndex ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                      <KeyboardArrowDown />
-                    )}
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </ItemContainer>
-            <div style={{ marginTop: "5px" }}>
-              <Collapse
-                in={expandedRow === rowIndex}
-                timeout="auto"
-                unmountOnExit
+            <Grid item xs={3} md={3} alignItems="center">
+              <HeaderText variant="body1">Reference ID</HeaderText>
+            </Grid>
+            <Grid item xs={3} md={3} alignItems="center">
+              <HeaderText variant="body1">Product</HeaderText>
+            </Grid>
+            <Grid item xs={3} md={3} alignItems="center">
+              <HeaderText variant="body1">Quantity</HeaderText>
+            </Grid>
+            <Grid item xs={3} md={3} alignItems="center">
+              &nbsp;
+            </Grid>
+          </Grid>
+          {/* Table Content */}
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              backgroundColor: (theme) => theme.palette.white.main,
+              spacing: 2,
+            }}
+          >
+            {orders.map((order, rowIndex) => (
+              <Grid
+                item
+                xs={12}
+                key={rowIndex}
+                spacing={2}
+                sx={{
+                  marginTop: "5px",
+                  backgroundColor: (theme) => theme.palette.background2,
+                }}
               >
-                <CollapsibleContent>
-                  {customerProducts.map((customer, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#f1f2f4",
-                        borderBottom: "1px solid lightgray",
-                        borderTop: "1px solid lightgray",
-                      }}
+                <ItemContainer>
+                  <Grid container>
+                    <Grid item xs={3} md={3}>
+                      {order.id}
+                    </Grid>
+                    <Grid item xs={3} md={3}>
+                      <p style={{ fontWeight: "1 rem" }}>
+                        {store.columnsList[order.id][1]}
+                      </p>
+                    </Grid>
+                    <Grid item xs={3} md={3}>
+                      {order.quantity}
+                    </Grid>
+                    <Grid
+                      container
+                      item
+                      xs={3}
+                      md={3}
+                      justifyContent="flex-end"
                     >
-                      {customer.products.map((product) => (
-                        <div key={product.id}>
-                          <Grid container>
-                            <Grid item xs={3} md={3}>
-                              <p>{customer.email}</p>
-                              <p>{customer.name}</p>
-                              <p>{customer.phone}</p>
-                            </Grid>
-                            <Grid item xs={3} md={3}>
-                              &nbsp;
-                            </Grid>
-                            <Grid item xs={3} md={3}>
-                              {product.quantity}
-                            </Grid>
-                            <Grid item xs={3} md={3}>
-                              <BodyText
-                                variant="footnote"
-                                sx={{ marginBottom: 1, fontWeight: "light" }}
-                              >
-                                Notes / Comments
-                              </BodyText>
-                              <BodyText variant="body1">
-                                {customer.comment}
-                              </BodyText>
-                            </Grid>
-                          </Grid>
+                      <IconButton
+                        onClick={() => handleToggleCollapse(rowIndex)}
+                        sx={{ color: (theme) => theme.palette.primary.main }}
+                      >
+                        {expandedRow === rowIndex ? (
+                          <KeyboardArrowUp />
+                        ) : (
+                          <KeyboardArrowDown />
+                        )}
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </ItemContainer>
+                <div style={{ marginTop: "5px" }}>
+                  <Collapse
+                    in={expandedRow === rowIndex}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <CollapsibleContent>
+                      {customerProducts.map((customer, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            width: "100%",
+                            backgroundColor: "#f1f2f4",
+                            borderBottom: "1px solid lightgray",
+                            borderTop: "1px solid lightgray",
+                          }}
+                        >
+                          {customer.products.map((product) => (
+                            <div key={product.id}>
+                              <Grid container>
+                                <Grid item xs={3} md={3}>
+                                  <p>{customer.email}</p>
+                                  <p>{customer.name}</p>
+                                  <p>{customer.phone}</p>
+                                </Grid>
+                                <Grid item xs={3} md={3}>
+                                  &nbsp;
+                                </Grid>
+                                <Grid item xs={3} md={3}>
+                                  {product.quantity}
+                                </Grid>
+                                <Grid item xs={3} md={3}>
+                                  <BodyText
+                                    variant="footnote"
+                                    sx={{
+                                      marginBottom: 1,
+                                      fontWeight: "light",
+                                    }}
+                                  >
+                                    Notes / Comments
+                                  </BodyText>
+                                  <BodyText variant="body1">
+                                    {customer.comment}
+                                  </BodyText>
+                                </Grid>
+                              </Grid>
+                            </div>
+                          ))}
                         </div>
                       ))}
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapse>
-            </div>
+                    </CollapsibleContent>
+                  </Collapse>
+                </div>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-    </Container>
+        </Container>
+      )}
+    </>
   );
 };
 

@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import { BodyText } from "../OrdersPage/OrdersPage";
 import Loading from "../../components/Loading";
+import NotAvailableComponent from "../../components/NotAvailableComponent/NotAvailableComponent";
 
 export const ItemContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -115,233 +116,264 @@ const CustomerOrders = () => {
       });
     }
   };
+
   if (loading) return <Loading />;
+  // Check if there are no orders
+  const noCustomers = customers.length === 0;
   return (
-    <Grid container spacing={2}>
-      {customers.map((customer, index) => (
-        <Grid item xs={12} key={index}>
-          <ItemContainer
-            sx={{
-              backgroundColor: (theme) => theme.palette.background2,
-            }}
-          >
-            <div style={{ width: "100%" }}>
-              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
-                {customer.name}
-              </Typography>
-            </div>
-            <div style={{ width: "100%" }}>
-              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
-                {customer.email}
-              </Typography>
-            </div>
-            <div style={{ width: "100%" }}>
-              <Typography variant="body" align="left" sx={{ fontWeight: 400 }}>
-                {customer.phone}
-              </Typography>
-            </div>
-            <IconButton
-              onClick={() => handleToggleCollapse(index, customer)}
-              sx={{ color: (theme) => theme.palette.primary.main }}
-            >
-              {expandedRow === index ? (
-                <KeyboardArrowUp />
-              ) : (
-                <KeyboardArrowDown />
-              )}
-            </IconButton>
-          </ItemContainer>
-          {expandedRow === index && (
-            <Collapse
-              in={expandedRow === index}
-              timeout={300}
-              sx={{
-                padding: (theme) => theme.spacing(1),
-              }}
-            >
-              <CollapsibleContent>
-                <div>
+    <>
+      {noCustomers ? (
+        <div>
+          <NotAvailableComponent
+            heading="No Customers Yet"
+            subtext="Looks like there are no customers yet for this store."
+          />{" "}
+        </div>
+      ) : (
+        <Grid container spacing={2}>
+          {customers.map((customer, index) => (
+            <Grid item xs={12} key={index}>
+              <ItemContainer
+                sx={{
+                  backgroundColor: (theme) => theme.palette.background2,
+                }}
+              >
+                <div style={{ width: "100%" }}>
                   <Typography
-                    variant="body1"
+                    variant="body"
                     align="left"
-                    fontSize={"14px"}
-                    mb={1}
+                    sx={{ fontWeight: 400 }}
                   >
-                    Note /Comments
-                  </Typography>
-                  <Typography variant="body1" align="left" fontWeight={400}>
-                    {customer.comment}
+                    {customer.name}
                   </Typography>
                 </div>
-                {/* Display Order for each Customer */}
-                <div>
-                  <Grid
-                    container
-                    spacing={2}
-                    key="titles"
-                    alignItems="center"
-                    sx={{
-                      minHeight: "12vh",
-                      marginTop: 2,
-                      backgroundColor: (theme) => theme.palette.primary.main,
-                      padding: 1,
-                    }}
+                <div style={{ width: "100%" }}>
+                  <Typography
+                    variant="body"
+                    align="left"
+                    sx={{ fontWeight: 400 }}
                   >
-                    <Grid item xs={3} md={5}>
+                    {customer.email}
+                  </Typography>
+                </div>
+                <div style={{ width: "100%" }}>
+                  <Typography
+                    variant="body"
+                    align="left"
+                    sx={{ fontWeight: 400 }}
+                  >
+                    {customer.phone}
+                  </Typography>
+                </div>
+                <IconButton
+                  onClick={() => handleToggleCollapse(index, customer)}
+                  sx={{ color: (theme) => theme.palette.primary.main }}
+                >
+                  {expandedRow === index ? (
+                    <KeyboardArrowUp />
+                  ) : (
+                    <KeyboardArrowDown />
+                  )}
+                </IconButton>
+              </ItemContainer>
+              {expandedRow === index && (
+                <Collapse
+                  in={expandedRow === index}
+                  timeout={300}
+                  sx={{
+                    padding: (theme) => theme.spacing(1),
+                  }}
+                >
+                  <CollapsibleContent>
+                    <div>
                       <Typography
-                        variant="subtitle1"
+                        variant="body1"
                         align="left"
-                        sx={{
-                          color: (theme) => theme.palette.white.main,
-                          fontWeight: 400,
-                          fontSize: "14px",
-                        }}
+                        fontSize={"14px"}
+                        mb={1}
                       >
-                        Reference ID
+                        Note /Comments
                       </Typography>
-                    </Grid>
-                    <Grid item xs={3} md={2}>
-                      <Typography
-                        variant="subtitle1"
-                        align="left"
-                        sx={{
-                          color: (theme) => theme.palette.white.main,
-                          fontWeight: 400,
-                          fontSize: "14px",
-                        }}
-                      >
-                        Product
+                      <Typography variant="body1" align="left" fontWeight={400}>
+                        {customer.comment}
                       </Typography>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                      <div>
-                        <Typography
-                          variant="subtitle1"
-                          align="left"
-                          sx={{
-                            color: (theme) => theme.palette.white.main,
-                            fontWeight: 400,
-                            fontSize: "14px",
-                          }}
-                        >
-                          Quantity
-                        </Typography>
-                      </div>
-                    </Grid>
-                    <Grid item xs={3} md={2}>
-                      <div>
-                        <Typography
-                          variant="subtitle1"
-                          align="left"
-                          sx={{
-                            color: (theme) => theme.palette.white.main,
-                            fontWeight: 400,
-                            fontSize: "14px",
-                          }}
-                        >
-                          Amount
-                        </Typography>
-                      </div>
-                    </Grid>
-                  </Grid>
-                  {orders?.map((order, index) => {
-                    return (
+                    </div>
+                    {/* Display Order for each Customer */}
+                    <div>
                       <Grid
                         container
                         spacing={2}
-                        key={index}
-                        pb={1}
-                        pl={1}
+                        key="titles"
+                        alignItems="center"
                         sx={{
-                          backgroundColor: (theme) => theme.palette.background2,
-                          borderTop: "2px solid",
-                          borderColor: (theme) =>
-                            alpha(theme.palette.primary.main, 0.3),
-                          "&:first-child": {
-                            borderTop: "none",
-                          },
-                          "&:last-child": {
-                            borderBottom: "none",
-                          },
                           minHeight: "12vh",
+                          marginTop: 2,
+                          backgroundColor: (theme) =>
+                            theme.palette.primary.main,
+                          padding: 1,
                         }}
                       >
                         <Grid item xs={3} md={5}>
-                          <BodyText variant="body1">
-                            {store.columnsList[order.id][1]}
-                          </BodyText>
+                          <Typography
+                            variant="subtitle1"
+                            align="left"
+                            sx={{
+                              color: (theme) => theme.palette.white.main,
+                              fontWeight: 400,
+                              fontSize: "14px",
+                            }}
+                          >
+                            Reference ID
+                          </Typography>
                         </Grid>
                         <Grid item xs={3} md={2}>
-                          <BodyText variant="body1">
-                            {store.columnsList[order.id][2]} {store?.currency}
-                          </BodyText>
+                          <Typography
+                            variant="subtitle1"
+                            align="left"
+                            sx={{
+                              color: (theme) => theme.palette.white.main,
+                              fontWeight: 400,
+                              fontSize: "14px",
+                            }}
+                          >
+                            Product
+                          </Typography>
                         </Grid>
                         <Grid item xs={3} md={3}>
-                          <BodyText variant="body1">{order.quantity}</BodyText>
+                          <div>
+                            <Typography
+                              variant="subtitle1"
+                              align="left"
+                              sx={{
+                                color: (theme) => theme.palette.white.main,
+                                fontWeight: 400,
+                                fontSize: "14px",
+                              }}
+                            >
+                              Quantity
+                            </Typography>
+                          </div>
                         </Grid>
                         <Grid item xs={3} md={2}>
-                          <BodyText variant="body1">
-                            {(
-                              parseFloat(store.columnsList[order.id][2]) *
-                              parseFloat(order.quantity)
-                            ).toFixed(2)}{" "}
-                            {store?.currency}
-                          </BodyText>
+                          <div>
+                            <Typography
+                              variant="subtitle1"
+                              align="left"
+                              sx={{
+                                color: (theme) => theme.palette.white.main,
+                                fontWeight: 400,
+                                fontSize: "14px",
+                              }}
+                            >
+                              Amount
+                            </Typography>
+                          </div>
                         </Grid>
                       </Grid>
-                    );
-                  })}
-                  <div>
-                    <Grid
-                      container
-                      spacing={2}
-                      justifyContent="flex-end"
-                      sx={{
-                        backgroundColor: (theme) =>
-                          theme.palette.greyBackground,
-                        marginTop: 1,
-                        marginLeft: "auto",
-                        width: "50%",
-                      }}
-                    >
-                      <Grid
-                        container
-                        item
-                        xs={3}
-                        md={6}
-                        justifyContent="center"
-                      >
-                        <h4>Grand Total</h4>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={3}
-                        md={6}
-                        container
-                        justifyContent="center"
-                      >
-                        <h4 styles={{ marginLeft: "10px" }}>
-                          {orders
-                            .reduce((prev, next) => {
-                              return (
-                                prev +
-                                parseFloat(store.columnsList[next.id][2]) *
-                                  parseFloat(next.quantity)
-                              );
-                            }, 0)
-                            .toFixed(2)}{" "}
-                          {store?.currency}
-                        </h4>
-                      </Grid>
-                    </Grid>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapse>
-          )}
+                      {orders?.map((order, index) => {
+                        return (
+                          <Grid
+                            container
+                            spacing={2}
+                            key={index}
+                            pb={1}
+                            pl={1}
+                            sx={{
+                              backgroundColor: (theme) =>
+                                theme.palette.background2,
+                              borderTop: "2px solid",
+                              borderColor: (theme) =>
+                                alpha(theme.palette.primary.main, 0.3),
+                              "&:first-child": {
+                                borderTop: "none",
+                              },
+                              "&:last-child": {
+                                borderBottom: "none",
+                              },
+                              minHeight: "12vh",
+                            }}
+                          >
+                            <Grid item xs={3} md={5}>
+                              <BodyText variant="body1">
+                                {store.columnsList[order.id][1]}
+                              </BodyText>
+                            </Grid>
+                            <Grid item xs={3} md={2}>
+                              <BodyText variant="body1">
+                                {store.columnsList[order.id][2]}{" "}
+                                {store?.currency}
+                              </BodyText>
+                            </Grid>
+                            <Grid item xs={3} md={3}>
+                              <BodyText variant="body1">
+                                {order.quantity}
+                              </BodyText>
+                            </Grid>
+                            <Grid item xs={3} md={2}>
+                              <BodyText variant="body1">
+                                {(
+                                  parseFloat(store.columnsList[order.id][2]) *
+                                  parseFloat(order.quantity)
+                                ).toFixed(2)}{" "}
+                                {store?.currency}
+                              </BodyText>
+                            </Grid>
+                          </Grid>
+                        );
+                      })}
+                      <div>
+                        <Grid
+                          container
+                          spacing={2}
+                          justifyContent="flex-end"
+                          sx={{
+                            backgroundColor: (theme) =>
+                              theme.palette.greyBackground,
+                            marginTop: 1,
+                            marginLeft: "auto",
+                            width: "50%",
+                          }}
+                        >
+                          <Grid
+                            container
+                            item
+                            xs={3}
+                            md={6}
+                            justifyContent="center"
+                          >
+                            <h4>Grand Total</h4>
+                          </Grid>
+                          <Grid
+                            item
+                            xs={3}
+                            md={6}
+                            container
+                            justifyContent="center"
+                          >
+                            <h4 styles={{ marginLeft: "10px" }}>
+                              {orders
+                                .reduce((prev, next) => {
+                                  return (
+                                    prev +
+                                    parseFloat(store.columnsList[next.id][2]) *
+                                      parseFloat(next.quantity)
+                                  );
+                                }, 0)
+                                .toFixed(2)}{" "}
+                              {store?.currency}
+                            </h4>
+                          </Grid>
+                        </Grid>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapse>
+              )}
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
+      )}
+    </>
   );
 };
 
