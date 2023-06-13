@@ -1,27 +1,30 @@
-import { Routes, Route } from "react-router-dom";
+import { Box } from "@mui/material";
 import { Toaster } from "react-hot-toast";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import Navigation from "./components/Navigation/Navigation";
+import OnboardingTooltip from "./components/ReactJoyride/ReactJoyride";
+import MainContainer from "./components/Styles/styledMainContainer";
+import ThemeCustomization from "./config/theme";
+import AnalyticsPage from "./pages/Analytics/Analytics";
+import CustomersPage from "./pages/CustomersPage/CustomersPage";
+import DownloadedPage from "./pages/DownloadedPage";
+import EditPopstore from "./pages/EditPopstore/EditPopstore";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import MyPopstore from "./pages/MyPopstore/MyPopstore";
 import NewPopstore from "./pages/NewPopstore/NewPopstore";
-import OrdersPage from "./pages/OrdersPage/OrdersPage";
-import OrderPage from "./pages/OrderPage/OrderPage";
-import QRPage from "./pages/QRPage/QRPage";
-import CustomersPage from "./pages/CustomersPage/CustomersPage";
-import PopStore from "./pages/PopStore/PopStore";
 import NotFound from "./pages/NotFound/NotFound";
-import EditPopstore from "./pages/EditPopstore/EditPopstore";
-import ThemeCustomization from "./config/theme";
-import Navigation from "./components/Navigation/Navigation";
-import MainContainer from "./components/Styles/styledMainContainer";
-import { Box } from "@mui/material";
-import AnalyticsPage from "./pages/Analytics/Analytics";
+import OrderPage from "./pages/OrderPage/OrderPage";
+import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import PackingPage from "./pages/PackingPage/PackingPage";
-import DownloadedPage from "./pages/DownloadedPage";
+import PopStore from "./pages/PopStore/PopStore";
+import QRPage from "./pages/QRPage/QRPage";
+import { steps } from "./utils/onboardingSteps";
 
 function App() {
   return (
     <ThemeCustomization>
+      <OnboardingTooltip steps={steps} />
       <Toaster />
       <Navigation />
       <MainContainer component={"main"}>

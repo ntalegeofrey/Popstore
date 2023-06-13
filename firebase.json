@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "deploy:staging": "npm run build && firebase hosting:channel:deploy --expires 1w popstoreV1-staging"
+  },
+  "deploy": {
+    "only": "hosting"
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

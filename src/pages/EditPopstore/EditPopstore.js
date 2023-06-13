@@ -45,6 +45,10 @@ import {
   eurocurrencies,
   updateCurrencyColumn,
 } from "../NewPopstore/NewPopstore";
+import {
+  ErrorAlert,
+  SuccessAlert,
+} from "../../components/Styles/styledNotificationAlerts";
 
 const EditPopstore = () => {
   const theme = useTheme();
@@ -56,8 +60,21 @@ const EditPopstore = () => {
   const [dbColumns] = useState(["Reference ID", "Name", "Price"]);
   const [loading, setLoading] = useState(true);
   const [strefRef, setStrefRef] = useState(true);
-
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleAlert = async (type, message) => {
+    await setAlert({ type, message });
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleOpenModal = async (e) => {
+    setOpenModal(true);
+  };
 
   const MySwal = withReactContent(Swal);
 
@@ -97,32 +114,20 @@ const EditPopstore = () => {
     e.preventDefault();
 
     if (store.storeName.trim() === "") {
-      await MySwal.fire({
-        title: "Error!",
-        text: "Please select a name for PopStore",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please select a name for PopStore");
+      handleOpenModal();
       return;
     }
 
     if (!isEmail(store.storeOwner) || store.storeOwner.trim() === "") {
-      await MySwal.fire({
-        title: "Error!",
-        text: "Please add an email for PopStore owner",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please add an email for PopStore owner");
+      handleOpenModal();
       return;
     }
 
     if (store.description.trim() === "") {
-      await MySwal.fire({
-        title: "Error!",
-        text: "Please add description for PopStore",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please add description for PopStore");
+      handleOpenModal();
       return;
     }
 
@@ -142,14 +147,10 @@ const EditPopstore = () => {
 
     await updateDoc(storeRef, updatedStore);
 
-    await MySwal.fire({
-      title: "Success!",
-      text: "PopStore updated successfully",
-      icon: "success",
-      confirmButtonText: "Ok",
-    });
+    await handleAlert("success", "PopStore updated successfully");
+    handleOpenModal();
+
     localStorage.removeItem("columns");
-    navigate("/");
   };
 
   const cancelStore = async (e) => {
@@ -174,14 +175,9 @@ const EditPopstore = () => {
       const storeRef = doc(strefRef, storeId);
       await deleteDoc(storeRef);
 
-      MySwal.fire({
-        title: "Success!",
-        text: "PopStore deleted successfully",
-        icon: "success",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("success", "PopStore deleted successfully");
+      handleOpenModal();
       localStorage.removeItem("columns");
-      navigate("/");
     } catch (error) {
       console.log("Error deleting store:", error);
       // Handle the error condition here, if necessary
@@ -262,6 +258,21 @@ const EditPopstore = () => {
           >
             Update
           </Button>
+          {alert.type === "error" && (
+            <ErrorAlert
+              open={openModal}
+              onClose={handleCloseModal}
+              message={alert.message}
+            />
+          )}
+          {alert.type === "success" && (
+            <SuccessAlert
+              open={openModal}
+              onClose={() => navigate("/")}
+              message={alert.message}
+              navigate={() => navigate("/")}
+            />
+          )}
         </Grid>
         <Grid item xs={12} md={1}>
           <Link href="#" sx={{ width: "100%" }} onClick={cancelStore}>

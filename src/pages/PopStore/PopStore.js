@@ -13,6 +13,10 @@ import withReactContent from "sweetalert2-react-content";
 import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import Loading from "../../components/Loading";
+import {
+  ErrorAlert,
+  SuccessAlert,
+} from "../../components/Styles/styledNotificationAlerts";
 import { StyledTextField } from "../../components/Styles/styledTextField";
 import sendMail from "../../service/email";
 import {
@@ -43,6 +47,21 @@ const PopStore = () => {
   const [orderRef, setOrderRef] = useState(null);
   const [isSnackbarOpen, setSnackbarOpen] = React.useState(false);
   const [lockedState, setLockedState] = useState();
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleAlert = async (type, message) => {
+    await setAlert({ type, message });
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleOpenModal = async (e) => {
+    setOpenModal(true);
+  };
+
   let total = 0;
   const getData = async () => {
     // const res = await axios.get('https://geolocation-db.com/json/').then(res => {
@@ -97,34 +116,22 @@ const PopStore = () => {
     setSubmitting(true);
 
     if (!isEmail(email) || email.trim() === "") {
-      await MySwal.fire({
-        title: "Error",
-        text: "Please enter your email",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please enter your email");
+      handleOpenModal();
       setSubmitting(false);
       return;
     }
 
     if (!isMobilePhone(phone) || phone.trim() === "") {
-      await MySwal.fire({
-        title: "Error",
-        text: "Please enter your phone number",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please enter your phone number");
+      handleOpenModal();
       setSubmitting(false);
       return;
     }
 
     if (order.length === 0) {
-      await MySwal.fire({
-        title: "Error",
-        text: "Please add some items to your order",
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+      await handleAlert("error", "Please add some items to your order");
+      handleOpenModal();
       setSubmitting(false);
       return;
     }
@@ -168,12 +175,8 @@ const PopStore = () => {
     await setDoc(orderRef, Order);
     setOrderRef(orderRef);
     console.log("order: ", orderRef);
-    await MySwal.fire({
-      title: "Success",
-      text: "Your order has been placed",
-      icon: "success",
-      confirmButtonText: "Ok",
-    });
+    await handleAlert("success", "Your order has been placed");
+    handleOpenModal();
 
     let orderConfirmationEmail = `
             <!doctype html>
@@ -318,6 +321,21 @@ const PopStore = () => {
                 >
                   {isMobile ? "Order" : "Complete Order"}
                 </Button>
+                {alert.type === "error" && (
+                  <ErrorAlert
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    message={alert.message}
+                  />
+                )}
+                {alert.type === "success" && (
+                  <SuccessAlert
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    message={alert.message}
+                    navigate={handleCloseModal}
+                  />
+                )}
               </Grid>
             </Grid>
           </Grid>

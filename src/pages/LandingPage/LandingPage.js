@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import DataTable from "../../components/DataTable/DataTable";
-import OnboardingTooltip from "../../components/ReactJoyride/ReactJoyride";
+import StoreCardComponent from "../../components/StoreCard/storeCard";
 import {
   DataIndicator,
   PostoreIndicator,
@@ -21,7 +21,6 @@ import firebase, {
   signInWithGoogle,
 } from "../../service/firebase";
 import "./styles.css";
-import StoreCardComponent from "../../components/StoreCard/storeCard";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -34,32 +33,6 @@ const LandingPage = () => {
   const [storeCount, setStoreCount] = useState(0);
 
   const MySwal = withReactContent(Swal);
-
-  const steps = [
-    {
-      target: "#outlined-basic",
-      content: "Paste the data you copied from a spreadsheet here (1/5)",
-    },
-    {
-      target: "#step2",
-      content:
-        "Click “Create PopStore” to convert your data into a PopStore (2/5)",
-    },
-    {
-      target: "#step3",
-      content: "View analytics about your PopStores (3/5)",
-    },
-    {
-      target: "#step4",
-      content:
-        "Copy the link of your PopStore to share it with your customers (4/5)",
-    },
-    {
-      target: "#step5",
-      content:
-        "Click on your PopStore to view & edit your store, order, customers, and packing (5/5)",
-    },
-  ];
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(async (user) => {
@@ -163,7 +136,6 @@ const LandingPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <OnboardingTooltip steps={steps} />
       <Grid container spacing={2}>
         <Grid item>
           <Typography

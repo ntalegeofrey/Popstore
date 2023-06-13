@@ -45,6 +45,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy:staging": "npm run build && firebase hosting:channel:deploy --expires 7d popstoreV1-staging",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
