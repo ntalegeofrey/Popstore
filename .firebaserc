@@ -6,8 +6,8 @@
   "targets": {
     "popsto-re": {
       "hosting": {
-        "lisbonapp": [
-          "www-lisbonapp-popsto-re"
+        "lisbon": [
+          "lisbonapp"
         ]
       }
     }

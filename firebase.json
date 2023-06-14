@@ -7,7 +7,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "target": "lisbonapp",
+    "target": "lisbon",
     "public": "build",
     "ignore": [
       "firebase.json",

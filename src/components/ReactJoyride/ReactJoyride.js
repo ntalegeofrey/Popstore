@@ -7,6 +7,11 @@ const OnboardingTooltip = ({ steps }) => {
       <ReactJoyride
         continuous={true}
         steps={steps}
+        disableCloseOnEsc
+        disableOverlayClose
+        disableScrollParentFix
+        showSkipButton
+        disableOverlay
         styles={{
           options: {
             arrowColor: "#4c8991",
@@ -16,9 +21,18 @@ const OnboardingTooltip = ({ steps }) => {
             width: "268px",
             zIndex: "162px",
           },
+          tooltipContent: {
+            padding: "20px 10px",
+            textAlign: "left",
+            fontWeight: 300,
+            fontSize: "16px",
+            lineHeight: "22px",
+          },
         }}
         locale={{
           last: "Finish",
+          skip: "Skip",
+          Next: "Next",
         }}
       >
         Test
