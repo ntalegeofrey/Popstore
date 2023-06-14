@@ -1,37 +1,48 @@
 import { styled } from "@mui/material/styles";
 import React from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import DataUsageIcon from "@mui/icons-material/DataUsage";
 import { Box, Typography } from "@mui/material";
+import HomeIcon from "../../icons/HomeIcon";
+import MBIcon from "../../icons/MBIcon";
 
 const StyledBoxContainer = styled(Box)(({ theme }) => ({
   marginTop: "30px",
   padding: "16px",
-  border: "2px solid",
-  borderColor: "#7a7d81",
+  border: "1px solid",
+  borderColor: "#000000",
   display: "flex",
   flexDirection: "column",
-  borderRadius: "10px",
+  borderRadius: "4px",
+  width: "166px",
+  height: "86px",
 }));
 
 const StyledIndicatorWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   marginTop: "16px",
   alignItems: "center",
+  width: "20px",
+  height: "20px",
+  width: "100%",
 }));
 
 export const PostoreIndicator = ({ popstores }) => {
   return (
     <>
       <StyledBoxContainer id="step3">
-        <Typography variant="h4" color="text.main">
+        <Typography variant="body3" color="majorBlack">
           My PopStores:
         </Typography>
         <StyledIndicatorWrapper>
-          <Typography id="step3" variant="h3" color="primary.main" mr="16px">
+          <Typography
+            id="step3"
+            variant="h3"
+            color="primary.main"
+            mr="16px"
+            sx={{ fontWeight: 400, fontSize: "40px", lineHeight: "54.47px" }}
+          >
             {popstores}
           </Typography>
-          <HomeIcon sx={{ color: (theme) => theme.palette.primary.main }} />
+          <HomeIcon />
         </StyledIndicatorWrapper>
       </StyledBoxContainer>
     </>
@@ -42,16 +53,19 @@ export const DataIndicator = ({ dataUsage }) => {
   return (
     <>
       <StyledBoxContainer>
-        <Typography variant="h4" color="text.main">
+        <Typography variant="body3" color="majorBlack">
           MB Usage:
         </Typography>
         <StyledIndicatorWrapper>
-          <Typography variant="h3" color="primary.main" mr="16px">
+          <Typography
+            variant="h3"
+            color="primary.main"
+            mr="16px"
+            sx={{ fontWeight: 400, fontSize: "40px", lineHeight: "54.47px" }}
+          >
             {parseFloat(dataUsage).toFixed(3)}
           </Typography>
-          <DataUsageIcon
-            sx={{ color: (theme) => theme.palette.primary.main }}
-          />
+          <MBIcon />
         </StyledIndicatorWrapper>
       </StyledBoxContainer>
     </>

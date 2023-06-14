@@ -67,6 +67,11 @@ const typography = {
     lineHeight: 1.66,
     color: dark.main,
   },
+  body3: {
+    fontWeight: 400,
+    fontSize: "16px",
+    lineHeight: "21.79px",
+  },
   subtitle1: {
     fontSize: "0.875rem",
     fontWeight: 300,

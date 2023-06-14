@@ -21,6 +21,7 @@ import firebase, {
   signInWithGoogle,
 } from "../../service/firebase";
 import "./styles.css";
+import { StyledTextField } from "../../components/Styles/styledTextField";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -136,38 +137,41 @@ const LandingPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item>
           <Typography
-            variant="h2"
-            color="text.main"
-            sx={{ pb: 4, fontWeight: "light" }}
+            color="majorBlack"
+            fontWeight={300}
+            fontSize="32px"
+            lineHeight="43.58px"
+            sx={{ pb: "14px", fontWeight: "light" }}
           >
             Create Popstore from a spreadsheet
           </Typography>
         </Grid>
       </Grid>
       <form onSubmit={saveSheet}>
-        <Grid container spacing={2} alignItems="center">
+        <Grid container alignItems="center">
           <Grid item xs={12} md={6}>
-            <TextField
+            <StyledTextField
               fullWidth
               id="outlined-basic"
-              label="Create Popstore from a spreadsheet"
+              label="Paste the data for a spreadsheet here "
               helperText=""
               variant="outlined"
               onPaste={handlePaste}
               value={pastedData}
+              sx={{ width: "549px", height: "53px" }}
             />
           </Grid>
-          <Grid item xs={6} md={3}>
+          <Grid container item xs={6} md={3} justifyContent="flex-end">
             <Button
               id="step2"
               color="primary"
               variant="contained"
               disabled={!sheetData.length}
               onClick={handleOpenModal}
-              sx={{ width: "100%" }}
+              sx={{ width: "175px", height: "40px" }}
             >
               Create PopStore
             </Button>
@@ -177,13 +181,14 @@ const LandingPage = () => {
               saveSheet={saveSheet}
             />
           </Grid>
-          <Grid item xs={6} md={3}>
+          <Grid container item xs={6} md={3} justifyContent="flex-end">
+            {" "}
             <Button
               color="secondary"
               variant="outlined"
               disabled={typeof sheetData === "undefined" || !sheetData.length}
               onClick={clearSheet}
-              sx={{ width: "100%" }}
+              sx={{ width: "175px", height: "40px" }}
             >
               Clear Data
             </Button>
@@ -195,7 +200,7 @@ const LandingPage = () => {
           <DataTable sheet={sheetData} />
         </div>
       )}
-      <Grid container spacing={2} marginBottom="30px">
+      <Grid container marginTop="30px">
         <Grid item xs={12} md={2}>
           <PostoreIndicator popstores={storeCount} />
         </Grid>
@@ -203,11 +208,13 @@ const LandingPage = () => {
           <DataIndicator dataUsage={dataUsage} />
         </Grid>
       </Grid>
-      <Grid container>
-        <Grid item xs={12}>
-          {user && <StoreCardComponent name="gfgsc" />}
+      <div style={{ width: "100%" }}>
+        <Grid container sx={{ marginTop: "59px" }}>
+          <Grid item xs={12}>
+            {user && <StoreCardComponent name="gfgsc" />}
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     </Container>
   );
 };

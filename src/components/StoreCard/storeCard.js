@@ -1,12 +1,10 @@
-import CopyAllIcon from "@mui/icons-material/CopyAll";
 import { Button, Card, Grid, Snackbar, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LockIcon from "@mui/icons-material/Lock";
+import CopyIcon from "../../icons/copyIcon";
 import firebase, {
-  addDoc,
   collection,
   db,
   doc,
@@ -17,6 +15,14 @@ import firebase, {
   setDoc,
 } from "../../service/firebase";
 import Loading from "../Loading";
+import LockIcon from "../../icons/lockIcon";
+
+const styles = `
+  .lock-icon {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+`;
 
 const CardContainer = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.background2,
@@ -28,6 +34,8 @@ const CardContainer = styled(Card)(({ theme }) => ({
   borderRadius: "4px",
   marginTop: theme.spacing(1),
   textDecoration: "none",
+  width: "100%",
+  height: "72px",
 }));
 
 const ButtonContainer = styled(Grid)(({ theme }) => ({
@@ -138,9 +146,10 @@ const StoreCardComponent = () => {
     }
   };
 
-  if (loading) return <Loading />;
   return (
     <>
+      <style>{styles}</style>
+      {loading && <Loading />}
       {productList.map((row, i) => (
         <div key={i}>
           <CardContainer>
@@ -148,15 +157,16 @@ const StoreCardComponent = () => {
               <Grid
                 item
                 xs={6}
-                md={tableData[i].locked ? 3 : 6}
+                md={6}
                 sx={{ cursor: "pointer" }}
                 onClick={(e) =>
                   navigate(`/popstore/analytics/${tableData[i].storeID}`)
                 }
               >
                 <Typography
-                  variant="h6"
+                  variant="body3"
                   component={Link}
+                  color="majorBlack"
                   to={`/popstore/analytics/${tableData[i].storeID}`}
                   sx={{
                     flexGrow: 1,
@@ -165,19 +175,20 @@ const StoreCardComponent = () => {
                   }}
                 >
                   {row.name}
+                  &nbsp; &nbsp; &nbsp;
+                  {tableData[i].locked && (
+                    <span className="lock-icon">
+                      <LockIcon style={{ color: "#4c8991" }} />
+                    </span>
+                  )}
                 </Typography>
               </Grid>
-              {tableData[i].locked && (
-                <Grid item xs={6} md={3}>
-                  <LockIcon style={{ color: "#4c8991" }} />
-                </Grid>
-              )}
               <ButtonContainer container item spacing={2} xs={12} md={6}>
                 <Grid item xs={12} sm={4} alignItems="center">
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ width: "100%" }}
+                    sx={{ width: "139px", height: "40px" }}
                     component={Link}
                     to={`/popstore/orders/${tableData[i].storeID}`}
                   >
@@ -188,7 +199,7 @@ const StoreCardComponent = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ width: "100%" }}
+                    sx={{ width: "139px", height: "40px" }}
                     onClick={() => handleDuplicateStore(tableData[i].storeID)}
                   >
                     Duplicate Store
@@ -198,8 +209,8 @@ const StoreCardComponent = () => {
                   <Button
                     id="step4"
                     variant="contained"
-                    startIcon={<CopyAllIcon />}
-                    sx={{ width: "100%" }}
+                    startIcon={<CopyIcon />}
+                    sx={{ width: "139px", height: "40px" }}
                     onClick={() =>
                       handleCopy(
                         `/store/${tableData[i].ownerID}/${tableData[i].storeID}`

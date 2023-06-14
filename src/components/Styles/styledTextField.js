@@ -4,7 +4,7 @@ import { styled, TextField } from "@mui/material";
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-notchedOutline": {
     border: "1px solid",
-    borderColor: "#353535",
+    borderColor: theme.palette.majorBlack,
     borderRadius: "6px",
   },
   "& .MuiOutlinedInput-root": {
