@@ -6,11 +6,15 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import firebase, {
+  addDoc,
   collection,
   db,
+  doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
+  setDoc,
 } from "../../service/firebase";
 import Loading from "../Loading";
 
@@ -90,6 +94,50 @@ const StoreCardComponent = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  const handleDuplicateStore = async (storeID) => {
+    try {
+      setLoading(true);
+
+      // Retrieve the details of the store to be duplicated
+      const storeRef = doc(db, `/StoreOwners/${user.uid}/allStores/${storeID}`);
+      const storeSnapshot = await getDoc(storeRef);
+      const storeData = storeSnapshot.data();
+
+      // Create a new store with auto-generated ID and the same details as the original store
+      const newStoreRef = doc(
+        collection(db, `/StoreOwners/${user.uid}/allStores`)
+      );
+      const newStoreID = newStoreRef.id;
+      const newStoreData = { ...storeData }; // Create a fresh copy of the store data
+      newStoreData.storeID = newStoreID; // Modify storeID to the new ID
+      await setDoc(newStoreRef, newStoreData);
+
+      // Fetch all the store data
+      const allStoresRef = query(
+        collection(db, `/StoreOwners/${user.uid}/allStores`),
+        orderBy("createAt", "desc")
+      );
+      const querySnapshot = await getDocs(allStoresRef);
+      const allStoresData = [];
+      querySnapshot.forEach((doc) => {
+        allStoresData.push(doc.data());
+      });
+
+      // Update the table data with all the store data
+      setTableData(allStoresData);
+      setLoading(false);
+
+      // Retrieve the ID of the newly duplicated store
+      console.log("Duplicated store ID:", newStoreID);
+
+      // Perform any additional actions with the duplicated store ID here
+    } catch (error) {
+      console.error("Error duplicating store:", error);
+      setLoading(false);
+    }
+  };
+
   if (loading) return <Loading />;
   return (
     <>
@@ -141,8 +189,7 @@ const StoreCardComponent = () => {
                     variant="contained"
                     color="primary"
                     sx={{ width: "100%" }}
-                    component={Link}
-                    to={`/popstore/edit/${tableData[i].storeID}`}
+                    onClick={() => handleDuplicateStore(tableData[i].storeID)}
                   >
                     Duplicate Store
                   </Button>

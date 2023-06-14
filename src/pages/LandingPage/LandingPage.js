@@ -11,7 +11,7 @@ import {
   PostoreIndicator,
 } from "../../components/Styles/styledIndicators";
 import PopUpModal from "../../components/Styles/styledLoginPopUp";
-import textToCellsParser from "../../functions/textToCellsParser";
+import textToCellsParser from "../../funcs/textToCellsParser";
 import firebase, {
   collection,
   db,

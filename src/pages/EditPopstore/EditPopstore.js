@@ -76,8 +76,6 @@ const EditPopstore = () => {
     setOpenModal(true);
   };
 
-  const MySwal = withReactContent(Swal);
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {

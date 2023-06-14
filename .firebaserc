@@ -1,5 +1,16 @@
 {
   "projects": {
-    "default": "popsto-re"
-  }
+    "default": "popsto-re",
+    "staging": "popsto-re"
+  },
+  "targets": {
+    "popsto-re": {
+      "hosting": {
+        "lisbonapp": [
+          "www-lisbonapp-popsto-re"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
