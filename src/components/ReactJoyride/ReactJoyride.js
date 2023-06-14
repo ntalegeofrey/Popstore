@@ -1,6 +1,17 @@
 import React from "react";
 import ReactJoyride from "react-joyride";
 
+const buttonReset = {
+  backgroundColor: "#4c8991",
+  border: 0,
+  borderRadius: 0,
+  color: "#555",
+  outline: "none",
+  lineHeight: 1,
+  padding: 8,
+  WebkitAppearance: "none",
+};
+
 const OnboardingTooltip = ({ steps }) => {
   return (
     <div>
@@ -27,6 +38,13 @@ const OnboardingTooltip = ({ steps }) => {
             fontWeight: 300,
             fontSize: "16px",
             lineHeight: "22px",
+          },
+          buttonNext: {
+            ...buttonReset,
+            backgroundColor: "#4c8991",
+            color: "#fff",
+            right: 0,
+            top: 0,
           },
         }}
         locale={{
