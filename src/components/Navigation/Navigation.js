@@ -28,7 +28,7 @@ const Navigation = () => {
 
   const handleLogout = async (e) => {
     await logout();
-    window.location.reload(); // Refresh the current page
+    window.location.reload(); // Refresh  current page
   };
   const handleClosePopup = () => setOpenPopup(false);
 
