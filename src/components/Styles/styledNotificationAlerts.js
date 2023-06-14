@@ -1,11 +1,11 @@
-import React from "react";
-import { Modal, IconButton, Typography, Box, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { DeleteOutline, DownloadOutlined } from "@mui/icons-material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import React from "react";
 import toast from "react-hot-toast";
+import CancelIcon from "../../icons/cancel";
+import SuccessIcon from "../../icons/success";
 
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: "flex",
@@ -21,7 +21,8 @@ const PopupContainer = styled("div")(({ theme }) => ({
   backgroundColor: "#F2F4F5",
   padding: theme.spacing(3),
   textAlign: "center",
-  width: "90%",
+  width: "745px",
+  height: "341px",
   [theme.breakpoints.up("sm")]: {
     width: "50%",
   },
@@ -34,8 +35,8 @@ const PopupContainer2 = styled("div")(({ theme }) => ({
   justifyContent: "flex-start",
   alignItems: "center",
   backgroundColor: "#F2F4F5",
-  padding: theme.spacing(3),
-  width: "90%",
+  width: "745px",
+  height: "341px",
   [theme.breakpoints.up("sm")]: {
     width: "50%",
   },
@@ -49,7 +50,9 @@ const CloseButton = styled(IconButton)(({ theme }) => ({
 
 const OkButton = styled(Button)(({ theme }) => ({
   color: theme.palette.primary.main,
-  width: "25%",
+  width: "177px",
+  height: "40px",
+  marginTop: "37px",
   marginBottom: "15px",
   "&.MuiButton-contained": {
     color: theme.palette.white.main,
@@ -62,7 +65,7 @@ export const SuccessAlert = ({ open, onClose, message, navigate }) => {
       <StyledModal open={open} onClose={onClose}>
         <PopupContainer>
           <CloseButton onClick={onClose}>
-            <CloseIcon />
+            <CancelIcon />
           </CloseButton>
           <Typography
             variant="h3"
@@ -77,11 +80,9 @@ export const SuccessAlert = ({ open, onClose, message, navigate }) => {
               marginBottom: (theme) => theme.spacing(2),
             }}
           >
-            <CheckCircleOutlineIcon
-              sx={{
+            <SuccessIcon
+              style={{
                 color: (theme) => theme.palette.primary.main,
-                height: "50px",
-                width: "50px",
                 marginRight: (theme) => theme.spacing(2),
               }}
               fontSize="large"
@@ -101,7 +102,7 @@ export const ErrorAlert = ({ open, onClose, message }) => {
     <StyledModal open={open} onClose={onClose}>
       <PopupContainer>
         <CloseButton onClick={onClose}>
-          <CloseIcon />
+          <CancelIcon />
         </CloseButton>
         <Typography
           variant="h3"
@@ -158,7 +159,7 @@ export const DeleteAlert = ({
     <StyledModal open={open} onClose={onClose}>
       <PopupContainer2>
         <CloseButton onClick={onClose}>
-          <CloseIcon />
+          <CancelIcon />
         </CloseButton>
         <div
           style={{

@@ -286,7 +286,7 @@ const NewPopstore = () => {
       localStorage.removeItem("sheetData");
       await handleAlert(
         "success",
-        "Your Popstore has been created successfully:)"
+        "Your Popstore has been created successfully."
       );
     }
 

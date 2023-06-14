@@ -3,6 +3,7 @@ import { Modal, IconButton, Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import GoogleButton from "./styledGoogleLoginButton";
+import CancelIcon from "../../icons/cancel";
 
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: "flex",
@@ -19,8 +20,11 @@ const PopupContainer = styled("div")(({ theme }) => ({
   padding: theme.spacing(3),
   borderRadius: theme.spacing(1),
   textAlign: "center",
-  width: "50%",
-  height: "50%",
+  width: "745px",
+  height: "341px",
+  [theme.breakpoints.up("sm")]: {
+    width: "50%",
+  },
   borderRadius: 0,
 }));
 
@@ -40,7 +44,7 @@ const PopUpModal = ({ open, onClose, saveSheet }) => {
       <PopupContainer>
         <Box sx={{ display: "flex", marginLeft: "auto" }}>
           <CloseButton onClick={onClose}>
-            <CloseIcon />
+            <CancelIcon />
           </CloseButton>
         </Box>
         <Typography variant="h2">Welcome to PopStore!</Typography>
