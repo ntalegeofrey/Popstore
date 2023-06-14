@@ -46,9 +46,11 @@ import {
   updateCurrencyColumn,
 } from "../NewPopstore/NewPopstore";
 import {
+  DeleteAlert,
   ErrorAlert,
   SuccessAlert,
 } from "../../components/Styles/styledNotificationAlerts";
+import toast from "react-hot-toast";
 
 const EditPopstore = () => {
   const theme = useTheme();
@@ -74,6 +76,19 @@ const EditPopstore = () => {
 
   const handleOpenModal = async (e) => {
     setOpenModal(true);
+  };
+
+  // Custom toast style
+  const customToastStyle = {
+    background: "#4c8991",
+    color: "white",
+  };
+
+  // Show custom toast
+  const showCustomToast = ({ msg }) => {
+    toast(msg, {
+      style: customToastStyle,
+    });
   };
 
   useEffect(() => {
@@ -156,6 +171,11 @@ const EditPopstore = () => {
     localStorage.removeItem("columns");
     navigate("/");
   };
+  const cancelStorePopup = async (e) => {
+    e.preventDefault();
+    localStorage.removeItem("columns");
+    handleCloseModal();
+  };
 
   const handleCopy = (link) => {
     const url = `${window.location.origin}${link}`;
@@ -168,16 +188,20 @@ const EditPopstore = () => {
     setSnackbarOpen(false);
   };
 
+  const handleDeletePopup = () => {
+    handleAlert("delete", "Are you sure you want to delete this popstore?");
+    handleOpenModal();
+  };
+
   const handleDelete = async () => {
     try {
       const storeRef = doc(strefRef, storeId);
       await deleteDoc(storeRef);
-
-      await handleAlert("success", "PopStore deleted successfully");
-      handleOpenModal();
       localStorage.removeItem("columns");
+      navigate("/");
+      showCustomToast("Store Deleted Successfully");
     } catch (error) {
-      console.log("Error deleting store:", error);
+      console.log("Error opening delete popup:", error);
       // Handle the error condition here, if necessary
     }
   };
@@ -209,7 +233,6 @@ const EditPopstore = () => {
       doc.text(row[0], 10, y);
       doc.text(row[1], 50, y);
       doc.text(row[2], 100, y);
-
       y += 10;
     });
 
@@ -217,7 +240,7 @@ const EditPopstore = () => {
     doc.save("popstore.pdf");
     const blob = doc.output("blob");
     saveAs(blob, "postore.pdf");
-    navigate("/popstore/downloaded");
+    handleAlert("success", "Download Completed.");
   };
 
   if (loading) return <Loading />;
@@ -266,14 +289,25 @@ const EditPopstore = () => {
           {alert.type === "success" && (
             <SuccessAlert
               open={openModal}
-              onClose={() => navigate("/")}
+              onClose={handleCloseModal}
               message={alert.message}
-              navigate={() => navigate("/")}
+              navigate={handleCloseModal}
+            />
+          )}
+          {alert.type === "delete" && (
+            <DeleteAlert
+              open={openModal}
+              onClose={handleCloseModal}
+              message={alert.message}
+              navigate={handleCloseModal}
+              deleteClicked={() => handleDelete()}
+              cancelClicked={handleCloseModal}
+              downloadClicked={generatePDF}
             />
           )}
         </Grid>
         <Grid item xs={12} md={1}>
-          <Link href="#" sx={{ width: "100%" }} onClick={cancelStore}>
+          <Link href="#" sx={{ width: "100%" }} onClick={cancelStorePopup}>
             Cancel
           </Link>
         </Grid>
@@ -493,7 +527,7 @@ const EditPopstore = () => {
             color: "red",
             width: isMobile ? "100%" : "20%",
           }}
-          onClick={handleDelete}
+          onClick={() => handleDeletePopup()}
         >
           Delete Popstore
         </Button>

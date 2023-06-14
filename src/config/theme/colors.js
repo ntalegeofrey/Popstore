@@ -9,6 +9,7 @@ const colors = {
   background2: "#edf3f4",
   canvasColor: "#FFF",
   greyBackground: "#f1f2f4",
+  majorBlack: "#353535",
 
   button: {
     active: "#4c8991",
