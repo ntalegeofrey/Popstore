@@ -35,7 +35,6 @@ const ThemeCustomization = ({ children }) => {
           display: "flex",
           minHeight: "100vh",
           justifyContent: "row",
-          overflowY: "scroll",
         }}
       >
         <CssBaseline />
