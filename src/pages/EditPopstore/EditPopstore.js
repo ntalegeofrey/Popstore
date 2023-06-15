@@ -85,8 +85,8 @@ const EditPopstore = () => {
   };
 
   // Show custom toast
-  const showCustomToast = ({ msg }) => {
-    toast(msg, {
+  const showCustomToast = () => {
+    toast("Store Deleted Successfully", {
       style: customToastStyle,
     });
   };
@@ -199,7 +199,7 @@ const EditPopstore = () => {
       await deleteDoc(storeRef);
       localStorage.removeItem("columns");
       navigate("/");
-      showCustomToast("Store Deleted Successfully");
+      showCustomToast();
     } catch (error) {
       console.log("Error opening delete popup:", error);
       // Handle the error condition here, if necessary
